@@ -6,7 +6,8 @@ tool for recogninitions/detections/analyzing images. Solution for searching diff
 appearences/disappearences of objects, change of weather/light conditions.
 
 Target: 
-Find optimal solution to use and figure out how to make such recognitions in a best way.
+Find optimal solution to use and figure out how to make such recognitions in a best way. Sharing it between proffessional developers help us to find best practices to make recognition fast and usefull, thats why I`m here :). 
+Every improvement idea are welcome!
 
 Components:
 
