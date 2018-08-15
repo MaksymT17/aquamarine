@@ -1,11 +1,16 @@
 
-aquamarine lib
+aquamarine
 
 Initial idea:
 tool for recogninitions/detections/analyzing images. Solution for searching differences in pictures, can help in detection of movement, 
 appearences/disappearences of objects, change of weather/light conditions.
 
-module extraction:
+Target: 
+Find optimal solution to use and figure out how to make such recognitions in a best way.
+
+Components:
+
+extraction:
 extraction data of pixels(RGB channels, currently Alpha channel not required), as result of reading - will be filled Matrix with RGB values.
 Currently will be used bmp_reader as open library to reading BMP images.
 
@@ -21,8 +26,6 @@ appearences/disappearences of objects, change of weather/light conditions based 
 
 thirdparty:
 external open libraries which can help in implementation of all desired features
-
-
 
 next planned tasks:
 add proper reading from bmp files
