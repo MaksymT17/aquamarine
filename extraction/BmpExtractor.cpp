@@ -12,9 +12,8 @@ namespace recognition
 
 		if (!image)
 		{
-			printf("Error - Failed to open: input.bmp\n");
 			std::string errMsg = "File '" + fileName + "' could not be found!";
-			throw FileAccessException(errMsg);
+			throw common::FileAccessException(errMsg);
 		}
 
 

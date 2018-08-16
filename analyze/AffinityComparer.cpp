@@ -21,7 +21,7 @@ namespace recognition {
 
 		void fillPixelLineWithDiffs(shared_ptr<Matrix<ColorChannels>> base, shared_ptr<Matrix<ColorChannels>> toCompare,
 			shared_ptr<Matrix<ColorChannelsDiff>> result, size_t rowId, size_t width) {
-			printf("fillPixelLineWithDiffs row:%d  width %d \n", rowId, width);
+
 			for (size_t i = 0; i < width; ++i) {
 				const auto &baseRef = *base.get();
 				const auto &toCompareRef = *toCompare.get();

@@ -1,6 +1,11 @@
+#pragma once
 #include<exception>
 
-class ExceptionError : public std::exception
-{
+namespace common {
+	namespace {
+		class ExceptionError : public std::exception
+		{
 
-};
+		};
+	}
+}

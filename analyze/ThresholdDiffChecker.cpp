@@ -1,6 +1,6 @@
 
 
-#include"TresholdDiffChecker.h"
+#include"ThresholdDiffChecker.h"
 #include <future>
 
 using namespace common;
@@ -8,16 +8,16 @@ using namespace common;
 namespace recognition {
 	namespace analyze {
 
-		TresholdDiffChecker::TresholdDiffChecker(const uint16_t channelTreshold) :
+		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) :
 			mTreshold(channelTreshold) {}
 
-		void isDiffInsideOfTreshold(uint16_t treshold, size_t& counter, const ColorChannelsDiff& chDiff)
+		void isDiffInsideOfThreshold(uint16_t treshold, size_t& counter, const ColorChannelsDiff& chDiff)
 		{
 			if ((chDiff.r + chDiff.g + chDiff.b) < treshold)
 				++counter;
 		}
 
-		float TresholdDiffChecker::getAffinityPersent(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
+		float ThresholdDiffChecker::getAffinityPersent(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
 		{
 			float channelDiffCounter = 0;
 
