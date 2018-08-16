@@ -4,11 +4,11 @@
 namespace recognition {
 	namespace analyze {
 
-		class TresholdDiffChecker
+		class ThresholdDiffChecker
 		{
 		public:
-			TresholdDiffChecker(const uint16_t channelTreshold);
-			virtual ~TresholdDiffChecker() = default;
+			ThresholdDiffChecker(const uint16_t channelTreshold);
+			virtual ~ThresholdDiffChecker() = default;
 
 			float getAffinityPersent(std::shared_ptr<common::Matrix<common::ColorChannelsDiff>> diffs);
 

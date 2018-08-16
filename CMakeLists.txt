@@ -8,7 +8,7 @@ include_directories(common thirdparty analyze)
 add_executable(recognition 
 main.cpp 
 analyze/AffinityComparer.cpp 
-analyze/TresholdDiffChecker.cpp 
+analyze/ThresholdDiffChecker.cpp 
 extraction/BmpExtractor.cpp
 )
 

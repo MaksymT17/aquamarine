@@ -1,8 +1,11 @@
+#pragma once
 #include"ExceptionError.hpp"
 
-class FileAccessException : public std::exception
-{
-public:
-	FileAccessException(std::string& msg) :
-		std::exception(msg.c_str()) {}
-};
+namespace common {
+	class FileAccessException : public std::runtime_error
+	{
+	public:
+		FileAccessException(std::string& msg) :
+			std::runtime_error(msg.c_str()) {}
+	};
+}
