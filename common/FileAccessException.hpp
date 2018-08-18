@@ -1,5 +1,5 @@
 #pragma once
-#include"ExceptionError.hpp"
+#include<exception>
 
 namespace common {
 	class FileAccessException : public std::runtime_error

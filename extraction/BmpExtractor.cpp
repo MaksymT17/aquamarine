@@ -1,7 +1,7 @@
 
 #include"BmpExtractor.h"
-#include "../thirdparty/bitmap_reader/bitmap_image.hpp"
-#include "../common/FileAccessException.hpp"
+#include "thirdparty/bitmap_reader/bitmap_image.hpp"
+#include "common/FileAccessException.hpp"
 
 namespace recognition
 {

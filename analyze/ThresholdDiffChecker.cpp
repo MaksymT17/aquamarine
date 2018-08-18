@@ -30,7 +30,6 @@ namespace recognition {
 			{
 				for (std::size_t x = 0; x < width; ++x)
 				{
-					//printf("chcked %d %d \n", y,x);
 					// if value bigger then trshoold we can assume - color changed
 					if ((diffRef(y, x).r + diffRef(y, x).g + diffRef(y, x).b) > mTreshold)
 						++channelDiffCounter;
