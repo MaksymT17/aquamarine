@@ -1,7 +1,7 @@
 #pragma once
 
 #include<memory>
-#include"../common/Types.hpp"
+#include"common/Types.hpp"
 
 namespace recognition {
 	namespace analyze {
