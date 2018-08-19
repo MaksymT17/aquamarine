@@ -11,6 +11,7 @@ main.cpp
 analyze/AffinityComparer.cpp 
 analyze/ThresholdDiffChecker.cpp 
 extraction/BmpExtractor.cpp
+extraction/MultipleBmpExtractor.cpp
 )
 
 target_link_libraries (recognition ${CMAKE_THREAD_LIBS_INIT})

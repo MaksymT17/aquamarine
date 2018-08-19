@@ -32,18 +32,6 @@ namespace recognition {
 			}
 		}
 
-		size_t getOptimalThreadsCount(size_t rowsLimit)
-		{
-			const float MAX_CPU_LOAD_PERCENT = 0.7f;
-			// 70% of CPU threads for our stuff, others - for maintaining background proccess
-
-			unsigned int MAX_THREADS = std::thread::hardware_concurrency();
-			const float concurrentCallsCount = static_cast<float>(MAX_THREADS) * MAX_CPU_LOAD_PERCENT;
-			size_t threadsCount = concurrentCallsCount < 1.0f ? 1 : static_cast<size_t>(concurrentCallsCount);
-
-			return threadsCount > rowsLimit ? rowsLimit : threadsCount;
-		}
-
 		AffinityComparer::AffinityComparer(shared_ptr<Matrix<ColorChannels>> base)
 			: mBase(base),
 			mMode(DataMode::KEEP_BASE_FRAME)
@@ -84,14 +72,13 @@ namespace recognition {
 
 				futures.clear();
 			}
-
 			
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.push_back(std::async(fillPixelLineWithDiffs, mBase, newSource, result, lastLines, width));
 
-			for (auto &e : futures)
-				e.get();
+				for (auto &e : futures)
+					e.get();
 
 			if (mMode == SWITCH_TO_COMPARED)
 				mBase = newSource;
