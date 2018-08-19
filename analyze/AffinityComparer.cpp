@@ -1,4 +1,5 @@
 #include "AffinityComparer.h"
+#include"common/Context.hpp"
 #include <future>
 
 using namespace std;
@@ -69,12 +70,12 @@ namespace recognition {
 			// can be wrapped in try() for bad alloc
 			shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
 
-			size_t threadsCount = getOptimalThreadsCount(height);
+			size_t availableThrCount = common::Context::getInstance()->getOpimalThreadsCount();
+			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
 
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
-
 				for (size_t i = 0; i < threadsCount; ++i)
 					futures.push_back(std::async(fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
 

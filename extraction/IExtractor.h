@@ -2,7 +2,8 @@
 #pragma once
 
 #include <string>
-#include "../common/Types.hpp"
+#include "common/Types.hpp"
+#include<memory>
 
 namespace recognition
 {
