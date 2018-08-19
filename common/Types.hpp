@@ -75,6 +75,11 @@ namespace common {
 			return mData[i * mWidth + j];
 		}
 
+		void push_back(T elem)
+		{
+			mData.push_back(elem);
+		}
+
 	private:
 		size_t mWidth;
 		size_t mHeight;
@@ -91,6 +96,5 @@ namespace common {
 		else
 			diff = compared - source;
 	}
-
 
 } // common

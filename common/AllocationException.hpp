@@ -6,6 +6,6 @@ namespace common {
 	{
 	public:
 		AllocationException(std::string& msg) :
-			std::exception(msg.c_str()) {}
+			std::runtime_error(msg.c_str()) {}
 	};
 }
