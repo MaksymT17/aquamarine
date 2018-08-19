@@ -43,5 +43,5 @@ namespace common {
 			return mOptimalThreadsCount;
 		}
 	};
-	Context* Context::inst = nullptr;
+	
 }

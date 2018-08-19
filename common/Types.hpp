@@ -2,7 +2,6 @@
 #include<stdint.h>
 #include <vector>
 
-
 namespace common {
 
 	const int R_POS_VAL = 1;
