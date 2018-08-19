@@ -85,7 +85,6 @@ namespace recognition {
 			}
 
 			
-
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.push_back(std::async(fillPixelLineWithDiffs, mBase, newSource, result, lastLines, width));
