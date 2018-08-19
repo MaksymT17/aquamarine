@@ -10,8 +10,8 @@ int main() {
 	using namespace common;
 	
 	recognition::BmpExtractor extractor;
-	std::string base("sample_clean_2560x1440.BMP");
-	std::string toCompare("sample_clean_mod_2560x1440.BMP");
+	std::string base("image_inputs/sample_clean_2560x1440.BMP");
+	std::string toCompare("image_inputs/sample_clean_mod_2560x1440.BMP");
 
 	std::shared_ptr<Matrix<ColorChannels>> res = extractor.readFile(base);
 	std::shared_ptr<Matrix<ColorChannels>> resMOd = extractor.readFile(toCompare);
