@@ -26,14 +26,7 @@ namespace recognition
 			std::string errMsg = "File '" + fileName + "' could not be found!";
 			throw common::FileAccessException(errMsg);
 		}
-		bitmap_image image1(fileName.c_str());
 
-		if (!image1)
-		{
-			std::string errMsg = "File '" + fileName + "' could not be found!";
-			throw common::FileAccessException(errMsg);
-		}
-		
 
 		const unsigned int height = image.height();
 		const unsigned int width = image.width();

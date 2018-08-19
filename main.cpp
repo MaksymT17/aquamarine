@@ -3,7 +3,7 @@
 #include <memory>
 #include"extraction/BmpExtractor.h"
 #include"analyze/ThresholdDiffChecker.h"
-
+ 
 int main() {
 	using namespace recognition;
 	using namespace common;
