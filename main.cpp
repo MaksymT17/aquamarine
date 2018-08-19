@@ -3,11 +3,12 @@
 #include <memory>
 #include"extraction/BmpExtractor.h"
 #include"analyze/ThresholdDiffChecker.h"
- 
+#include"common/Context.hpp"
+common::Context* common::Context::inst = nullptr;
 int main() {
 	using namespace recognition;
 	using namespace common;
-
+	
 	recognition::BmpExtractor extractor;
 	std::string base("sample_clean_2560x1440.BMP");
 	std::string toCompare("sample_clean_mod_2560x1440.BMP");
