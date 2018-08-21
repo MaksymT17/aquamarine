@@ -7,8 +7,7 @@ namespace recognition
 {
 	std::shared_ptr<common::Matrix<common::ColorChannels>> getFileData(std::string file)
 	{
-		recognition::BmpExtractor extractor;
-		return extractor.readFile(file);
+		return recognition::BmpExtractor::readFile(file);
 	}
 
 	std::vector<std::shared_ptr<common::Matrix<common::ColorChannels>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
