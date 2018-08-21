@@ -1,7 +1,6 @@
 rm -rf build/ &&
 mkdir build &&
-scp -r image_inputs/ build/ &&
-echo "sample images copied."
+echo "clean build folder."
 cd build/ &&
 cmake .. &&
 make -j8 &&

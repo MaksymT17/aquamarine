@@ -8,6 +8,7 @@
 #include <future>
 
 common::Context* common::Context::inst = nullptr;
+
 using namespace recognition;
 using namespace common;
 
@@ -39,5 +40,7 @@ int main()
 	float sim = similarityCheck.getAffinityPersent(diffs);
 	printf("images similarity persent %f\n", sim *100.0f);
 
+	//clean up all used data
+	common::Context::release();
 	return 0;
 }

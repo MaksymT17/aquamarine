@@ -6,15 +6,11 @@ namespace common {
 	// singleton implementation
 	class Context {
 	private:
-		Context() 
-			:
+		Context() 	:
 			mOptimalThreadsCount(calculateOptimalThreadsCount()) 
 		{
 		}
-		~Context() {
-			if (inst != nullptr)
-				delete inst;
-		}		
+	
 
 		size_t calculateOptimalThreadsCount()
 		{
@@ -28,9 +24,18 @@ namespace common {
 			return threadsCount;
 		}
 		size_t mOptimalThreadsCount;
-		
+
 	public:
 		static Context *inst;
+
+		static void release()
+		{
+			if (inst != nullptr)
+				delete inst;
+		}
+
+		~Context() {
+		}
 
 		static Context *getInstance() {
 			if (inst == nullptr)
