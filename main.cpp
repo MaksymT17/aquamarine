@@ -4,6 +4,7 @@
 #include"extraction/BmpExtractor.h"
 #include"extraction/MultipleBmpExtractor.h"
 #include"analyze/ThresholdDiffChecker.h"
+#include"analyze/algorithm/ObjectDetector.h"
 #include"common/Context.hpp"
 #include <future>
 
@@ -12,14 +13,14 @@ common::Context* common::Context::inst = nullptr;
 using namespace recognition;
 using namespace common;
 
-std::shared_ptr<Matrix<ColorChannels>> getFileData(std::string& file)
-{
-	recognition::BmpExtractor extractor;
-	return extractor.readFile(file);
-}
-
 int main()
 {
+	/*
+	simple case for debug purposes
+	std::string base("image_inputs/10x10_clean.BMP");
+	std::string toCompare("image_inputs/10x10_2obj.BMP");
+	*/
+
 	recognition::MultipleBmpExtractor extractor;
 	std::string base("image_inputs/sample_clean_2560x1440.BMP");
 	std::string toCompare("image_inputs/sample_clean_mod_2560x1440.BMP");
@@ -39,6 +40,10 @@ int main()
 	analyze::ThresholdDiffChecker similarityCheck(20);
 	float sim = similarityCheck.getAffinityPersent(diffs);
 	printf("images similarity persent %f\n", sim *100.0f);
+
+	//experimental - but, main feature currently, external review needed
+	analyze::algorithm::ObjectDetector detector = analyze::algorithm::ObjectDetector(1);
+	detector.getObjectsCount(diffs);
 
 	//clean up all used data
 	common::Context::release();
