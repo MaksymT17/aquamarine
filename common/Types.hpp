@@ -1,6 +1,7 @@
 #pragma once
 #include<stdint.h>
 #include <vector>
+#include <limits>
 
 namespace common {
 
@@ -11,6 +12,8 @@ namespace common {
 	const int R_BIT_POSITION = 0;
 	const int G_BIT_POSITION = 1;
 	const int B_BIT_POSITION = 2;
+
+	const uint16_t CHANGE = std::numeric_limits<uint16_t>::max();
 
 	//simple check if value in diff positive(true), otherwise - negative(false)
 	static bool isChannelDiffPositive(uint8_t diff, int position)
@@ -95,5 +98,4 @@ namespace common {
 		else
 			diff = compared - source;
 	}
-
 } // common
