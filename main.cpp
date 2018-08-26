@@ -15,16 +15,10 @@ using namespace common;
 
 int main()
 {
-	/*
-	simple case for debug purposes
-	std::string base("image_inputs/10x10_clean.BMP");
-	std::string toCompare("image_inputs/10x10_2obj.BMP");
-	*/
-
 	recognition::MultipleBmpExtractor extractor;
-	std::string base("image_inputs/sample_clean_2560x1440.BMP");
-	std::string toCompare("image_inputs/sample_clean_mod_2560x1440.BMP");
-	std::vector<std::string> fileNames = { base,toCompare };
+	std::string base("image_inputs/fhd_clean.BMP");
+	std::string toCompare("image_inputs/fhd_5obj.BMP");
+	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
 	std::vector<std::shared_ptr<Matrix<ColorChannels>>> data = extractor.readFiles(fileNames);
@@ -38,12 +32,14 @@ int main()
 
 	//check how images similar reagrding to affinity percent
 	analyze::ThresholdDiffChecker similarityCheck(20);
+
 	float sim = similarityCheck.getAffinityPersent(diffs);
+
 	printf("images similarity persent %f\n", sim *100.0f);
 
 	//experimental - but, main feature currently, external review needed
-	analyze::algorithm::ObjectDetector detector = analyze::algorithm::ObjectDetector(1);
-	detector.getObjectsCount(diffs);
+	analyze::algorithm::ObjectDetector detector = analyze::algorithm::ObjectDetector(Context::getInstance()->getOpimalThreadsCount());
+	std::vector<analyze::algorithm::Object> rects = detector.getObjectsRects(diffs);
 
 	//clean up all used data
 	common::Context::release();

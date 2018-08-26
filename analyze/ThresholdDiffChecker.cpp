@@ -24,7 +24,6 @@ namespace recognition {
 			}
 		}
 
-
 		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff, 
 			const uint16_t threshold, std::shared_ptr<std::atomic_size_t> diffCounter)
 		{
@@ -40,7 +39,6 @@ namespace recognition {
 		float ThresholdDiffChecker::getAffinityPersent(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
 		{
 			std::shared_ptr<std::atomic_size_t> diffCounter(new std::atomic_size_t(0));
-
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
 
@@ -58,7 +56,6 @@ namespace recognition {
 
 				futures.clear();
 			}
-			
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.push_back(std::async(checlImageRow, lastLines, width, diffs, mTreshold, diffCounter));
@@ -71,9 +68,6 @@ namespace recognition {
 
 		std::shared_ptr<Matrix<uint16_t>> ThresholdDiffChecker::getThresholdDiff(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs, size_t threadsCount, uint16_t threshold)
 		{
-
-			
-
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
 			std::shared_ptr<Matrix<uint16_t>> res(new Matrix<uint16_t>(width,height));

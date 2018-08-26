@@ -34,9 +34,9 @@ namespace common {
 		uint8_t positives;
 		// bitmask for representations +/- for channel diffs
 		// 0(min) - no positives; 8(max) - all positives.
-		// 1 bit - r channel positivness
-		// 2 bit - g channel positivness
-		// 3 bit - b channel positivness
+		// 1 bit - r channel positiveness
+		// 2 bit - g channel positiveness
+		// 3 bit - b channel positiveness
 		// only 3 bits used, other 5 can be used for other info
 		/// why ? - to reduce memory usage, in case of HQ images(QHD, 4K) it can be important
 		bool isPositveR()
