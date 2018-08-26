@@ -1,6 +1,7 @@
+echo "removing existing build folder..."
 rm -rf build/ &&
 mkdir build &&
-echo "clean build folder."
+echo "preparing new build with cmake..." &&
 cd build/ &&
 cmake .. &&
 make -j8 &&

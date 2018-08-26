@@ -10,6 +10,7 @@ add_executable(recognition
 main.cpp 
 analyze/AffinityComparer.cpp 
 analyze/ThresholdDiffChecker.cpp 
+analyze/algorithm/Object.cpp
 analyze/algorithm/ObjectDetector.cpp 
 extraction/BmpExtractor.cpp
 extraction/MultipleBmpExtractor.cpp

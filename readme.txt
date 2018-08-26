@@ -8,7 +8,7 @@ conditions.
 Target: 
 Find optimal solution to implementation and figure out how to make such recognitions in a best way. 
 Sharing it between professional developers help us to find best practices to make recognition fast 
-and useful, thats why I`m here :). Every improvement idea are welcome!
+and useful, thats why I`m here. Every improvement idea are welcome!
 
 Components, sub-folders description:
 
@@ -30,8 +30,3 @@ set of images more than 2.
 
 thirdparty:
 external open libraries which can help in implementation of all desired features
-
-next planned tasks:
-add proper reading from bmp files
-add logger with variadic arguments
-add class for showing percentage of similarity of compared images with setting affinity threshold
