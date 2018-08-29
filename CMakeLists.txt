@@ -15,6 +15,7 @@ analyze/algorithm/ObjectDetector.cpp
 analyze/algorithm/ImagePair.cpp 
 extraction/BmpExtractor.cpp
 extraction/MultipleBmpExtractor.cpp
+service/Service.cpp
 
 )
 
