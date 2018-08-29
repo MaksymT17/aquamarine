@@ -1,5 +1,6 @@
 #include "AffinityComparer.h"
-#include"common/Context.hpp"
+#include "common/Context.hpp"
+#include "common/AllocationException.hpp"
 #include <future>
 
 using namespace std;
@@ -54,7 +55,10 @@ namespace recognition {
 			const size_t height = mBase.get()->getHeight();
 
 			if (!validateComparingRequestedSize(width, height, newSource.get()->getWidth(), newSource.get()->getHeight()))
-				return nullptr;
+			{
+				std::string msg("Size of base and compared image are different, comparison not supported.");
+				throw common::AllocationException(msg);
+			}
 			// can be wrapped in try() for bad alloc
 			shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
 

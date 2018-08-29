@@ -1,16 +1,15 @@
 #pragma once
-#include<thread>
+#include <thread>
 
 namespace common {
 	// Context with general info
 	// singleton implementation
 	class Context {
 	private:
-		Context() 	:
-			mOptimalThreadsCount(calculateOptimalThreadsCount()) 
+		Context() :
+			mOptimalThreadsCount(calculateOptimalThreadsCount())
 		{
 		}
-	
 
 		size_t calculateOptimalThreadsCount()
 		{
@@ -43,10 +42,10 @@ namespace common {
 
 			return inst;
 		}
-		
+
 		size_t getOpimalThreadsCount() {
 			return mOptimalThreadsCount;
 		}
 	};
-	
+
 }
