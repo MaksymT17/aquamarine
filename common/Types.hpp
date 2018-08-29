@@ -1,8 +1,8 @@
 #pragma once
-#include<stdint.h>
+#include <stdint.h>
 #include <vector>
 #include <limits>
-
+#include <cstdlib>
 namespace common {
 
 	const int R_POS_VAL = 1;
@@ -52,6 +52,9 @@ namespace common {
 			return isChannelDiffPositive(positives, B_BIT_POSITION);
 		}
 	};
+
+
+
 
 	template<class T>
 	class Matrix

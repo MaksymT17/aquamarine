@@ -5,6 +5,7 @@
 #include"extraction/MultipleBmpExtractor.h"
 #include"analyze/ThresholdDiffChecker.h"
 #include"analyze/algorithm/ObjectDetector.h"
+#include"analyze/algorithm/ImagePair.h"
 #include"common/Context.hpp"
 #include <future>
 
@@ -26,6 +27,8 @@ int main()
 	std::shared_ptr<Matrix<ColorChannels>> res = data[0];
 	std::shared_ptr<Matrix<ColorChannels>> resMOd = data[1];
 
+	std::shared_ptr<analyze::algorithm::ImagePair> pair(new analyze::algorithm::ImagePair(res, resMOd));
+
 	//find of rsulting matrix of diffs
 	analyze::AffinityComparer checker(res);
 	std::shared_ptr<Matrix<ColorChannelsDiff>> diffs = checker.compare(resMOd);
@@ -40,6 +43,7 @@ int main()
 	//experimental - but, main feature currently, external review needed
 	analyze::algorithm::ObjectDetector detector = analyze::algorithm::ObjectDetector(Context::getInstance()->getOpimalThreadsCount());
 	std::vector<analyze::algorithm::Object> rects = detector.getObjectsRects(diffs);
+	std::vector<analyze::algorithm::Object> rects1 = detector.getObjectsRects(pair);
 
 	//clean up all used data
 	common::Context::release();

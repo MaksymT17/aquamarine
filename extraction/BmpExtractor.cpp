@@ -35,7 +35,8 @@ namespace recognition
 		std::shared_ptr<common::Matrix<common::ColorChannels>> data(new common::Matrix<common::ColorChannels>(width, height));
 		
 		///todo: seems that multhreading not supported to access to file there
-		/*size_t threadsCount = 5;
+		/*
+		size_t threadsCount = 5;
 			
 		std::vector<std::future<void>> futures;
 
