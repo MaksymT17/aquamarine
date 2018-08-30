@@ -72,11 +72,11 @@ namespace recognition {
 			}
 			size_t Object::getMinHeight() const
 			{
-				return min_width;
+				return min_height;
 			}
 			size_t Object::getMaxHeight() const
 			{
-				return max_width;
+				return max_height;
 			}
 		}
 	}
