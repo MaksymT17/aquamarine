@@ -27,36 +27,10 @@ namespace recognition
 			throw common::FileAccessException(errMsg);
 		}
 
-
 		const unsigned int height = image.height();
 		const unsigned int width = image.width();
-
-
-		std::shared_ptr<common::Matrix<common::ColorChannels>> data(new common::Matrix<common::ColorChannels>(width, height));
 		
-		///todo: seems that multhreading not supported to access to file there
-		/*
-		size_t threadsCount = 5;
-			
-		std::vector<std::future<void>> futures;
-
-		for (size_t portion = 0; portion < height; portion += threadsCount) {
-			for (size_t i = 0; i < threadsCount; ++i)
-				futures.push_back(std::async(readRowFromImageSource, portion+i , width, image, *data.get()));
-
-			for (auto &e : futures)
-				e.get();
-
-			futures.clear();
-		}
-
-		// final section in case if width not divided normally on threads count
-		for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
-			futures.push_back(std::async(readRowFromImageSource, lastLines, width, image, data));
-
-		for (auto &e : futures)
-			e.get();
-		*/
+		std::shared_ptr<common::Matrix<common::ColorChannels>> data(new common::Matrix<common::ColorChannels>(width, height));
 
 		auto& colorsRef = *data.get();
 

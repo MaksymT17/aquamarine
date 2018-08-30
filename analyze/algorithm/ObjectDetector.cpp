@@ -169,6 +169,9 @@ namespace recognition {
 
 				std::vector<Object> res;
 
+				if (rects.size() == 1)
+					return *rects.begin();
+
 				for (int leftId = 0; leftId < rects.size() - 1; ++leftId)
 				{
 					for (auto& leftItem : rects[leftId])
@@ -199,7 +202,7 @@ namespace recognition {
 
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
 
-				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
+				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
 					futures.push_back(std::async(startObjectsSearch, changes, mPixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));
@@ -221,7 +224,7 @@ namespace recognition {
 
 				size_t count = 0;
 
-				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
+				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
 					futures.push_back(std::async(startObjectsSearch2, pair, mPixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));

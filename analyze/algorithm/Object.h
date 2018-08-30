@@ -25,7 +25,7 @@ namespace recognition {
 				size_t getMinHeight() const;
 				size_t getMaxHeight() const;
 
-			private:
+			
 				size_t min_width;
 				size_t min_height;
 				size_t max_width;
