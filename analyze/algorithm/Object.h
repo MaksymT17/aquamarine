@@ -1,7 +1,7 @@
 #pragma once
 #include<vector>
 #include<cstdlib>
-namespace recognition {
+namespace aq {
 	namespace analyze {
 		namespace algorithm {
 			// position of Pixel on image 

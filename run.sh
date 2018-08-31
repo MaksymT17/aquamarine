@@ -1,4 +1,4 @@
 scp -r image_inputs/ build/ &&
 echo "Image samples copied." &&
-./build/recognition &&
+./build/aq &&
 echo "Execution of tests finished."

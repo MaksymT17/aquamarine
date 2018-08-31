@@ -1,18 +1,18 @@
 #pragma once
 
 #include<memory>
-#include"common/Types.hpp"
+#include"common/types/Matrix.hpp"
+#include"common/types/ColorChannelsDiff.hpp"
 
-namespace recognition {
+
+namespace aq {
 	namespace analyze {
-		using namespace common;
-
 		class IComparer
 		{
 		public:
 			virtual ~IComparer() = default;
 
-			virtual std::shared_ptr<Matrix<ColorChannelsDiff>> compare(std::shared_ptr<Matrix<ColorChannels>> newSource) = 0;
+			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) = 0;
 		};
 	}
 }
