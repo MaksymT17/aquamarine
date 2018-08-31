@@ -2,17 +2,20 @@
 #pragma once
 
 #include <string>
-#include "common/Types.hpp"
-#include<memory>
+#include <memory>
+#include "common/types/Matrix.hpp"
+#include "common/types/ColorChannels.hpp"
 
-namespace recognition
+namespace aq
 {
-	class IExtractor
+	namespace extraction
 	{
-	public:
-		virtual ~IExtractor() = default;
+		class IExtractor
+		{
+		public:
+			virtual ~IExtractor() = default;
 
-		virtual std::shared_ptr<common::Matrix<common::ColorChannels>> readFile(std::string& filePath) = 0;
-
-	};
+			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> readFile(std::string& filePath) = 0;
+		};
+	}
 }

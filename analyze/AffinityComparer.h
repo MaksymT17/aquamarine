@@ -1,7 +1,9 @@
 #pragma once
 #include"IComparer.h"
+#include "common/types/ColorChannelsDiff.hpp"
+#include "common/types/Matrix.hpp"
 
-namespace recognition
+namespace aq
 {
 	namespace analyze
 	{
@@ -11,7 +13,7 @@ namespace recognition
 			SWITCH_TO_COMPARED = 1   // after every comparison base frame will replace to new(compared last)
 		};
 
-		using namespace common;
+		using namespace common::types;
 		class AffinityComparer : public IComparer
 		{
 		public:
@@ -19,12 +21,12 @@ namespace recognition
 
 			virtual ~AffinityComparer() = default;
 
-			virtual std::shared_ptr<Matrix<ColorChannelsDiff>> compare(std::shared_ptr<Matrix<ColorChannels>> newSource) override;
+			virtual std::shared_ptr<common::types::Matrix<ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<ColorChannels>> newSource) override;
 
-			bool isRequestSizeValid(std::shared_ptr<Matrix<ColorChannels>> newSource) const;
+			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) const;
 
 		private:
-			std::shared_ptr<Matrix<ColorChannels>> mBase;
+			std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> mBase;
 			DataMode mMode;
 		};
 	}

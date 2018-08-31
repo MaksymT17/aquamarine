@@ -1,13 +1,15 @@
 #include "ImagePair.h"
 #include "common/Context.hpp"
 #include <common/AllocationException.hpp>
-#include <cstdlib>
 
-namespace recognition {
+
+namespace aq {
 	namespace analyze {
 		namespace algorithm {
 
-			ImagePair::ImagePair(std::shared_ptr<common::Matrix<common::ColorChannels>> base, std::shared_ptr<common::Matrix<common::ColorChannels>> toCompare) :
+			using namespace common::types;
+
+			ImagePair::ImagePair(std::shared_ptr<Matrix<ColorChannels>> base, std::shared_ptr<Matrix<ColorChannels>> toCompare) :
 				mBase(base),
 				mCompare(toCompare)
 			{
@@ -33,14 +35,13 @@ namespace recognition {
 
 			uint16_t ImagePair::getAbsoluteDiff(const size_t rowId, const size_t colId) const
 			{
-				common::Matrix<common::ColorChannels>& baseRef = *mBase.get();
-				common::Matrix<common::ColorChannels>& compareRef = *mCompare.get();
+				Matrix<ColorChannels>& baseRef = *mBase.get();
+				Matrix<ColorChannels>& compareRef = *mCompare.get();
 
 				return std::abs(baseRef(rowId, colId).r - compareRef(rowId, colId).r) +
-					std::abs(baseRef(rowId, colId).g - compareRef(rowId, colId).g) +
-					std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
-			}
-
+						std::abs(baseRef(rowId, colId).g - compareRef(rowId, colId).g) +
+						std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
+			}	
 		}
 	}
 }

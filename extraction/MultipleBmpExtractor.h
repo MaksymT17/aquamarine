@@ -1,19 +1,22 @@
 #pragma once
 
-#include <vector>
 #include <memory>
-#include <common/Types.hpp>
+#include "common/types/Matrix.hpp"
+#include "common/types/ColorChannels.hpp"
 
-namespace recognition
+namespace aq
 {
-	// class for multiple reading files,
-	//given vector of fieNames will returned with relative data from files
-	class MultipleBmpExtractor
+	namespace extraction
 	{
-	public:
-		MultipleBmpExtractor() = default;
-		virtual ~MultipleBmpExtractor() = default;
+		// class for multiple reading files,
+		//given vector of fieNames will returned with relative data from files
+		class MultipleBmpExtractor
+		{
+		public:
+			MultipleBmpExtractor() = default;
+			virtual ~MultipleBmpExtractor() = default;
 
-		std::vector<std::shared_ptr<common::Matrix<common::ColorChannels>>> readFiles(std::vector<std::string> fileNames);
-	};
+			std::vector<std::shared_ptr<common::types::Matrix<common::types::ColorChannels>>> readFiles(std::vector<std::string> fileNames);
+		};
+	}
 }

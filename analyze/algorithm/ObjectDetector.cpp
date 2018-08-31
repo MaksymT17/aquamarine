@@ -6,14 +6,14 @@
 #include <common/Context.hpp>
 #include "ImagePair.h"
 
-using namespace common;
+using namespace common::types;
 
-namespace recognition {
+namespace aq {
 	namespace analyze {
 		namespace algorithm {
 
 			ObjectDetector::ObjectDetector(const size_t threadsCount) :
-				mThreadsCount(Context::getInstance()->getOpimalThreadsCount()),
+				mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount()),
 				mPixelStep(5u), /// todo should be able to calibrate in runtime, resolution dependent constant
 				mThreshold(20u) /// todo should be able to calibrate in runtime, user defined constant
 			{
@@ -44,7 +44,7 @@ namespace recognition {
 					if ((position.rowId >= 0 && position.colId >= 0 && position.rowId < changes.getHeight() &&
 						position.colId < changes.getWidth()) &&
 						position.colId >= left && position.colId <= right &&
-						changes(position.rowId, position.colId) == CHANGE)
+						changes(position.rowId, position.colId) == common::CHANGE) /// todo check constant usage
 					{
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
@@ -77,7 +77,7 @@ namespace recognition {
 				{
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
 					{
-						if (chRef(rowId, colId) == CHANGE)
+						if (chRef(rowId, colId) == common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{rowId, colId} };
 							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },
@@ -90,7 +90,7 @@ namespace recognition {
 				return resultList;
 			}
 
-			std::vector<Pixel> dfs2(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right, size_t counter)
+			std::vector<Pixel> dfs2(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
 			{
 				std::vector<Pixel> nextCheck;
 
@@ -99,11 +99,11 @@ namespace recognition {
 					if ((position.rowId >= 0 && position.colId >= 0 && position.rowId < visited.getHeight() &&
 						position.colId < visited.getWidth()) &&
 						position.colId >= left && position.colId <= right &&
-						visited(position.rowId, position.colId) != CHANGE &&
+						visited(position.rowId, position.colId) != common::CHANGE &&
 						pair.getAbsoluteDiff(position.rowId, position.colId) > 20)
 					{
 
-						visited(position.rowId, position.colId) = CHANGE;
+						visited(position.rowId, position.colId) = common::CHANGE;
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
@@ -115,17 +115,17 @@ namespace recognition {
 						if (isNew(object, newPos))
 						{
 							object.push_back(newPos);
-							visited(position.rowId, position.colId) = CHANGE;
+							visited(position.rowId, position.colId) = common::CHANGE;
 						}
 					}
 				}
 				if (nextCheck.size())
-					dfs2(pair, visited, nextCheck, object, left, right, counter);
+					dfs2(pair, visited, nextCheck, object, left, right);
 
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearch2(std::shared_ptr<ImagePair> pair, size_t step, size_t counter, size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearch2(std::shared_ptr<ImagePair> pair, size_t step,  size_t startPixel, size_t sectionWidth)
 			{
 				//auto& chRef = *changes.get();
 				auto& pairRef = *pair.get();
@@ -139,13 +139,13 @@ namespace recognition {
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
 					{
 
-						if (pairRef.getAbsoluteDiff(rowId, colId) > 20 && changes(rowId, colId) != CHANGE)
+						if (pairRef.getAbsoluteDiff(rowId, colId) > 20 && changes(rowId, colId) != common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{ rowId, colId } };
 							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },
 														   Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
 
-							resultList.push_back(dfs2(pairRef, changes, toCheck, obj, startPixel, sectionWidth, counter++));
+							resultList.push_back(dfs2(pairRef, changes, toCheck, obj, startPixel, sectionWidth));
 						}
 					}
 				}
@@ -219,15 +219,12 @@ namespace recognition {
 				const size_t columnWidth = pair.get()->getWidth() / mThreadsCount;
 
 				std::vector<std::vector<std::vector<Pixel>>> res;
-
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
-
-				size_t count = 0;
 
 				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearch2, pair, mPixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearch2, pair, mPixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
 				}
 
 				for (auto &e : futures)

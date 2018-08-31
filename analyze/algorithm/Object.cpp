@@ -1,5 +1,5 @@
 #include"Object.h"
-namespace recognition {
+namespace aq {
 	namespace analyze {
 		namespace algorithm {
 

@@ -2,9 +2,9 @@
 #include <future>
 #include "common/Context.hpp"
 
-using namespace common;
+using namespace common::types;
 
-namespace recognition {
+namespace aq {
 	namespace analyze {
 
 		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) :
@@ -94,4 +94,4 @@ namespace recognition {
 		}
 
 	} // namespace analyze
-} // namespace recognition
+} // namespace aq

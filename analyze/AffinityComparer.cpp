@@ -1,21 +1,22 @@
 #include "AffinityComparer.h"
 #include "common/Context.hpp"
+#include "common/Types.hpp"
 #include "common/AllocationException.hpp"
 #include <future>
 
 using namespace std;
-using namespace common;
+using namespace common::types;
 
-namespace recognition {
+namespace aq {
 	namespace analyze {
 
 		ColorChannelsDiff getChannelsDiff(const ColorChannels &source, const ColorChannels &toCompare) {
 			ColorChannelsDiff diff;
 			uint8_t positives = 0u; // details: see Types.hpp about bitmask usage
 
-			setUpChannelDiff(source.r, toCompare.r, diff.r, positives, R_POS_VAL);
-			setUpChannelDiff(source.g, toCompare.g, diff.g, positives, G_POS_VAL);
-			setUpChannelDiff(source.b, toCompare.b, diff.b, positives, B_POS_VAL);
+			setUpChannelDiff(source.r, toCompare.r, diff.r, positives, common::R_POS_VAL);
+			setUpChannelDiff(source.g, toCompare.g, diff.g, positives, common::G_POS_VAL);
+			setUpChannelDiff(source.b, toCompare.b, diff.b, positives, common::B_POS_VAL);
 
 			diff.positives = positives;
 			return diff;
@@ -90,4 +91,4 @@ namespace recognition {
 			return result;
 		}
 	} // namespace analyze
-} // namespace recognition
+} // namespace aq

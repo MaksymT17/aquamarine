@@ -1,30 +1,35 @@
 
 #include "MultipleBmpExtractor.h"
 #include <future>
-#include"BmpExtractor.h"
+#include "BmpExtractor.h"
+#include "common/types/ColorChannels.hpp"
 
-namespace recognition
+namespace aq
 {
-	std::shared_ptr<common::Matrix<common::ColorChannels>> getFileData(std::string file)
+	namespace extraction
 	{
-		return recognition::BmpExtractor::readFile(file);
-	}
-
-	std::vector<std::shared_ptr<common::Matrix<common::ColorChannels>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
-	{
-		std::vector<std::shared_ptr<common::Matrix<common::ColorChannels>>> result;
-		
-		std::vector<std::future<std::shared_ptr<common::Matrix<common::ColorChannels>>>> futures;
-
-		for (size_t i = 0; i < fileNames.size(); ++i)
+		using namespace common::types;
+		std::shared_ptr<Matrix<ColorChannels>> getFileData(std::string file)
 		{
-			futures.push_back(std::async(getFileData, fileNames[i]));
+			return BmpExtractor::readFile(file);
 		}
 
-		for (auto &e : futures) 
+		std::vector<std::shared_ptr<Matrix<ColorChannels>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
 		{
-			result.push_back(e.get());
+			std::vector<std::shared_ptr<Matrix<ColorChannels>>> result;
+
+			std::vector<std::future<std::shared_ptr<Matrix<ColorChannels>>>> futures;
+
+			for (size_t i = 0; i < fileNames.size(); ++i)
+			{
+				futures.push_back(std::async(getFileData, fileNames[i]));
+			}
+
+			for (auto &e : futures)
+			{
+				result.push_back(e.get());
+			}
+			return result;
 		}
-		return result;
 	}
 }

@@ -1,7 +1,7 @@
 
 #include"IComparer.h"
 
-namespace recognition {
+namespace aq {
 	namespace analyze {
 
 		class ThresholdDiffChecker
@@ -10,8 +10,8 @@ namespace recognition {
 			ThresholdDiffChecker(const uint16_t channelTreshold);
 			virtual ~ThresholdDiffChecker() = default;
 
-			float getAffinityPersent(std::shared_ptr<common::Matrix<common::ColorChannelsDiff>> diffs);
-			static std::shared_ptr<common::Matrix<uint16_t>> getThresholdDiff(std::shared_ptr<common::Matrix<common::ColorChannelsDiff>> diffs, size_t threadsCount, uint16_t threshold);
+			float getAffinityPersent(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs);
+			static std::shared_ptr<common::types::Matrix<uint16_t>> getThresholdDiff(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs, size_t threadsCount, uint16_t threshold);
 
 		private:
 			uint16_t mTreshold;
