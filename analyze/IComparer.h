@@ -5,7 +5,7 @@
 #include"common/types/ColorChannelsDiff.hpp"
 
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		class IComparer
 		{

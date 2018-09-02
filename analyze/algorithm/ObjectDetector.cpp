@@ -6,9 +6,9 @@
 #include <common/Context.hpp>
 #include "ImagePair.h"
 
-using namespace common::types;
+using namespace am::common::types;
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		namespace algorithm {
 

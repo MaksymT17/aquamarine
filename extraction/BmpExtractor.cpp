@@ -6,7 +6,7 @@
 #include<future>
 #include<vector>
 
-namespace aq
+namespace am
 {
 	namespace extraction
 	{

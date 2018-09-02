@@ -2,7 +2,7 @@
 #include"IObjectDetector.h"
 #include <cstdlib>
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		namespace algorithm {
 			class ImagePair;

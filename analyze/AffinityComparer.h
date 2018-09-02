@@ -3,7 +3,7 @@
 #include "common/types/ColorChannelsDiff.hpp"
 #include "common/types/Matrix.hpp"
 
-namespace aq
+namespace am
 {
 	namespace analyze
 	{

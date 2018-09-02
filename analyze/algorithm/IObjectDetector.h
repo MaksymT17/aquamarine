@@ -5,7 +5,7 @@
 #include "common/types/ColorChannelsDiff.hpp"
 #include "Object.h"
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		namespace algorithm {
 

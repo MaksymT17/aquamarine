@@ -1,7 +1,7 @@
 
 #include"IComparer.h"
 
-namespace aq {
+namespace am {
 	namespace analyze {
 
 		class ThresholdDiffChecker
