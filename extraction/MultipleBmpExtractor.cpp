@@ -4,7 +4,7 @@
 #include "BmpExtractor.h"
 #include "common/types/ColorChannels.hpp"
 
-namespace aq
+namespace am
 {
 	namespace extraction
 	{

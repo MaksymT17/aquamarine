@@ -4,10 +4,9 @@
 #include "common/AllocationException.hpp"
 #include <future>
 
-using namespace std;
-using namespace common::types;
+using namespace am::common::types;
 
-namespace aq {
+namespace am {
 	namespace analyze {
 
 		ColorChannelsDiff getChannelsDiff(const ColorChannels &source, const ColorChannels &toCompare) {
@@ -22,8 +21,8 @@ namespace aq {
 			return diff;
 		}
 
-		void fillPixelLineWithDiffs(shared_ptr<Matrix<ColorChannels>> base, shared_ptr<Matrix<ColorChannels>> toCompare,
-			shared_ptr<Matrix<ColorChannelsDiff>> result, size_t rowId, size_t width) {
+		void fillPixelLineWithDiffs(std::shared_ptr<Matrix<ColorChannels>> base, std::shared_ptr<Matrix<ColorChannels>> toCompare,
+			std::shared_ptr<Matrix<ColorChannelsDiff>> result, size_t rowId, size_t width) {
 
 			for (size_t i = 0; i < width; ++i) {
 				const auto &baseRef = *base.get();
@@ -34,7 +33,7 @@ namespace aq {
 			}
 		}
 
-		AffinityComparer::AffinityComparer(shared_ptr<Matrix<ColorChannels>> base)
+		AffinityComparer::AffinityComparer(std::shared_ptr<Matrix<ColorChannels>> base)
 			: mBase(base),
 			mMode(DataMode::KEEP_BASE_FRAME)
 		{}
@@ -44,14 +43,14 @@ namespace aq {
 			return (sourceW == targetW) && (sourceH == targetH);
 		}
 
-		bool AffinityComparer::isRequestSizeValid(shared_ptr<Matrix<ColorChannels>> newSource) const
+		bool AffinityComparer::isRequestSizeValid(std::shared_ptr<Matrix<ColorChannels>> newSource) const
 		{
 			const auto & base = mBase.get();
 			const auto & compare = newSource.get();
 			return (base->getWidth() == compare->getWidth() && base->getHeight() == compare->getHeight());
 		}
 
-		shared_ptr<Matrix<ColorChannelsDiff>> AffinityComparer::compare(shared_ptr<Matrix<ColorChannels>> newSource) {
+		std::shared_ptr<Matrix<ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<ColorChannels>> newSource) {
 			const size_t width = mBase.get()->getWidth();
 			const size_t height = mBase.get()->getHeight();
 
@@ -61,7 +60,7 @@ namespace aq {
 				throw common::AllocationException(msg);
 			}
 			// can be wrapped in try() for bad alloc
-			shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
+			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
 
 			size_t availableThrCount = common::Context::getInstance()->getOpimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
@@ -91,4 +90,4 @@ namespace aq {
 			return result;
 		}
 	} // namespace analyze
-} // namespace aq
+} // namespace am

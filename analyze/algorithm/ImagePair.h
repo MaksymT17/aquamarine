@@ -4,7 +4,7 @@
 #include "common/types/ColorChannels.hpp"
 #include <memory>
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		namespace algorithm {
 

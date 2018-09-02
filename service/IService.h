@@ -1,14 +1,16 @@
 #pragma once
+namespace am {
 
-namespace service {
+	namespace service {
 
-	class IService
-	{
-	public:
-		virtual ~IService() = default;
+		class IService
+		{
+		public:
+			virtual ~IService() = default;
 
-		virtual void start() = 0;
-		virtual void stop() = 0;
-	};
+			virtual void start() = 0;
+			virtual void stop() = 0;
+		};
 
+	}
 }

@@ -3,7 +3,7 @@
 #include <common/AllocationException.hpp>
 
 
-namespace aq {
+namespace am {
 	namespace analyze {
 		namespace algorithm {
 

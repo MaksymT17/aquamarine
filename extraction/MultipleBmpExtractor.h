@@ -4,7 +4,7 @@
 #include "common/types/Matrix.hpp"
 #include "common/types/ColorChannels.hpp"
 
-namespace aq
+namespace am
 {
 	namespace extraction
 	{
