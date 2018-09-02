@@ -16,25 +16,22 @@ using namespace am::analyze;
 
 int main()
 {
-	//service::Service ser;
-	//ser.start();
-	/**/
 	am::extraction::MultipleBmpExtractor extractor;
-	std::string base("image_inputs/fhd_clean.BMP");
-	std::string toCompare("image_inputs/fhd_5obj.BMP");
+	std::string base("image_inputs/rs_1.BMP");
+	std::string toCompare("image_inputs/rs_2.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
 	std::vector<std::shared_ptr<Matrix<ColorChannels>>> data = extractor.readFiles(fileNames);
 
 	std::shared_ptr<Matrix<ColorChannels>> res = data[0];
-	std::shared_ptr<Matrix<ColorChannels>> resMOd = data[1];
+	std::shared_ptr<Matrix<ColorChannels>> resChange = data[1];
 
-	std::shared_ptr<algorithm::ImagePair> pair(new algorithm::ImagePair(res, resMOd));
+	std::shared_ptr<algorithm::ImagePair> pair(new algorithm::ImagePair(res, resChange));
 
 	//find of rsulting matrix of diffs
 	AffinityComparer checker(res);
-	std::shared_ptr<Matrix<ColorChannelsDiff>> diffs = checker.compare(resMOd);
+	std::shared_ptr<Matrix<ColorChannelsDiff>> diffs = checker.compare(resChange);
 
 	//check how images similar reagrding to affinity percent
 	ThresholdDiffChecker similarityCheck(20);
@@ -45,8 +42,13 @@ int main()
 
 	//experimental - but, main feature currently, external review needed
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(am::common::Context::getInstance()->getOpimalThreadsCount());
-	std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
+	//std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
 	std::vector<algorithm::Object> rects1 = detector.getObjectsRects(pair);
+
+	for (auto& rect : rects1)
+	{
+		printf("%d %d    %d %d \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
+	}
 
 	//clean up all used data
 	am::common::Context::release();

@@ -1,13 +1,14 @@
 #pragma once
-#include<exception>
+#include "common/AmException.hpp"
 
 namespace am {
 	namespace common {
-		class FileAccessException : public std::runtime_error
+
+		class FileAccessException : public AmException
 		{
 		public:
 			FileAccessException(std::string& msg) :
-				std::runtime_error(msg.c_str()) {}
+				AmException(msg) {}
 		};
 	}
 }

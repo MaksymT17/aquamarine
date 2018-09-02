@@ -90,7 +90,7 @@ namespace am {
 				return resultList;
 			}
 
-			std::vector<Pixel> dfs2(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
+			std::vector<Pixel> dfsInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
 			{
 				std::vector<Pixel> nextCheck;
 
@@ -120,12 +120,12 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfs2(pair, visited, nextCheck, object, left, right);
+					dfsInPair(pair, visited, nextCheck, object, left, right);
 
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearch2(std::shared_ptr<ImagePair> pair, size_t step,  size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step,  size_t startPixel, size_t sectionWidth)
 			{
 				//auto& chRef = *changes.get();
 				auto& pairRef = *pair.get();
@@ -145,7 +145,7 @@ namespace am {
 							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },
 														   Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
 
-							resultList.push_back(dfs2(pairRef, changes, toCheck, obj, startPixel, sectionWidth));
+							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth));
 						}
 					}
 				}
@@ -224,7 +224,7 @@ namespace am {
 				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearch2, pair, mPixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearchInPair, pair, mPixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
 				}
 
 				for (auto &e : futures)
