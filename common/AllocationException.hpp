@@ -1,14 +1,14 @@
 #pragma once
-#include<exception>
 
+#include "common/AmException.hpp"
 
 namespace am {
 	namespace common {
-		class AllocationException : public std::runtime_error
+		class AllocationException : public AmException
 		{
 		public:
 			AllocationException(std::string& msg) :
-				std::runtime_error(msg.c_str()) {}
+				AmException(msg) {}
 		};
 	}
 }
