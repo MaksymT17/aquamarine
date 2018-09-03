@@ -1,6 +1,6 @@
 #pragma once
 #include "ColorChannels.hpp"
-#include "common/Types.hpp"
+#include "common/Constants.hpp"
 
 namespace am {
 	namespace common {
