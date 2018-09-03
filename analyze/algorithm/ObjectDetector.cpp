@@ -15,7 +15,7 @@ namespace am {
 			ObjectDetector::ObjectDetector(const size_t threadsCount) :
 				mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount()),
 				mPixelStep(5u), /// todo should be able to calibrate in runtime, resolution dependent constant
-				mThreshold(20u) /// todo should be able to calibrate in runtime, user defined constant
+				mThreshold(200u) /// todo should be able to calibrate in runtime, user defined constant
 			{
 			}
 
@@ -100,7 +100,7 @@ namespace am {
 						position.colId < visited.getWidth()) &&
 						position.colId >= left && position.colId <= right &&
 						visited(position.rowId, position.colId) != common::CHANGE &&
-						pair.getAbsoluteDiff(position.rowId, position.colId) > 20)
+						pair.getAbsoluteDiff(position.rowId, position.colId) > 200)
 					{
 
 						visited(position.rowId, position.colId) = common::CHANGE;
@@ -125,7 +125,7 @@ namespace am {
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step,  size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step, size_t startPixel, size_t sectionWidth)
 			{
 				//auto& chRef = *changes.get();
 				auto& pairRef = *pair.get();
@@ -139,11 +139,10 @@ namespace am {
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
 					{
 
-						if (pairRef.getAbsoluteDiff(rowId, colId) > 20 && changes(rowId, colId) != common::CHANGE)
+						if (pairRef.getAbsoluteDiff(rowId, colId) > 200 && changes(rowId, colId) != common::CHANGE)
 						{
-							std::vector<Pixel> obj = { Pixel{ rowId, colId } };
-							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },
-														   Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
+							std::vector<Pixel> obj = {Pixel{rowId, colId}};
+							std::vector<Pixel> toCheck = {Pixel{rowId - 1, colId}, Pixel{rowId + 1, colId}, Pixel{rowId, colId - 1}, Pixel{rowId, colId + 1 }};
 
 							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth));
 						}
@@ -161,7 +160,7 @@ namespace am {
 					std::vector<Object> threadObjs;
 					for (auto objs : thrList)
 					{
-						if (objs.size() > 10) // objects with 5 pixels seems like noise - skipping(have to be confirmed)
+						if (objs.size() > 30) // objects with 5 pixels seems like noise - skipping(have to be confirmed)
 							threadObjs.push_back(Object(objs));
 					}
 					rects.push_back(threadObjs);

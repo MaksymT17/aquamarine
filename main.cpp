@@ -17,8 +17,8 @@ using namespace am::analyze;
 int main()
 {
 	am::extraction::MultipleBmpExtractor extractor;
-	std::string base("image_inputs/rs_1.BMP");
-	std::string toCompare("image_inputs/rs_2.BMP");
+	std::string base("image_inputs/1_ll.BMP");
+	std::string toCompare("image_inputs/2_ll.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
@@ -29,12 +29,13 @@ int main()
 
 	std::shared_ptr<algorithm::ImagePair> pair(new algorithm::ImagePair(res, resChange));
 
-	//find of rsulting matrix of diffs
+	//find of resulting matrix of diffs
 	AffinityComparer checker(res);
 	std::shared_ptr<Matrix<ColorChannelsDiff>> diffs = checker.compare(resChange);
 
 	//check how images similar reagrding to affinity percent
-	ThresholdDiffChecker similarityCheck(20);
+	//according to last tests in day light threshold should be near to 200
+	ThresholdDiffChecker similarityCheck(200);
 
 	float sim = similarityCheck.getAffinityPersent(diffs);
 
@@ -47,7 +48,7 @@ int main()
 
 	for (auto& rect : rects1)
 	{
-		printf("%d %d    %d %d \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
+		printf("row:%zd col:%zd    row:%zd col:%zd \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
 	}
 
 	//clean up all used data

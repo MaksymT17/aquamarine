@@ -1,6 +1,6 @@
 #include "AffinityComparer.h"
 #include "common/Context.hpp"
-#include "common/Types.hpp"
+#include "common/Constants.hpp"
 #include "common/AllocationException.hpp"
 #include <future>
 
