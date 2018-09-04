@@ -5,6 +5,7 @@
 #include "analyze/ThresholdDiffChecker.h"
 #include <common/Context.hpp>
 #include "ImagePair.h"
+#include <chrono>
 
 using namespace am::common::types;
 
@@ -90,8 +91,18 @@ namespace am {
 				return resultList;
 			}
 
-			std::vector<Pixel> dfsInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
+			std::vector<Pixel> dfsInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
+				size_t left, size_t right, std::chrono::steady_clock::time_point& startTime)
 			{
+				auto timeNow = std::chrono::steady_clock::now();
+				std::chrono::duration<double> calcDuration = timeNow - startTime;
+				if (calcDuration.count() >= 0.5)
+				{
+					///todo: make Error notification about failed detection
+					printf("Timelimit for calculation exceded. So much noise in picture.\n");
+					return object;
+				}
+
 				std::vector<Pixel> nextCheck;
 
 				for (auto& position : toCheck)
@@ -120,14 +131,14 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfsInPair(pair, visited, nextCheck, object, left, right);
+					dfsInPair(pair, visited, nextCheck, object, left, right, startTime);
 
 				return object;
 			}
 
 			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step, size_t startPixel, size_t sectionWidth)
 			{
-				//auto& chRef = *changes.get();
+				auto startTime = std::chrono::steady_clock::now();
 				auto& pairRef = *pair.get();
 				Matrix<uint16_t> changes(pairRef.getWidth(), pairRef.getHeight());
 
@@ -138,13 +149,20 @@ namespace am {
 				{
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
 					{
-
-						if (pairRef.getAbsoluteDiff(rowId, colId) > 200 && changes(rowId, colId) != common::CHANGE)
+						auto timeNow = std::chrono::steady_clock::now();
+						std::chrono::duration<double> calcDuration = timeNow - startTime;
+						if (calcDuration.count() >= 0.5)
 						{
-							std::vector<Pixel> obj = {Pixel{rowId, colId}};
-							std::vector<Pixel> toCheck = {Pixel{rowId - 1, colId}, Pixel{rowId + 1, colId}, Pixel{rowId, colId - 1}, Pixel{rowId, colId + 1 }};
+							///todo: make Error notification about failed detection
+							printf("Timelimit for calculation exceded. So much noise in picture.\n");
+							return resultList;
+						}
+						else if (pairRef.getAbsoluteDiff(rowId, colId) > 200 && changes(rowId, colId) != common::CHANGE)
+						{
+							std::vector<Pixel> obj = { Pixel{rowId, colId} };
+							std::vector<Pixel> toCheck = { Pixel{rowId - 1, colId}, Pixel{rowId + 1, colId}, Pixel{rowId, colId - 1}, Pixel{rowId, colId + 1 } };
 
-							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth));
+							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime));
 						}
 					}
 				}

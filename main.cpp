@@ -17,8 +17,8 @@ using namespace am::analyze;
 int main()
 {
 	am::extraction::MultipleBmpExtractor extractor;
-	std::string base("image_inputs/1_ll.BMP");
-	std::string toCompare("image_inputs/2_ll.BMP");
+	std::string base("image_inputs/rs_1.BMP");
+	std::string toCompare("image_inputs/rs_2.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
