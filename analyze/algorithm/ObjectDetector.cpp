@@ -7,6 +7,7 @@
 #include "ImagePair.h"
 #include <chrono>
 
+
 using namespace am::common::types;
 
 namespace am {
@@ -15,8 +16,7 @@ namespace am {
 
 			ObjectDetector::ObjectDetector(const size_t threadsCount) :
 				mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount()),
-				mPixelStep(5u), /// todo should be able to calibrate in runtime, resolution dependent constant
-				mThreshold(200u) /// todo should be able to calibrate in runtime, user defined constant
+				mConfiguration(common::Context::getInstance()->getConfiguration())
 			{
 			}
 
@@ -43,8 +43,7 @@ namespace am {
 				for (auto& position : toCheck)
 				{
 					if ((position.rowId >= 0 && position.colId >= 0 && position.rowId < changes.getHeight() &&
-						position.colId < changes.getWidth()) &&
-						position.colId >= left && position.colId <= right &&
+						position.colId < changes.getWidth()) &&	position.colId >= left && position.colId <= right &&
 						changes(position.rowId, position.colId) == common::CHANGE) /// todo check constant usage
 					{
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
@@ -81,8 +80,7 @@ namespace am {
 						if (chRef(rowId, colId) == common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{rowId, colId} };
-							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },
-								Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
+							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },	Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
 
 							resultList.push_back(dfs(chRef, toCheck, obj, startPixel, sectionWidth, counter++));
 						}
@@ -214,7 +212,7 @@ namespace am {
 				size_t count = 0;
 				const size_t columnWidth = width / mThreadsCount;
 
-				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs, mThreadsCount, mThreshold);
+				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs, mThreadsCount, mConfiguration.AffinityThreshold);
 				std::vector<std::vector<std::vector<Pixel>>> res;
 
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
@@ -222,7 +220,7 @@ namespace am {
 				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearch, changes, mPixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearch, changes, mConfiguration.PixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));
 				}
 
 				for (auto &e : futures)
@@ -241,7 +239,7 @@ namespace am {
 				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearchInPair, pair, mPixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearchInPair, pair, mConfiguration.PixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
 				}
 
 				for (auto &e : futures)

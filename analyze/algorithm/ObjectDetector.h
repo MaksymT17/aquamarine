@@ -1,8 +1,11 @@
 #pragma once
-#include"IObjectDetector.h"
+#include "IObjectDetector.h"
 #include <cstdlib>
+#include "configuration/Configuration.hpp"
+
 
 namespace am {
+
 	namespace analyze {
 		namespace algorithm {
 			class ImagePair;
@@ -20,8 +23,7 @@ namespace am {
 
 			private:
 				size_t mThreadsCount;
-				size_t mPixelStep;
-				uint8_t mThreshold;
+				am::configuration::Configuration mConfiguration;
 			};
 		}
 	}

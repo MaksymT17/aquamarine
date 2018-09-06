@@ -1,5 +1,6 @@
 #pragma once
 #include <thread>
+#include <configuration/Configuration.hpp>
 
 namespace am {
 
@@ -25,9 +26,20 @@ namespace am {
 				return threadsCount;
 			}
 			size_t mOptimalThreadsCount;
+			static Context *inst;
 
 		public:
-			static Context *inst;
+			am::configuration::Configuration getConfiguration()
+			{
+				///todo: add reading from file
+				am::configuration::Configuration conf;
+				conf.AffinityThreshold = 200;
+				conf.MinPixelsForObject = 30;
+				conf.PixelStep = 5;
+				conf.IdleTimeout = 5;
+				conf.CalculationTimeLimit = 0.5;
+				return conf;
+			}
 
 			static void release()
 			{
