@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "common/FileAccessException.hpp"
+#include "common/exceptions/FileAccessException.hpp"
 
 namespace {
 	const char PARAM_LIMITER = ':';
@@ -27,7 +27,7 @@ namespace am {
 				{
 					std::string errorMsg("Configuration file access failed!");
 					printf("file open failed, %s. \n", errorMsg.c_str());
-					throw common::FileAccessException(errorMsg);
+					throw common::exceptions::FileAccessException(errorMsg);
 				}
 				std::vector<Configuration> data;
 

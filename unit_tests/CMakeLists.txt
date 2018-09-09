@@ -5,11 +5,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 find_package (Threads)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(..)
 
 
 add_executable(aquamarine_ut 
 TestBase.hpp
+../extraction/BmpExtractor.cpp
+BmpReaderTest.cpp
+main.cpp
 )
 
-target_link_libraries (aquamarine ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries (aquamarine_ut ${CMAKE_THREAD_LIBS_INIT})
 
