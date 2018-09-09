@@ -90,11 +90,11 @@ namespace am {
 			}
 
 			std::vector<Pixel> dfsInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
-				size_t left, size_t right, std::chrono::steady_clock::time_point& startTime)
+				size_t left, size_t right, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
-				if (calcDuration.count() >= 0.5)
+				if (calcDuration.count() >= conf.CalculationTimeLimit)
 				{
 					///todo: make Error notification about failed detection
 					printf("Timelimit for calculation exceded. So much noise in picture.\n");
@@ -109,9 +109,8 @@ namespace am {
 						position.colId < visited.getWidth()) &&
 						position.colId >= left && position.colId <= right &&
 						visited(position.rowId, position.colId) != common::CHANGE &&
-						pair.getAbsoluteDiff(position.rowId, position.colId) > 200)
+						pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
 					{
-
 						visited(position.rowId, position.colId) = common::CHANGE;
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
@@ -119,7 +118,6 @@ namespace am {
 						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
 
 						Pixel newPos{ position.rowId, position.colId };
-
 
 						if (isNew(object, newPos))
 						{
@@ -129,12 +127,12 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfsInPair(pair, visited, nextCheck, object, left, right, startTime);
+					dfsInPair(pair, visited, nextCheck, object, left, right, startTime,conf);
 
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step, size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, size_t step, size_t startPixel, size_t sectionWidth, const configuration::Configuration conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				auto& pairRef = *pair.get();
@@ -149,25 +147,25 @@ namespace am {
 					{
 						auto timeNow = std::chrono::steady_clock::now();
 						std::chrono::duration<double> calcDuration = timeNow - startTime;
-						if (calcDuration.count() >= 0.5)
+						if (calcDuration.count() >= conf.CalculationTimeLimit)
 						{
 							///todo: make Error notification about failed detection
 							printf("Timelimit for calculation exceded. So much noise in picture.\n");
 							return resultList;
 						}
-						else if (pairRef.getAbsoluteDiff(rowId, colId) > 200 && changes(rowId, colId) != common::CHANGE)
+						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold && changes(rowId, colId) != common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{rowId, colId} };
 							std::vector<Pixel> toCheck = { Pixel{rowId - 1, colId}, Pixel{rowId + 1, colId}, Pixel{rowId, colId - 1}, Pixel{rowId, colId + 1 } };
 
-							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime));
+							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime,conf));
 						}
 					}
 				}
 				return resultList;
 			}
 
-			std::vector<Object> createObjectRects(std::vector<std::vector<std::vector<Pixel>>>& objPixels)
+			std::vector<Object> createObjectRects(std::vector<std::vector<std::vector<Pixel>>>& objPixels, const size_t minObjSize)
 			{
 				std::vector <std::vector<Object>> rects;
 
@@ -176,7 +174,7 @@ namespace am {
 					std::vector<Object> threadObjs;
 					for (auto objs : thrList)
 					{
-						if (objs.size() > 30) // objects with 5 pixels seems like noise - skipping(have to be confirmed)
+						if (objs.size() > minObjSize) // objects with 5 pixels seems like noise - skipping(have to be confirmed)
 							threadObjs.push_back(Object(objs));
 					}
 					rects.push_back(threadObjs);
@@ -226,7 +224,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				return createObjectRects(res);
+				return createObjectRects(res,mConfiguration.MinPixelsForObject);
 			}
 
 			std::vector<Object> ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
@@ -239,13 +237,13 @@ namespace am {
 				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearchInPair, pair, mConfiguration.PixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearchInPair, pair, mConfiguration.PixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth, mConfiguration));
 				}
 
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				return createObjectRects(res);
+				return createObjectRects(res,mConfiguration.MinPixelsForObject);
 			}
 		}
 	}

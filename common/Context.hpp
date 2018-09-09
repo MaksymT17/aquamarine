@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
-#include <configuration/Configuration.hpp>
+//#include <configuration/Configuration.hpp>
+#include "configuration/ConfigurationReader.hpp"
 
 namespace am {
 
@@ -31,14 +32,8 @@ namespace am {
 		public:
 			am::configuration::Configuration getConfiguration()
 			{
-				///todo: add reading from file
-				am::configuration::Configuration conf;
-				conf.AffinityThreshold = 200;
-				conf.MinPixelsForObject = 30;
-				conf.PixelStep = 5;
-				conf.IdleTimeout = 5;
-				conf.CalculationTimeLimit = 0.5;
-				return conf;
+				am::configuration::ConfigurationReader reader;
+				return *reader.getConfigurationFromFile("inputs/configuration.csv").begin(); // begin because only 1 config there(no multiresolution support - todo)
 			}
 
 			static void release()
