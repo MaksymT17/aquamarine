@@ -7,6 +7,7 @@
 #include"analyze/algorithm/ImagePair.h"
 #include"common/Context.hpp"
 #include <future>
+#include "configuration/ConfigurationReader.hpp"
 
 am::common::Context* am::common::Context::inst = nullptr;
 
@@ -16,9 +17,10 @@ using namespace am::analyze;
 
 int main()
 {
+	
 	am::extraction::MultipleBmpExtractor extractor;
-	std::string base("image_inputs/rs_1.BMP");
-	std::string toCompare("image_inputs/rs_2.BMP");
+	std::string base("inputs/rs_1.BMP");
+	std::string toCompare("inputs/rs_2.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
@@ -43,7 +45,7 @@ int main()
 
 	//experimental - but, main feature currently, external review needed
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(am::common::Context::getInstance()->getOpimalThreadsCount());
-	//std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
+	std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
 	std::vector<algorithm::Object> rects1 = detector.getObjectsRects(pair);
 
 	for (auto& rect : rects1)
