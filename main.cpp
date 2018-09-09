@@ -1,6 +1,5 @@
 #include "analyze/AffinityComparer.h"
 #include <stdio.h>
-#include"extraction/BmpExtractor.h"
 #include"extraction/MultipleBmpExtractor.h"
 #include"analyze/ThresholdDiffChecker.h"
 #include"analyze/algorithm/ObjectDetector.h"
@@ -8,6 +7,7 @@
 #include"common/Context.hpp"
 #include <future>
 #include "configuration/ConfigurationReader.hpp"
+
 
 am::common::Context* am::common::Context::inst = nullptr;
 
@@ -17,7 +17,6 @@ using namespace am::analyze;
 
 int main()
 {
-	
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/rs_1.BMP");
 	std::string toCompare("inputs/rs_2.BMP");

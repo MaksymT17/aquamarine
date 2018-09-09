@@ -1,6 +1,6 @@
 #include "ImagePair.h"
 #include "common/Context.hpp"
-#include <common/AllocationException.hpp>
+#include <common/exceptions/AllocationException.hpp>
 
 
 namespace am {
@@ -16,7 +16,7 @@ namespace am {
 				if (mBase->getHeight() != mCompare->getHeight() || mBase->getWidth() != mCompare->getWidth())
 				{
 					std::string msg("ImagePair allocation failed, size of Images are different. Pair require equal size.");
-					throw common::AllocationException(msg);
+					throw common::exceptions::AllocationException(msg);
 				}
 
 				mWidth = mBase->getWidth();

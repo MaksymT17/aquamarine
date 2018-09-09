@@ -1,7 +1,7 @@
 #include "AffinityComparer.h"
 #include "common/Context.hpp"
 #include "common/Constants.hpp"
-#include "common/AllocationException.hpp"
+#include "common/exceptions/AllocationException.hpp"
 #include <future>
 
 using namespace am::common::types;
@@ -57,7 +57,7 @@ namespace am {
 			if (!validateComparingRequestedSize(width, height, newSource.get()->getWidth(), newSource.get()->getHeight()))
 			{
 				std::string msg("Size of base and compared image are different, comparison not supported.");
-				throw common::AllocationException(msg);
+				throw common::exceptions::AllocationException(msg);
 			}
 			// can be wrapped in try() for bad alloc
 			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));

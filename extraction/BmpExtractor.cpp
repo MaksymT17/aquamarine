@@ -1,8 +1,8 @@
 
 #include "BmpExtractor.h"
 #include "thirdparty/bitmap_reader/bitmap_image.hpp"
-#include "common/FileAccessException.hpp"
-#include "common/AllocationException.hpp"
+#include "common/exceptions/FileAccessException.hpp"
+#include "common/exceptions/AllocationException.hpp"
 #include<future>
 #include<vector>
 
@@ -27,7 +27,7 @@ namespace am
 			if (!image)
 			{
 				std::string errMsg = "File '" + fileName + "' could not be found!";
-				throw common::FileAccessException(errMsg);
+				throw common::exceptions::FileAccessException(errMsg);
 			}
 
 			const unsigned int height = image.height();
