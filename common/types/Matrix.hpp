@@ -2,7 +2,6 @@
 #include <vector>
 #include <cstdlib>
 
-
 namespace am {
 	namespace common {
 		namespace types {
@@ -29,11 +28,6 @@ namespace am {
 				T operator()(size_t i, size_t j) const
 				{
 					return mData[i * mWidth + j];
-				}
-
-				void push_back(T elem)
-				{
-					mData.push_back(elem);
 				}
 
 			private:
