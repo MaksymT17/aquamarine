@@ -36,53 +36,64 @@ namespace am {
 			}
 
 			//optimized dfs left/right borders for threads, every thread will search in defined area(column) of image
-			std::vector<Pixel> dfs(Matrix<uint16_t>& changes, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right, size_t counter)
+			std::vector<Pixel> dfs(Matrix<uint16_t>& changes, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
 			{
 				std::vector<Pixel> nextCheck;
 
 				for (auto& position : toCheck)
 				{
-					if ((position.rowId >= 0 && position.colId >= 0 && position.rowId < changes.getHeight() &&
-						position.colId < changes.getWidth()) &&	position.colId >= left && position.colId <= right &&
-						changes(position.rowId, position.colId) == common::CHANGE) /// todo check constant usage
+					if (changes(position.rowId, position.colId) == common::CHANGE)
 					{
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
+						if (position.rowId - 1 >= 0)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
+						if (position.rowId + 1 < changes.getHeight())
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
+						if (position.colId - 1 >= left)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
+						if (position.colId + 1 < left + right)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
 
 						Pixel newPos{ position.rowId, position.colId };
 
 						if (isNew(object, newPos))
 						{
 							object.push_back(newPos);
-							changes(position.rowId, position.colId) = counter;
+							changes(position.rowId, position.colId) = 0;
 						}
 					}
 				}
 				if (nextCheck.size())
-					dfs(changes, nextCheck, object, left, right, counter);
+					dfs(changes, nextCheck, object, left, right);
 
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step, size_t counter, size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step,  size_t startPixel, size_t sectionWidth)
 			{
 				auto& chRef = *changes.get();
 
 				std::vector<std::vector<Pixel>> resultList;
 				// check all diffs on potential objects
 				//if change found -> run DFS to figure out how many pixels included in this object
-				for (size_t rowId = step; rowId < changes.get()->getHeight(); rowId += step)
+				for (size_t rowId = step; rowId < chRef.getHeight(); rowId += step)
 				{
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
 					{
 						if (chRef(rowId, colId) == common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{rowId, colId} };
-							std::vector<Pixel> toCheck = { Pixel{ rowId - 1, colId },Pixel{ rowId + 1, colId },	Pixel{ rowId, colId - 1 },Pixel{ rowId, colId + 1 } };
+							std::vector<Pixel> toCheck;
 
-							resultList.push_back(dfs(chRef, toCheck, obj, startPixel, sectionWidth, counter++));
+							if (rowId - 1 >= 0)
+								toCheck.push_back(Pixel{ rowId - 1, colId });
+							if (rowId + 1 < chRef.getHeight())
+								toCheck.push_back(Pixel{ rowId + 1, colId });
+							if (colId - 1 >= startPixel)
+								toCheck.push_back(Pixel{ rowId , colId - 1 });
+							if (colId + 1 < startPixel + sectionWidth)
+								toCheck.push_back(Pixel{ rowId , colId - 1 });
+
+							resultList.push_back(dfs(chRef, toCheck, obj, startPixel, sectionWidth));
 						}
 					}
 				}
@@ -105,17 +116,18 @@ namespace am {
 
 				for (auto& position : toCheck)
 				{
-					if ((position.rowId >= 0 && position.colId >= 0 && position.rowId < visited.getHeight() &&
-						position.colId < visited.getWidth()) &&
-						position.colId >= left && position.colId <= right &&
-						visited(position.rowId, position.colId) != common::CHANGE &&
-						pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
+					if (visited(position.rowId, position.colId) != common::CHANGE && pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
-						pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
+
+						if (position.rowId - 1 >= 0)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
+						if (position.rowId + 1 < visited.getHeight())
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
+						if (position.colId - 1 >= left)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
+						if (position.colId + 1 <  right)
+							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
 
 						Pixel newPos{ position.rowId, position.colId };
 
@@ -127,7 +139,7 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfsInPair(pair, visited, nextCheck, object, left, right, startTime,conf);
+					dfsInPair(pair, visited, nextCheck, object, left, right, startTime, conf);
 
 				return object;
 			}
@@ -156,9 +168,18 @@ namespace am {
 						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold && changes(rowId, colId) != common::CHANGE)
 						{
 							std::vector<Pixel> obj = { Pixel{rowId, colId} };
-							std::vector<Pixel> toCheck = { Pixel{rowId - 1, colId}, Pixel{rowId + 1, colId}, Pixel{rowId, colId - 1}, Pixel{rowId, colId + 1 } };
+							std::vector<Pixel> toCheck;
 
-							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime,conf));
+							if (rowId - 1 >= 0)
+								toCheck.push_back(Pixel{ rowId - 1, colId });
+							if (rowId + 1 <= pairRef.getHeight())
+								toCheck.push_back(Pixel{ rowId + 1, colId });
+							if (colId - 1 >= startPixel)
+								toCheck.push_back(Pixel{ rowId , colId - 1 });
+							if (colId + 1 < sectionWidth)
+								toCheck.push_back(Pixel{ rowId , colId - 1 });
+
+							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime, conf));
 						}
 					}
 				}
@@ -174,7 +195,7 @@ namespace am {
 					std::vector<Object> threadObjs;
 					for (auto objs : thrList)
 					{
-						if (objs.size() > minObjSize) // objects with 5 pixels seems like noise - skipping(have to be confirmed)
+						if (objs.size() > minObjSize) // skip objects if smaller that minObjSize, avoid noise
 							threadObjs.push_back(Object(objs));
 					}
 					rects.push_back(threadObjs);
@@ -193,7 +214,7 @@ namespace am {
 						{
 							for (auto& rightItem : rects[leftId + 1])
 							{
-								leftItem.mergeIfPossible(rightItem);//) // if not merged add right separately
+								leftItem.mergeIfPossible(rightItem);
 							}
 							res.push_back(leftItem);
 						}
@@ -207,7 +228,6 @@ namespace am {
 			{
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();
-				size_t count = 0;
 				const size_t columnWidth = width / mThreadsCount;
 
 				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs, mThreadsCount, mConfiguration.AffinityThreshold);
@@ -215,16 +235,16 @@ namespace am {
 
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
 
-				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
+				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
-					futures.push_back(std::async(startObjectsSearch, changes, mConfiguration.PixelStep, count, columnId*columnWidth, columnId*columnWidth + columnWidth));
+					futures.push_back(std::async(startObjectsSearch, changes, mConfiguration.PixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth));
 				}
 
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				return createObjectRects(res,mConfiguration.MinPixelsForObject);
+				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
 
 			std::vector<Object> ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
@@ -234,7 +254,7 @@ namespace am {
 				std::vector<std::vector<std::vector<Pixel>>> res;
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
 
-				for (size_t columnId = 0; columnId <= mThreadsCount; ++columnId)
+				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
 					std::vector<Pixel> toCheck;
 					futures.push_back(std::async(startObjectsSearchInPair, pair, mConfiguration.PixelStep, columnId*columnWidth, columnId*columnWidth + columnWidth, mConfiguration));
@@ -243,7 +263,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				return createObjectRects(res,mConfiguration.MinPixelsForObject);
+				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
 		}
 	}

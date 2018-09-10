@@ -8,12 +8,16 @@
 #include <future>
 #include "configuration/ConfigurationReader.hpp"
 
+#include"analyze/algorithm/IObjectMovementDetector.h"
+
 
 am::common::Context* am::common::Context::inst = nullptr;
 
 using namespace am::common::types;
 using namespace am::analyze;
 
+// currently below are set of tests
+// proper way put this tests in UT, and run here only required detection logic
 
 int main()
 {

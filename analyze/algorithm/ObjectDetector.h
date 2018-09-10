@@ -18,8 +18,10 @@ namespace am {
 				ObjectDetector(const size_t threadsCount);
 				virtual ~ObjectDetector() = default;
 
+				//all calculation with diffs, no time limits
 				virtual std::vector<Object> getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs) override;
 				
+				//fast search with time limitations
 				virtual std::vector<Object> getObjectsRects(std::shared_ptr<ImagePair> pair) override;
 
 			private:
