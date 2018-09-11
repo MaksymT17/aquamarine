@@ -53,6 +53,7 @@ namespace am {
 		std::shared_ptr<Matrix<ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<ColorChannels>> newSource) {
 			const size_t width = mBase.get()->getWidth();
 			const size_t height = mBase.get()->getHeight();
+			//common::Context::getInstance()->logging().logInfo("AffinityComparer::compare width:%zd height:%zd.", width, height);
 
 			if (!validateComparingRequestedSize(width, height, newSource.get()->getWidth(), newSource.get()->getHeight()))
 			{
