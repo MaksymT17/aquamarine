@@ -1,6 +1,6 @@
 #pragma once
 #include <thread>
-//#include <configuration/Configuration.hpp>
+#include "Logger.hpp"
 #include "configuration/ConfigurationReader.hpp"
 
 namespace am {
@@ -10,8 +10,8 @@ namespace am {
 		// singleton implementation
 		class Context {
 		private:
-			Context() :
-				mOptimalThreadsCount(calculateOptimalThreadsCount())
+			Context()
+				: mOptimalThreadsCount(calculateOptimalThreadsCount())
 			{
 			}
 
@@ -28,6 +28,7 @@ namespace am {
 			}
 			size_t mOptimalThreadsCount;
 			static Context *inst;
+			Logger mLogger;
 
 		public:
 			am::configuration::Configuration getConfiguration()
@@ -50,6 +51,10 @@ namespace am {
 					inst = new Context();
 
 				return inst;
+			}
+			Logger& logging()
+			{
+				return mLogger;
 			}
 
 			size_t getOpimalThreadsCount() {

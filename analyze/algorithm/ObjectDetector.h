@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include "configuration/Configuration.hpp"
 
-
 namespace am {
 
 	namespace analyze {

@@ -3,6 +3,7 @@
 #include "thirdparty/bitmap_reader/bitmap_image.hpp"
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AllocationException.hpp"
+#include "common/Context.hpp"
 #include<future>
 #include<vector>
 
@@ -22,6 +23,7 @@ namespace am
 
 		std::shared_ptr<Matrix<ColorChannels>> BmpExtractor::readFile(std::string& fileName)
 		{
+			common::Context::getInstance()->logging().logInfo("BmpExtractor::readFile file:%s.", fileName.c_str());
 			bitmap_image image(fileName.c_str());
 
 			if (!image)

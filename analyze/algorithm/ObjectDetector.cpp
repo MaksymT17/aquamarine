@@ -1,12 +1,10 @@
 #include "ObjectDetector.h"
 #include <future>
-#include <vector>
 #include <algorithm>
 #include "analyze/ThresholdDiffChecker.h"
 #include <common/Context.hpp>
 #include "ImagePair.h"
 #include <chrono>
-
 
 using namespace am::common::types;
 
@@ -68,7 +66,7 @@ namespace am {
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step,  size_t startPixel, size_t sectionWidth)
+			std::vector<std::vector<Pixel>> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step, size_t startPixel, size_t sectionWidth)
 			{
 				auto& chRef = *changes.get();
 
@@ -126,7 +124,7 @@ namespace am {
 							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
 						if (position.colId - 1 >= left)
 							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
-						if (position.colId + 1 <  right)
+						if (position.colId + 1 < right)
 							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
 
 						Pixel newPos{ position.rowId, position.colId };
@@ -243,6 +241,8 @@ namespace am {
 
 				for (auto &e : futures)
 					res.push_back(e.get());
+
+				common::Context::getInstance()->logging().logInfo("ObjectDetector::getObjectsRects Potential Objects: %zd", res.size());
 
 				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}

@@ -1,5 +1,5 @@
 #pragma once
-#include"IComparer.h"
+#include "IComparer.h"
 #include "common/types/ColorChannelsDiff.hpp"
 #include "common/types/Matrix.hpp"
 

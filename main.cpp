@@ -9,7 +9,7 @@
 #include "configuration/ConfigurationReader.hpp"
 
 #include"analyze/algorithm/IObjectMovementDetector.h"
-
+#include "common/Logger.hpp"
 
 am::common::Context* am::common::Context::inst = nullptr;
 
@@ -21,6 +21,8 @@ using namespace am::analyze;
 
 int main()
 {
+	am::common::Context::getInstance()->logging().logInfo("Program started.");	
+
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/rs_1.BMP");
 	std::string toCompare("inputs/rs_2.BMP");
@@ -55,6 +57,8 @@ int main()
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
 	}
+
+	am::common::Context::getInstance()->logging().logInfo("Program finished.");
 
 	//clean up all used data
 	am::common::Context::release();
