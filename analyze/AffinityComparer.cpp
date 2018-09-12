@@ -11,13 +11,11 @@ namespace am {
 
 		ColorChannelsDiff getChannelsDiff(const ColorChannels &source, const ColorChannels &toCompare) {
 			ColorChannelsDiff diff;
-			uint8_t positives = 0u; // details: see Types.hpp about bitmask usage
 
-			setUpChannelDiff(source.r, toCompare.r, diff.r, positives, common::R_POS_VAL);
-			setUpChannelDiff(source.g, toCompare.g, diff.g, positives, common::G_POS_VAL);
-			setUpChannelDiff(source.b, toCompare.b, diff.b, positives, common::B_POS_VAL);
+			setUpChannelDiff(source.r, toCompare.r, diff.r, diff.positives, common::R_BIT_POSITION);
+			setUpChannelDiff(source.g, toCompare.g, diff.g, diff.positives, common::G_BIT_POSITION);
+			setUpChannelDiff(source.b, toCompare.b, diff.b, diff.positives, common::B_BIT_POSITION);
 
-			diff.positives = positives;
 			return diff;
 		}
 
