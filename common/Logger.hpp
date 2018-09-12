@@ -72,7 +72,7 @@ namespace am {
 			/// todo check if path needed
 			bool open(/*const std::string& path, */const std::string& fileName)
 			{
-				_fileStream.open(/*path + */fileName, std::ofstream::ate);
+				_fileStream.open(/*path + */fileName, std::ofstream::app);
 				if (!_fileStream.is_open()) {
 					std::cerr << "FileLogPolicy Error: Failed to open file '" << fileName << "' at " << "\n";
 					return false;

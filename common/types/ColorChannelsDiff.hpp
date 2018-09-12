@@ -1,49 +1,43 @@
 #pragma once
 #include "ColorChannels.hpp"
 #include "common/Constants.hpp"
+#include <bitset>
 
 namespace am {
 	namespace common {
 		namespace types {
 
-			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, uint8_t& posisitvness, const uint8_t addition)
+			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, std::bitset<3>& positives, const uint8_t chId)
 			{
 				if (source > compared)
 				{
 					diff = source - compared;
-					posisitvness += addition;
+					positives[chId] = true;
 				}
 				else
 					diff = compared - source;
 			}
 
-			//simple check if value in diff positive(true), otherwise - negative(false)
-			static bool isChannelDiffPositive(uint8_t diff, int position)
-			{
-				return ((diff) & (1 << (position)));
-			}
-
 			struct ColorChannelsDiff : public ColorChannels
 			{
-				uint8_t positives;
-				// bitmask for representations +/- for channel diffs
-				// 0(min) - no positives; 8(max) - all positives.
+				// bits for representations +/- for channel diffs
+				// + = true = positive  ;   - = false = negative
 				// 1 bit - r channel positiveness
 				// 2 bit - g channel positiveness
 				// 3 bit - b channel positiveness
-				// only 3 bits used, other 5 can be used for other info
-				/// why ? - to reduce memory usage, in case of HQ images(QHD, 4K) it can be important
+				std::bitset<3> positives;
+
 				bool isPositveR()
 				{
-					return isChannelDiffPositive(positives, R_BIT_POSITION);
+					return positives[0];
 				}
 				bool isPositveG()
 				{
-					return isChannelDiffPositive(positives, G_BIT_POSITION);
+					return positives[1];
 				}
 				bool isPositveB()
 				{
-					return isChannelDiffPositive(positives, B_BIT_POSITION);
+					return positives[2];
 				}
 			};
 
