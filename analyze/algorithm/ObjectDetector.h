@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include "configuration/Configuration.hpp"
 
+#include "common/Logger.hpp"
+
 namespace am {
 
 	namespace analyze {
@@ -14,7 +16,7 @@ namespace am {
 			class ObjectDetector : public IObjectDetector
 			{
 			public:
-				ObjectDetector(const size_t threadsCount);
+				ObjectDetector();
 				virtual ~ObjectDetector() = default;
 
 				//all calculation with diffs, no time limits
@@ -26,6 +28,7 @@ namespace am {
 			private:
 				size_t mThreadsCount;
 				am::configuration::Configuration mConfiguration;
+				std::shared_ptr<am::common::Logger> mLogger;
 			};
 		}
 	}

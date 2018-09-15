@@ -22,11 +22,12 @@ namespace am {
 		public:
 
 			Logger() {
-				open(fileName);
+				//open(fileName);
 			}
+			Logger(Logger&) {};
 
 			~Logger() {
-				_fileStream.close();
+				//_fileStream.close();
 			}
 
 			template<typename... Args>
@@ -50,7 +51,7 @@ namespace am {
 		private:
 			void log(const char* tag, const char* format, ...)
 			{
-
+				open(fileName);
 				std::time_t time = std::time(nullptr);
 				std::string timeString = std::ctime(&time);
 
@@ -69,7 +70,7 @@ namespace am {
 				message += "\n";
 				write(message);
 
-				//_fileStream.close();
+				_fileStream.close();
 			}
 			/// todo check if path needed
 			bool open(/*const std::string& path, */const std::string& fileName)
@@ -80,7 +81,7 @@ namespace am {
 					return false;
 				}
 
-				_fileStream << "-- File Log Started --\n\n";
+				//_fileStream << "-- File Log Started --\n\n";
 
 				return true;
 			}

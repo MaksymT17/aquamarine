@@ -14,14 +14,21 @@ namespace am
 			return BmpExtractor::readFile(file);
 		}
 
+		MultipleBmpExtractor::MultipleBmpExtractor()
+			: mLogger(new am::common::Logger())
+		{
+		}
+
 		std::vector<std::shared_ptr<Matrix<ColorChannels>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
 		{
+			
 			std::vector<std::shared_ptr<Matrix<ColorChannels>>> result;
 
 			std::vector<std::future<std::shared_ptr<Matrix<ColorChannels>>>> futures;
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{
+				mLogger->logInfo("BmpExtractor::readFile file:%s.", fileNames[i].c_str());
 				futures.push_back(std::async(getFileData, fileNames[i]));
 			}
 

@@ -12,9 +12,10 @@ namespace am {
 	namespace analyze {
 		namespace algorithm {
 
-			ObjectDetector::ObjectDetector(const size_t threadsCount) :
-				mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount()),
-				mConfiguration(common::Context::getInstance()->getConfiguration())
+			ObjectDetector::ObjectDetector()
+				: mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount())
+				, mConfiguration(common::Context::getInstance()->getConfiguration())
+				, mLogger(new am::common::Logger())
 			{
 			}
 
@@ -221,7 +222,6 @@ namespace am {
 					}
 				}
 
-				common::Context::getInstance()->logging().logInfo("ObjectDetector Potential Objects: %zd", res.size());
 				return res;
 			}
 
@@ -230,7 +230,7 @@ namespace am {
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();
 				const size_t columnWidth = width / mThreadsCount;
-
+				mLogger->logInfo("ObjectDetector::getObjectsRects pair width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
 				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs, mThreadsCount, mConfiguration.AffinityThreshold);
 				std::vector<std::vector<std::vector<Pixel>>> res;
 
@@ -245,7 +245,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-
+				mLogger->logInfo("ObjectDetector::getObjectsRects fin");
 				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
 
