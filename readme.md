@@ -14,8 +14,7 @@ and useful, thats why I`m here. Every improvement idea are welcome!
 ## Components, sub-folders description:
 
 ### extraction:
-Extraction data of pixels(RGB channels, currently Alpha channel not required), as result of reading 
-- will be filled Matrix with RGB values. Currently will be used bmp_reader as open library to reading 
+Extraction data of pixels(RGB channels, currently Alpha channel not required), as result of reading will be filled Matrix with RGB values. Currently will be used bmp_reader as open library to reading 
 BMP images.
 
 ### common:
