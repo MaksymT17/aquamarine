@@ -1,6 +1,6 @@
 #pragma once
 
-#include"IExtractor.h"
+#include "IExtractor.h"
 #include "common/types/ColorChannels.hpp"
 #include "common/types/Matrix.hpp"
 #include <memory>
@@ -19,6 +19,7 @@ namespace am
 			virtual ~BmpExtractor() = default;
 
 			static std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> readFile(std::string& filePath);
+			
 		};
 	}
 }

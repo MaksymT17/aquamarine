@@ -1,28 +1,23 @@
 #include "analyze/AffinityComparer.h"
 #include <stdio.h>
-#include"extraction/MultipleBmpExtractor.h"
-#include"analyze/ThresholdDiffChecker.h"
-#include"analyze/algorithm/ObjectDetector.h"
-#include"analyze/algorithm/ImagePair.h"
-#include"common/Context.hpp"
+#include "extraction/MultipleBmpExtractor.h"
+#include "analyze/ThresholdDiffChecker.h"
+#include "analyze/algorithm/ObjectDetector.h"
+#include "analyze/algorithm/ImagePair.h"
+#include "common/Context.hpp"
 #include <future>
 #include "configuration/ConfigurationReader.hpp"
-
-#include"analyze/algorithm/IObjectMovementDetector.h"
-#include "common/Logger.hpp"
 
 am::common::Context* am::common::Context::inst = nullptr;
 
 using namespace am::common::types;
 using namespace am::analyze;
 
-// currently below are set of tests
-// proper way put this tests in UT, and run here only required detection logic
+// below are set of tests better way put this tests in UT,
+// and run here only required detection logic
 
 int main()
 {
-	am::common::Context::getInstance()->logging().logInfo("Program started.");	
-
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/1_ll.BMP");
 	std::string toCompare("inputs/2_ll.BMP");
@@ -49,7 +44,7 @@ int main()
 	printf("images similarity persent %f\n", sim *100.0f);
 
 	//experimental - but, main feature currently, external review needed
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(am::common::Context::getInstance()->getOpimalThreadsCount());
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector();
 	std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
 	std::vector<algorithm::Object> rects1 = detector.getObjectsRects(pair);
 
@@ -57,8 +52,6 @@ int main()
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
 	}
-
-	am::common::Context::getInstance()->logging().logInfo("Program finished.");
 
 	//clean up all used data
 	am::common::Context::release();

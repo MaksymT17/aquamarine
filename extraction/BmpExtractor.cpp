@@ -23,7 +23,7 @@ namespace am
 
 		std::shared_ptr<Matrix<ColorChannels>> BmpExtractor::readFile(std::string& fileName)
 		{
-			common::Context::getInstance()->logging().logInfo("BmpExtractor::readFile file:%s.", fileName.c_str());
+
 			bitmap_image image(fileName.c_str());
 
 			if (!image)
