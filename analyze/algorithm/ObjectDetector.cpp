@@ -33,8 +33,8 @@ namespace am {
 					toCheck.push_back(newPos);
 			}
 
-			//optimized dfs left/right borders for threads, every thread will search in defined area(column) of image
-			std::vector<Pixel> dfs(Matrix<uint16_t>& changes, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
+			//optimized bsf left/right borders for threads, every thread will search in defined area(column) of image
+			std::vector<Pixel> bsf(Matrix<uint16_t>& changes, std::vector<Pixel>& toCheck, std::vector<Pixel>& object, size_t left, size_t right)
 			{
 				std::vector<Pixel> nextCheck;
 
@@ -61,7 +61,7 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfs(changes, nextCheck, object, left, right);
+					bsf(changes, nextCheck, object, left, right);
 
 				return object;
 			}
@@ -72,7 +72,7 @@ namespace am {
 
 				std::vector<std::vector<Pixel>> resultList;
 				// check all diffs on potential objects
-				//if change found -> run DFS to figure out how many pixels included in this object
+				//if change found -> run bsf to figure out how many pixels included in this object
 				for (size_t rowId = step; rowId < chRef.getHeight(); rowId += step)
 				{
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
@@ -91,20 +91,22 @@ namespace am {
 							if (colId + 1 < startPixel + sectionWidth)
 								toCheck.push_back(Pixel{ rowId , colId - 1 });
 
-							resultList.push_back(dfs(chRef, toCheck, obj, startPixel, sectionWidth));
+							resultList.push_back(bsf(chRef, toCheck, obj, startPixel, sectionWidth));
 						}
 					}
 				}
 				return resultList;
 			}
 
-			std::vector<Pixel> dfsInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
+			std::vector<Pixel> bsfInPair(ImagePair& pair, Matrix<uint16_t>& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
 				size_t left, size_t right, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
 				if (calcDuration.count() >= conf.CalculationTimeLimit)
 				{
+
+					common::Context::getInstance()->logging().logInfo("ObjectDetector:: time limit exceeded. More %f seconds.", conf.CalculationTimeLimit);
 					///todo: make Error notification about failed detection
 					printf("Timelimit for calculation exceded. So much noise in picture.\n");
 					return object;
@@ -137,7 +139,7 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					dfsInPair(pair, visited, nextCheck, object, left, right, startTime, conf);
+					bsfInPair(pair, visited, nextCheck, object, left, right, startTime, conf);
 
 				return object;
 			}
@@ -150,7 +152,7 @@ namespace am {
 
 				std::vector<std::vector<Pixel>> resultList;
 				// check all diffs on potential objects
-				//if change found -> run DFS to figure out how many pixels included in this object
+				//if change found -> run bsf to figure out how many pixels included in this object
 				for (size_t rowId = step; rowId < pairRef.getHeight(); rowId += step)
 				{
 					for (size_t colId = startPixel; colId < sectionWidth; colId += step)
@@ -177,7 +179,7 @@ namespace am {
 							if (colId + 1 < sectionWidth)
 								toCheck.push_back(Pixel{ rowId , colId - 1 });
 
-							resultList.push_back(dfsInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime, conf));
+							resultList.push_back(bsfInPair(pairRef, changes, toCheck, obj, startPixel, sectionWidth, startTime, conf));
 						}
 					}
 				}
@@ -219,6 +221,7 @@ namespace am {
 					}
 				}
 
+				common::Context::getInstance()->logging().logInfo("ObjectDetector Potential Objects: %zd", res.size());
 				return res;
 			}
 
@@ -242,7 +245,6 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				common::Context::getInstance()->logging().logInfo("ObjectDetector::getObjectsRects Potential Objects: %zd", res.size());
 
 				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
