@@ -31,4 +31,4 @@ set of images more than 2.
 ### thirdparty:
 external open libraries which can help in implementation of all desired features
 
-More deteils can be found at [wiki page](https://github.com/containers/image/blob/master/vendor.conf)
+More deteils can be found at [wiki page](https://github.com/MaksymT17/aquamarine/wiki)
