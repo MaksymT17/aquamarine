@@ -24,8 +24,8 @@ int main()
 	am::common::Context::getInstance()->logging().logInfo("Program started.");	
 
 	am::extraction::MultipleBmpExtractor extractor;
-	std::string base("inputs/rs_1.BMP");
-	std::string toCompare("inputs/rs_2.BMP");
+	std::string base("inputs/1_ll.BMP");
+	std::string toCompare("inputs/2_ll.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	//multiple reading of files
