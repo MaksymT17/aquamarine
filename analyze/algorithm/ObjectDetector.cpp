@@ -106,8 +106,6 @@ namespace am {
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
 				if (calcDuration.count() >= conf.CalculationTimeLimit)
 				{
-
-					common::Context::getInstance()->logging().logInfo("ObjectDetector:: time limit exceeded. More %f seconds.", conf.CalculationTimeLimit);
 					///todo: make Error notification about failed detection
 					printf("Timelimit for calculation exceded. So much noise in picture.\n");
 					return object;

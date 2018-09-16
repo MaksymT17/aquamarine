@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IExtractor.h"
-#include "common/types/ColorChannels.hpp"
 #include "common/types/Matrix.hpp"
 #include <memory>
 
