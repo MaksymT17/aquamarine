@@ -3,7 +3,11 @@
 #include <ctime>
 #include <stdarg.h>
 #include <fstream>
+#include <ctime>
+#include <chrono>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 namespace am {
 	namespace common {
@@ -15,20 +19,15 @@ namespace am {
 			static const size_t s_MaxPrefixSize = 128;
 			static const size_t s_MaxBufferSize = 1024;
 			const char* fileName = "last_logging.log";
-			const char* INFO_TAG = "INFO";
-			const char* WARN_TAG = "WARNING";
-			const char* ERROR_TAG = "ERROR";
+			const char* INFO_TAG = "<INFO> ";
+			const char* WARN_TAG = "<WARNING> ";
+			const char* ERROR_TAG = "<ERROR> ";
 
 		public:
 
-			Logger() {
-				//open(fileName);
-			}
-			Logger(Logger&) {};
+			Logger() = default;
 
-			~Logger() {
-				//_fileStream.close();
-			}
+			~Logger() = default;
 
 			template<typename... Args>
 			void logInfo(const char* format, Args... args)
@@ -52,11 +51,14 @@ namespace am {
 			void log(const char* tag, const char* format, ...)
 			{
 				open(fileName);
-				std::time_t time = std::time(nullptr);
-				std::string timeString = std::ctime(&time);
 
-				char prefixString[s_MaxPrefixSize];
-				snprintf(prefixString, s_MaxPrefixSize, "<%s>: %s ", tag, timeString.substr(0, timeString.size() - 1).c_str());
+				///todo: refactor if needed, unfortunatelly milliseconds value require additional calls
+				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+				std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+
+				std::stringstream str;
+				str << tag << std::put_time(std::localtime(&now_c), "%Y-%m-%d %X:") <<
+					std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() % 1000;
 
 				va_list args;
 				va_start(args, format);
@@ -64,24 +66,20 @@ namespace am {
 				vsnprintf(buffer, s_MaxBufferSize, format, args);
 				va_end(args);
 
-				std::string message;
-				message += prefixString;
-				message += buffer;
-				message += "\n";
-				write(message);
+				str << " " << buffer << "\n";
+
+				write(str.str());
 
 				_fileStream.close();
 			}
 			/// todo check if path needed
-			bool open(/*const std::string& path, */const std::string& fileName)
+			bool open(const std::string& fileName)
 			{
 				_fileStream.open(fileName.c_str(), std::ofstream::in | std::ofstream::app);
 				if (!_fileStream.is_open()) {
 					std::cerr << "Error: Failed to open file '" << fileName << "\n";
 					return false;
 				}
-
-				//_fileStream << "-- File Log Started --\n\n";
 
 				return true;
 			}
@@ -92,7 +90,8 @@ namespace am {
 					_fileStream << buffer;
 				}
 				else {
-					std::cerr << "FileLogPolicy Error: File stream is not open for writing.\n";
+					/// exception FileAccess ?
+					std::cerr << "Error: File stream is not open for writing.\n";
 				}
 			}
 

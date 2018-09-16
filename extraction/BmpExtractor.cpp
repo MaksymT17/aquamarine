@@ -4,8 +4,8 @@
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AllocationException.hpp"
 #include "common/Context.hpp"
-#include<future>
-#include<vector>
+#include <future>
+#include <vector>
 
 namespace am
 {

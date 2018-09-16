@@ -13,6 +13,7 @@ namespace am {
 			Context()
 				: mOptimalThreadsCount(calculateOptimalThreadsCount())
 			{
+				mLogger.logInfo("Aquamarine starting ...");
 			}
 
 			size_t calculateOptimalThreadsCount()
@@ -43,7 +44,9 @@ namespace am {
 					delete inst;
 			}
 
-			~Context() {
+			~Context() 
+			{
+				mLogger.logInfo("Aquamarine finish jobs, cleaning resources.");
 			}
 
 			static Context *getInstance() {
@@ -51,10 +54,6 @@ namespace am {
 					inst = new Context();
 
 				return inst;
-			}
-			Logger& logging()
-			{
-				return mLogger;
 			}
 
 			size_t getOpimalThreadsCount() {
