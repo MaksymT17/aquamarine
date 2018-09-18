@@ -1,4 +1,4 @@
-#include"ThresholdDiffChecker.h"
+#include "ThresholdDiffChecker.h"
 #include <future>
 #include "common/Context.hpp"
 
@@ -9,10 +9,9 @@ namespace am {
 
 		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) :
 			mTreshold(channelTreshold) {}
-		
 
-			void setThresholdChanges(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff,
-				const uint16_t threshold, std::shared_ptr<Matrix<uint16_t>> result)
+		void setThresholdChanges(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff,
+			const uint16_t threshold, std::shared_ptr<Matrix<uint16_t>> result)
 		{
 			auto &diffRef = *diff.get();
 			auto &resRef = *result.get();
@@ -24,7 +23,7 @@ namespace am {
 			}
 		}
 
-		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff, 
+		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff,
 			const uint16_t threshold, std::shared_ptr<std::atomic_size_t> diffCounter)
 		{
 			auto &diffRef = *diff.get();
@@ -70,7 +69,7 @@ namespace am {
 		{
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
-			std::shared_ptr<Matrix<uint16_t>> res(new Matrix<uint16_t>(width,height));
+			std::shared_ptr<Matrix<uint16_t>> res(new Matrix<uint16_t>(width, height));
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {

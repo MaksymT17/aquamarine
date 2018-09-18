@@ -253,6 +253,7 @@ namespace am {
 
 				std::vector<std::vector<std::vector<Pixel>>> res;
 				std::vector<std::future<std::vector<std::vector<Pixel>>>> futures;
+				mLogger->logInfo("ObjectDetector::getObjectsRects pair threads:%d", mThreadsCount);
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
@@ -263,6 +264,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
+				mLogger->logInfo("ObjectDetector::getObjectsRects fin");
 				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
 		}

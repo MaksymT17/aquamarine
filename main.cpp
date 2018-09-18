@@ -45,6 +45,7 @@ int main()
 
 	//experimental - but, main feature currently, external review needed
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector();
+
 	std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
 	std::vector<algorithm::Object> rects1 = detector.getObjectsRects(pair);
 

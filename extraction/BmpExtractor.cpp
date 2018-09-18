@@ -14,7 +14,7 @@ namespace am
 		using namespace common::types;
 		void readRowFromImageSource(const size_t rowId, const size_t width, bitmap_image& image, Matrix<ColorChannels>& colors)
 		{
-			for (std::size_t x = 0; x < width; ++x)
+			for (size_t x = 0; x < width; ++x)
 			{
 				ColorChannels& channels = colors(rowId, x);
 				image.get_pixel(x, rowId, reinterpret_cast<rgb_t&>(channels)); // cast there: unsinged chat -> uint8_t
@@ -23,7 +23,6 @@ namespace am
 
 		std::shared_ptr<Matrix<ColorChannels>> BmpExtractor::readFile(std::string& fileName)
 		{
-
 			bitmap_image image(fileName.c_str());
 
 			if (!image)
