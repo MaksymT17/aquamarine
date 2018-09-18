@@ -35,7 +35,7 @@ namespace am {
 			am::configuration::Configuration getConfiguration()
 			{
 				am::configuration::ConfigurationReader reader;
-				return *reader.getConfigurationFromFile("inputs/configuration.csv").begin(); // begin because only 1 config there(no multiresolution support - todo)
+				return *reader.getConfigurationFromFile("inputs/configuration.csv").begin();
 			}
 
 			static void release()
@@ -44,7 +44,7 @@ namespace am {
 					delete inst;
 			}
 
-			~Context() 
+			~Context()
 			{
 				mLogger.logInfo("Aquamarine finish jobs, cleaning resources.");
 			}

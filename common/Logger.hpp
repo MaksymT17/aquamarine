@@ -1,13 +1,12 @@
 #pragma once
-#include <string>
 #include <ctime>
 #include <stdarg.h>
 #include <fstream>
-#include <ctime>
 #include <chrono>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <mutex>
 
 namespace am {
 	namespace common {
@@ -15,7 +14,7 @@ namespace am {
 		class Logger {
 
 		private:
-
+			std::mutex mtx;
 			static const size_t s_MaxPrefixSize = 128;
 			static const size_t s_MaxBufferSize = 1024;
 			const char* fileName = "last_logging.log";
@@ -50,8 +49,6 @@ namespace am {
 		private:
 			void log(const char* tag, const char* format, ...)
 			{
-				open(fileName);
-
 				///todo: refactor if needed, unfortunatelly milliseconds value require additional calls
 				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 				std::time_t now_c = std::chrono::system_clock::to_time_t(now);
@@ -68,6 +65,9 @@ namespace am {
 
 				str << " " << buffer << "\n";
 
+				// thread safe access to file, raii lock
+				std::unique_lock<std::mutex> lock(mtx);
+				open(fileName);
 				write(str.str());
 
 				_fileStream.close();

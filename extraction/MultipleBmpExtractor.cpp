@@ -21,9 +21,8 @@ namespace am
 
 		std::vector<std::shared_ptr<Matrix<ColorChannels>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
 		{
-			
 			std::vector<std::shared_ptr<Matrix<ColorChannels>>> result;
-
+			result.reserve(fileNames.size());
 			std::vector<std::future<std::shared_ptr<Matrix<ColorChannels>>>> futures;
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
