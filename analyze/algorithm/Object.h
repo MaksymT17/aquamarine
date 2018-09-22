@@ -17,7 +17,6 @@ namespace am {
 				Object(std::vector<Pixel>& pixels);
 				virtual ~Object() = default;
 				bool isMergableToRight(Object& toCompare) const;
-				void mergeToMe(Object& toCompare);
 				bool mergeIfPossible(Object& toCompare);
 
 				size_t getMinWidth() const;
@@ -25,11 +24,14 @@ namespace am {
 				size_t getMinHeight() const;
 				size_t getMaxHeight() const;
 
-			
-				size_t min_width;
-				size_t min_height;
-				size_t max_width;
-				size_t max_height;
+			private:
+				void mergeToMe(Object& toCompare);
+
+				size_t mPixelsCount;
+				size_t mMin_width;
+				size_t mMin_height;
+				size_t mMax_width;
+				size_t mMax_height;
 			};
 		}
 	}
