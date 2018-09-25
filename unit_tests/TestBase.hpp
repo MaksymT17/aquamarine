@@ -13,37 +13,40 @@ statement; \
  } \
 catch(expected_exception exc) \
 { \
-printf("expect excception [%s]\n", exc.what()); \
+printf("expect excception [%s]. Test OK.\n", exc.what()); \
 } \
 catch(...) \
 { \
-printf("Unexpected exception thrown\n"); \
+printf("Unexpected exception thrown. Test FAILED.\n"); \
 } \
 
 
-#define EXPECT_NON_THROW(statement, expected_exception) \
+#define EXPECT_NON_THROW(statement) \
 try { \
 statement; \
  } \
 catch(...) \
 { \
-printf("Unexpected exception thrown\n"); \
+printf("Unexpected exception thrown. Test FAILED\n"); \
 } \
 
-
-		void EXPECT_TRUE(bool first, bool second)
-		{
-			if (first != second) {
-				printf("UT Failed %d, EXPECT TRUE not accepted. \n");
+		class TestBase {
+		public:
+			void EXPECT_TRUE(bool first, bool second)
+			{
+				if (first != second) {
+					printf("UT Failed, EXPECT TRUE not accepted. \n");
+				}
 			}
-		}
 
-		void EXPECT_FALSE(bool first, bool second)
-		{
-			if (first == second) {
-				printf("UT Failed %d, EXPECT FALSE not accepted. \n");
+			void EXPECT_FALSE(bool first, bool second)
+			{
+				if (first == second) {
+					printf("UT Failed, EXPECT FALSE not accepted. \n");
+				}
 			}
-		}
 
+			virtual void doTest() = 0;
+		};
 	}
 }
