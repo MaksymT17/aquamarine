@@ -223,7 +223,7 @@ namespace am {
 				return res;
 			}
 
-			std::vector<Object> ObjectDetector::getObjectsRects(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
+			std::vector<Object> ObjectDetector::getObjectsRects(SharedColorDiffsMatrix diffs)
 			{
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();

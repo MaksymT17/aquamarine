@@ -2,7 +2,6 @@
 #include "common/Context.hpp"
 #include <common/exceptions/AllocationException.hpp>
 
-
 namespace am {
 	namespace analyze {
 		namespace algorithm {
@@ -39,9 +38,9 @@ namespace am {
 				Matrix<ColorChannels>& compareRef = *mCompare.get();
 
 				return std::abs(baseRef(rowId, colId).r - compareRef(rowId, colId).r) +
-						std::abs(baseRef(rowId, colId).g - compareRef(rowId, colId).g) +
-						std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
-			}	
+					std::abs(baseRef(rowId, colId).g - compareRef(rowId, colId).g) +
+					std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
+			}
 		}
 	}
 }
