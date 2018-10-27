@@ -1,6 +1,12 @@
 #include "BmpReaderTest.hpp"
 int main()
 {
-	am::unit_tests::BmpReaderTest().doTest();
+	using namespace am::unit_tests;
+	TestCounter result;
+
+	BmpReaderTest(result).doTest();
+
+	printf("Failed tests: %d,  Tests count: %d.\n", result.failed, result.total);
+	
 	return 0;
 }

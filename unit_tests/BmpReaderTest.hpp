@@ -5,7 +5,7 @@ namespace am {
 		class BmpReaderTest : public TestBase
 		{
 		public:
-			BmpReaderTest() = default;
+			BmpReaderTest(TestCounter& result) :TestBase(result) {};
 			~BmpReaderTest() = default;
 			virtual void doTest() override;
 		};

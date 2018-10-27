@@ -7,26 +7,26 @@
 namespace am {
 	namespace unit_tests {
 
-		void checkForNotExistingFile()
+		void checkForNotExistingFile(TestCounter& result)
 		{
 			am::extraction::BmpExtractor extractor;
 			std::string base("../inputs/NotExisting.BMP");
 
-			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException);
+			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException, result);
 		}
 
-		void checkForExistingFile()
+		void checkForExistingFile(TestCounter& result)
 		{
 			am::extraction::BmpExtractor extractor;
 			std::string base("../../inputs/rs_1.BMP");
 
-			EXPECT_NON_THROW(extractor.readFile(base));
+			EXPECT_NON_THROW(extractor.readFile(base), result);
 		}
 
 		void BmpReaderTest::doTest()
 		{
-			checkForNotExistingFile();
-			checkForExistingFile();
+			checkForNotExistingFile(mResult);
+			checkForExistingFile(mResult);
 		}
 	}
 }
