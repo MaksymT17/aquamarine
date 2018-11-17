@@ -51,7 +51,7 @@ namespace am {
 					mMax_height = toCompare.mMax_height;
 
 				// reset default value, means - to ignore
-				/// why?: removing of vector element will be time costly
+				/// why?: removing of vector element seems costly
 				toCompare.mMin_width = 0;
 				toCompare.mMax_width = 0;
 				toCompare.mMin_height = 0;

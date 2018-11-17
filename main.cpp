@@ -5,19 +5,17 @@
 #include "analyze/algorithm/ObjectDetector.h"
 #include "analyze/algorithm/ImagePair.h"
 #include "common/Context.hpp"
-#include <future>
 #include "configuration/ConfigurationReader.hpp"
 
 am::common::Context* am::common::Context::inst = nullptr;
-
-using namespace am::common::types;
-using namespace am::analyze;
 
 // below are set of tests better way put this tests in UT,
 // and run here only required detection logic
 
 int main()
 {
+	using namespace am::common::types;
+	using namespace am::analyze;
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/fhd_clean.BMP");
 	std::string toCompare("inputs/fhd_5obj.BMP");

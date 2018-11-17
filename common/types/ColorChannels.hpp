@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-
 namespace am {
 	namespace common {
 		namespace types {

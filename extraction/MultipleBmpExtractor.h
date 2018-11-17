@@ -9,7 +9,7 @@ namespace am
 	namespace extraction
 	{
 		// class for multiple reading files,
-		//given vector of fieNames will returned with relative data from files
+		// given vector of fieNames will returned with relative data from files
 		class MultipleBmpExtractor
 		{
 		public:
