@@ -10,6 +10,11 @@ namespace am {
 				size_t colId;
 			};
 
+			struct Column {
+				size_t left;
+				size_t right;
+			};
+
 			// simple representatin of found object area on image, ismplified to rectangle bounds
 			// base on diff pixels connected
 			class Object {

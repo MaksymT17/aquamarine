@@ -4,7 +4,6 @@
 #include "common/types/Matrix.hpp"
 #include <memory>
 
-
 namespace am
 {
 	namespace extraction

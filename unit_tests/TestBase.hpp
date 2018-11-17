@@ -45,7 +45,7 @@ printf("Unexpected exception thrown. Test FAILED\n"); \
 			TestBase(TestCounter& result) :
 				mResult(result) {}
 			~TestBase() = default;
-		
+
 			void EXPECT_EQ(bool first, bool second)
 			{
 				mResult.total++;
