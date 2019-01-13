@@ -35,7 +35,8 @@ namespace am {
 					toCheck.push_back(newPos);
 			}
 
-			//optimized bsf left/right borders for threads, every thread will search in defined area(column) of image
+			//optimized dfs depending to left/right borders for threads, 
+			//every thread will search in defined area(column) of image
 			Pixels bsf(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
 			{
 				std::vector<Pixel> nextCheck;
