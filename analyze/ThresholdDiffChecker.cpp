@@ -65,7 +65,7 @@ namespace am {
 			return 1.0f - (static_cast<float>(*diffCounter.get()) / static_cast<float>(width * height));
 		}
 
-		std::shared_ptr<Matrix<uint16_t>> ThresholdDiffChecker::getThresholdDiff(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs, size_t threadsCount, uint16_t threshold)
+		std::shared_ptr<Matrix<uint16_t>> ThresholdDiffChecker::getThresholdDiff(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs, size_t threadsCount, size_t threshold)
 		{
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();

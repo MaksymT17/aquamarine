@@ -35,7 +35,7 @@ namespace am {
 					toCheck.push_back(newPos);
 			}
 
-			//optimized dfs depending to left/right borders for threads, 
+			//optimized bfs depending to left/right borders for threads, 
 			//every thread will search in defined area(column) of image
 			Pixels bsf(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
 			{
@@ -210,7 +210,7 @@ namespace am {
 				if (rects.size() == 1)
 					return *rects.begin();
 
-				for (int leftId = 0; leftId < rects.size() - 1; ++leftId)
+				for (size_t leftId = 0; leftId < rects.size() - 1u; ++leftId)
 				{
 					for (auto& leftItem : rects[leftId])
 					{
