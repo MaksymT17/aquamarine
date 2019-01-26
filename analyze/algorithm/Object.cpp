@@ -27,7 +27,7 @@ namespace am {
 			bool Object::isMergableToRight(Object& toCompare) const
 			{
 				if (mMax_width + 1 == toCompare.getMinWidth()) {
-					for (int i = mMin_height; i < mMax_height; ++i)
+					for (size_t i = mMin_height; i < mMax_height; ++i)
 					{
 						if (i == toCompare.mMin_height || i == toCompare.mMax_height)
 							return true;
