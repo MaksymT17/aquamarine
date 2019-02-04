@@ -1,6 +1,8 @@
 #pragma once
 #include<vector>
 #include<cstdlib>
+#include <set>
+
 namespace am {
 	namespace analyze {
 		namespace algorithm {
@@ -28,6 +30,7 @@ namespace am {
 				size_t getMaxWidth() const;
 				size_t getMinHeight() const;
 				size_t getMaxHeight() const;
+				size_t getValue() const;
 
 			private:
 				void mergeToMe(Object& toCompare);
@@ -37,7 +40,36 @@ namespace am {
 				size_t mMin_height;
 				size_t mMax_width;
 				size_t mMax_height;
+				size_t mValue;
 			};
+
+			//todo: move comparators to other place
+			namespace comparators {
+				struct Ascending {
+					bool operator() (const Object& l, const Object& r) const
+					{
+						return l.getValue() < r.getValue();
+					}
+				};
+
+				struct Descending {
+					bool operator() (const Object& l, const Object& r) const
+					{
+						return l.getValue() > r.getValue();
+					}
+				};
+			}
+
+			//template struct to make automatic ordering when new objects are collected
+			// why ? to make priority in collected objects
+			// bigger should be first in collection
+			// if not needed can be used vector instead
+			template <typename T>
+			struct OrderedObjects {
+				std::multiset<Object, T> objects;
+			};
+
+			using DescObjects = OrderedObjects<comparators::Descending>;
 		}
 	}
 }

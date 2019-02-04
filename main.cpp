@@ -44,12 +44,12 @@ int main()
 	//experimental - but, main feature currently, external review needed
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector();
 
-	std::vector<algorithm::Object> rects = detector.getObjectsRects(diffs);
-	std::vector<algorithm::Object> rects1 = detector.getObjectsRects(pair);
+	algorithm::DescObjects rects = detector.getObjectsRects(diffs);
+	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
-	for (auto& rect : rects1)
+	for (auto& rect : rects1.objects)
 	{
-		printf("row:%zd col:%zd    row:%zd col:%zd \n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth());
+		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth(), rect.getValue());
 	}
 
 	//clean up all used data

@@ -16,8 +16,8 @@ namespace am {
 			public:
 				virtual ~IObjectDetector() = default;
 
-				virtual std::vector<Object> getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs) = 0;
-				virtual std::vector<Object> getObjectsRects(std::shared_ptr<ImagePair> pair) = 0;
+				virtual DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs) = 0;
+				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) = 0;
 			};
 		}
 	}
