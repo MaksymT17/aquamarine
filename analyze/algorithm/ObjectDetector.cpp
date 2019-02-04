@@ -117,7 +117,7 @@ namespace am {
 
 				for (auto& position : toCheck)
 				{
-					if (visited(position.rowId, position.colId) != common::CHANGE && 
+					if (visited(position.rowId, position.colId) != common::CHANGE &&
 						pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
@@ -146,7 +146,7 @@ namespace am {
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, 
+			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair,
 				size_t step, Column col, const configuration::Configuration conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
@@ -182,7 +182,7 @@ namespace am {
 								toCheck.push_back(Pixel{ rowId , colId - 1 });
 							if (colId + 1 < col.right)
 								toCheck.push_back(Pixel{ rowId , colId - 1 });
-							
+
 							resultList.push_back(bsfInPair(pairRef, changes, toCheck, obj, col, startTime, conf));
 						}
 					}
@@ -190,7 +190,7 @@ namespace am {
 				return resultList;
 			}
 
-			std::vector<Object> createObjectRects(std::vector<std::vector<Pixels>>& objPixels, const size_t minObjSize)
+			DescObjects createObjectRects(std::vector<std::vector<Pixels>>& objPixels, const size_t minObjSize)
 			{
 				std::vector <std::vector<Object>> rects;
 
@@ -205,10 +205,10 @@ namespace am {
 					rects.push_back(threadObjs);
 				}
 
-				std::vector<Object> res;
+				DescObjects res;
 
-				if (rects.size() == 1)
-					return *rects.begin();
+				//if (rects.size() == 1)
+					//return *rects.begin();
 
 				for (size_t leftId = 0; leftId < rects.size() - 1u; ++leftId)
 				{
@@ -220,7 +220,7 @@ namespace am {
 							{
 								leftItem.mergeIfPossible(rightItem);
 							}
-							res.push_back(leftItem);
+							res.objects.emplace(leftItem);
 						}
 					}
 				}
@@ -228,13 +228,13 @@ namespace am {
 				return res;
 			}
 
-			std::vector<Object> ObjectDetector::getObjectsRects(SharedColorDiffsMatrix diffs)
+			DescObjects ObjectDetector::getObjectsRects(SharedColorDiffsMatrix diffs)
 			{
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();
 				const size_t columnWidth = width / mThreadsCount;
 				mLogger->logInfo("ObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
-				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs, 
+				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 					mThreadsCount, mConfiguration.AffinityThreshold);
 				std::vector<std::vector<Pixels>> res;
 
@@ -254,7 +254,7 @@ namespace am {
 				return createObjectRects(res, mConfiguration.MinPixelsForObject);
 			}
 
-			std::vector<Object> ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
+			DescObjects ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
 			{
 				const size_t columnWidth = pair.get()->getWidth() / mThreadsCount;
 

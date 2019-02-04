@@ -8,7 +8,8 @@ namespace am {
 				mMin_width(pixels.begin()->colId),
 				mMin_height(pixels.begin()->rowId),
 				mMax_width(pixels.begin()->colId),
-				mMax_height(pixels.begin()->rowId)
+				mMax_height(pixels.begin()->rowId),
+				mValue(pixels.size())
 			{
 				for (auto pixel : pixels)
 				{
@@ -62,6 +63,7 @@ namespace am {
 				if (isMergableToRight(toCompare))
 				{
 					mergeToMe(toCompare);
+					mValue += toCompare.getValue();
 					return true;
 				}
 				return false;
@@ -81,6 +83,10 @@ namespace am {
 			size_t Object::getMaxHeight() const
 			{
 				return mMax_height;
+			}
+			size_t Object::getValue() const
+			{
+				return mValue;
 			}
 		}
 	}
