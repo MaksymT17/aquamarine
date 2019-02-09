@@ -1,5 +1,4 @@
 #pragma once
-#include <ctime>
 #include <stdarg.h>
 #include <fstream>
 #include <chrono>
