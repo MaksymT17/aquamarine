@@ -23,6 +23,7 @@ namespace am {
 			public:
 				Object(std::vector<Pixel>& pixels);
 				virtual ~Object() = default;
+
 				bool isMergableToRight(Object& toCompare) const;
 				bool mergeIfPossible(Object& toCompare);
 
@@ -67,6 +68,10 @@ namespace am {
 			template <typename T>
 			struct OrderedObjects {
 				std::multiset<Object, T> objects;
+			};
+
+			struct UnorderedObjects {
+				std::set<Object> objects;
 			};
 
 			using DescObjects = OrderedObjects<comparators::Descending>;

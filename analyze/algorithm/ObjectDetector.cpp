@@ -9,7 +9,7 @@
 namespace am {
 	namespace analyze {
 		namespace algorithm {
-
+			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>;
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
@@ -207,11 +207,15 @@ namespace am {
 
 				DescObjects res;
 
-				//if (rects.size() == 1)
-					//return *rects.begin();
-
-				for (size_t leftId = 0; leftId < rects.size() - 1u; ++leftId)
+				if (rects.size() == 1)
 				{
+					for (auto& r : *rects.begin())
+						res.objects.emplace(r);
+
+					return res;
+				}
+
+				for (size_t leftId = 0; leftId < rects.size() - 1u; ++leftId) {
 					for (auto& leftItem : rects[leftId])
 					{
 						if (leftItem.getMaxWidth() != 0 && leftItem.getMaxHeight() != 0)
@@ -233,12 +237,13 @@ namespace am {
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();
 				const size_t columnWidth = width / mThreadsCount;
+				std::vector<std::vector<Pixels>> res;
+				std::vector<std::future<std::vector<Pixels>>> futures;
+
 				mLogger->logInfo("ObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
+
 				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 					mThreadsCount, mConfiguration.AffinityThreshold);
-				std::vector<std::vector<Pixels>> res;
-
-				std::vector<std::future<std::vector<Pixels>>> futures;
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{

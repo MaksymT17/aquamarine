@@ -10,18 +10,18 @@ namespace am
 		enum DataMode
 		{
 			KEEP_BASE_FRAME = 0,     // keep base frame for multiple comparisons
-			SWITCH_TO_COMPARED = 1   // after every comparison base frame will replace to new(compared last)
+			SWITCH_TO_COMPARED = 1   // after every comparison base frame will replace to recently compared
 		};
 
-		using namespace common::types;
 		class AffinityComparer : public IComparer
 		{
 		public:
-			AffinityComparer(std::shared_ptr<Matrix<ColorChannels>> base);
+			AffinityComparer(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> base);
 
 			virtual ~AffinityComparer() = default;
 
-			virtual std::shared_ptr<common::types::Matrix<ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<ColorChannels>> newSource) override;
+			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>
+				compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) override;
 
 			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) const;
 
