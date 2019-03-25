@@ -7,8 +7,7 @@ can help in detection of movement, appearances/disappearances of objects, change
 conditions.
 
 ## Target: 
-Find optimal solution to implementation and figure out how to make such recognition in a best way. 
-Sharing it between professional developers can be used for discussions about approaches, algorithms to find best practices to make recognition fast and useful for different purposes. Every improvement idea are welcome!
+Find optimal solutions for implementation and figure out how to make recognition of image characteristics in a best way. In simple words: how to collect most important information based on picture data and use it for further analysis, paying into attention that collecting of every particular properties of image are time/CPU/power consuming operations. Sharing it between professional developers can be used for discussions about approaches and algorithms to be used. Every improvement idea are welcome!
 
 ## Components, sub-folders description:
 
