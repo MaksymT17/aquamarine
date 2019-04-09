@@ -210,7 +210,7 @@ namespace am {
 				if (rects.size() == 1)
 				{
 					for (auto& r : *rects.begin())
-						res.objects.emplace(r);
+						res.emplace(r);
 
 					return res;
 				}
@@ -224,7 +224,7 @@ namespace am {
 							{
 								leftItem.mergeIfPossible(rightItem);
 							}
-							res.objects.emplace(leftItem);
+							res.emplace(leftItem);
 						}
 					}
 				}

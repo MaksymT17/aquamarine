@@ -47,7 +47,7 @@ int main()
 	algorithm::DescObjects rects = detector.getObjectsRects(diffs);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
-	for (auto& rect : rects1.objects)
+	for (auto& rect : rects1)
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth(), rect.getValue());
 	}

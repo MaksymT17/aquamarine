@@ -18,8 +18,10 @@ analyze/ThresholdDiffChecker.cpp
 analyze/algorithm/Object.cpp
 analyze/algorithm/ObjectDetector.cpp 
 analyze/algorithm/ImagePair.cpp 
+analyze/algorithm/movement/MovementDetector.cpp
 extraction/BmpExtractor.cpp
 extraction/MultipleBmpExtractor.cpp
+
 )
 
 target_link_libraries (aquamarine ${CMAKE_THREAD_LIBS_INIT})

@@ -59,6 +59,12 @@ namespace am {
 						return l.getValue() > r.getValue();
 					}
 				};
+				struct Unordered {
+					bool operator() (const Object& l, const Object& r) const
+					{
+						return true;
+					}
+				};
 			}
 
 			//template struct to make automatic ordering when new objects are collected
@@ -70,11 +76,8 @@ namespace am {
 				std::multiset<Object, T> objects;
 			};
 
-			struct UnorderedObjects {
-				std::set<Object> objects;
-			};
 
-			using DescObjects = OrderedObjects<comparators::Descending>;
+			using DescObjects = std::multiset<Object, comparators::Descending>;
 		}
 	}
 }
