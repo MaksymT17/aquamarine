@@ -10,6 +10,7 @@
 namespace am {
 	namespace common {
 
+		/// todo: move immplementation to source file to make possible make a stub empty class for UT
 		class Logger {
 
 		private:

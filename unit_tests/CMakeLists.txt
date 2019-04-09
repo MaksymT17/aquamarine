@@ -8,11 +8,17 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(..)
 
 
-add_executable(aquamarine_ut 
+add_executable(bmpExtraction_ut 
 TestBase.hpp
 ../extraction/BmpExtractor.cpp
 BmpReaderTest.cpp
 main.cpp
+)
+
+add_executable(movementDetector_ut 
+../analyze/algorithm/movement/MovementDetector.cpp
+../analyze/algorithm/Object.cpp
+MovementDetectorTest.cpp
 )
 
 target_link_libraries (aquamarine_ut ${CMAKE_THREAD_LIBS_INIT})
