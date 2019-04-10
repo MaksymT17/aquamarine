@@ -1,6 +1,5 @@
 #include "ThresholdDiffChecker.h"
 #include <future>
-#include "common/Context.hpp"
 
 using namespace am::common::types;
 
@@ -41,7 +40,7 @@ namespace am {
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
 
-			size_t availableThrCount = common::Context::getInstance()->getOpimalThreadsCount();
+			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
 
 			std::vector<std::future<void>> futures;

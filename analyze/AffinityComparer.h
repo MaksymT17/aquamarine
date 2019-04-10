@@ -23,6 +23,8 @@ namespace am
 			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>
 				compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) override;
 
+			static std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> first, std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> second);
+
 			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) const;
 
 		private:

@@ -25,6 +25,8 @@ namespace am {
 									type.mov[MovementType::BOTTOM] = true;
 								if (b.getMaxHeight() < check.getMaxHeight())
 									type.mov[MovementType::TOP] = true;
+
+								break;
 							}
 						}
 						if (!isFound)

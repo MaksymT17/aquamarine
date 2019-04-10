@@ -1,107 +1,24 @@
 #include "ObjectDetector.h"
+#include "analyze/algorithm/ImagePair.h"
 #include <future>
-#include <algorithm>
-#include "analyze/ThresholdDiffChecker.h"
-#include <common/Context.hpp>
-#include "ImagePair.h"
-#include <chrono>
 
 namespace am {
 	namespace analyze {
 		namespace algorithm {
-			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>;
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
-			ObjectDetector::ObjectDetector()
-				: mThreadsCount(common::Context::getInstance()->getOpimalThreadsCount())
-				, mConfiguration(common::Context::getInstance()->getConfiguration())
-				, mLogger(new am::common::Logger())
+			ObjectDetector::ObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration>& conf,
+				std::shared_ptr<am::common::Logger>& logger) :
+				BfsObjectDetector(threads, conf, logger)
 			{
 			}
 
-			bool isNew(Pixels& object, Pixel newPos)
+			ObjectDetector::~ObjectDetector()
 			{
-				for (auto pos : object)
-					if (pos.colId == newPos.colId && pos.rowId == newPos.rowId)
-						return false;
-
-				return true;
 			}
-
-			void pushCheckIfNew(Pixels& object, Pixels& toCheck, Pixel newPos)
-			{
-				if (isNew(object, newPos))
-					toCheck.push_back(newPos);
-			}
-
-			//optimized bfs depending to left/right borders for threads, 
-			//every thread will search in defined area(column) of image
-			Pixels bsf(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
-			{
-				std::vector<Pixel> nextCheck;
-
-				for (auto& position : toCheck)
-				{
-					if (changes(position.rowId, position.colId) == common::CHANGE)
-					{
-						if (position.rowId - 1 >= 0)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
-						if (position.rowId + 1 < changes.getHeight())
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
-						if (position.colId - 1 >= col.left)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
-						if (position.colId + 1 < col.left + col.right)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
-
-						Pixel newPos{ position.rowId, position.colId };
-
-						if (isNew(object, newPos))
-						{
-							object.push_back(newPos);
-							changes(position.rowId, position.colId) = 0;
-						}
-					}
-				}
-				if (nextCheck.size())
-					bsf(changes, nextCheck, object, col);
-
-				return object;
-			}
-
-			std::vector<Pixels> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step, Column col)
-			{
-				auto& chRef = *changes.get();
-
-				std::vector<Pixels> resultList;
-				// check all diffs on potential objects
-				//if change found -> run bsf to figure out how many pixels included in this object
-				for (size_t rowId = step; rowId < chRef.getHeight(); rowId += step)
-				{
-					for (size_t colId = col.left; colId < col.right; colId += step)
-					{
-						if (chRef(rowId, colId) == common::CHANGE)
-						{
-							Pixels obj = { Pixel{rowId, colId} };
-							Pixels toCheck;
-
-							if (rowId - 1 >= 0)
-								toCheck.push_back(Pixel{ rowId - 1, colId });
-							if (rowId + 1 < chRef.getHeight())
-								toCheck.push_back(Pixel{ rowId + 1, colId });
-							if (colId - 1 >= col.left)
-								toCheck.push_back(Pixel{ rowId , colId - 1 });
-							if (colId + 1 < col.left + col.right)
-								toCheck.push_back(Pixel{ rowId , colId - 1 });
-
-							resultList.push_back(bsf(chRef, toCheck, obj, col));
-						}
-					}
-				}
-				return resultList;
-			}
-
-			std::vector<Pixel> bsfInPair(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
+			// Time dependent execution, if max calculation time exceeded calculation should finilize calculation.
+			Pixels bsf(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
@@ -121,17 +38,8 @@ namespace am {
 						pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
-
-						if (position.rowId - 1 >= 0)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId - 1, position.colId });
-						if (position.rowId + 1 < visited.getHeight())
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId + 1, position.colId });
-						if (position.colId - 1 >= col.left)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId - 1 });
-						if (position.colId + 1 < col.right)
-							pushCheckIfNew(object, nextCheck, Pixel{ position.rowId , position.colId + 1 });
-
 						Pixel newPos{ position.rowId, position.colId };
+						checkClosest(newPos, nextCheck, object, col, visited.getHeight());
 
 						if (isNew(object, newPos))
 						{
@@ -141,13 +49,12 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					bsfInPair(pair, visited, nextCheck, object, col, startTime, conf);
+					bsf(pair, visited, nextCheck, object, col, startTime, conf);
 
 				return object;
 			}
 
-			std::vector<std::vector<Pixel>> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair,
-				size_t step, Column col, const configuration::Configuration conf)
+			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col, const configuration::Configuration& conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				auto& pairRef = *pair.get();
@@ -156,9 +63,9 @@ namespace am {
 				std::vector<Pixels> resultList;
 				// check all diffs on potential objects
 				//if change found -> run bsf to figure out how many pixels included in this object
-				for (size_t rowId = step; rowId < pairRef.getHeight(); rowId += step)
+				for (size_t rowId = conf.PixelStep; rowId < pairRef.getHeight(); rowId += conf.PixelStep)
 				{
-					for (size_t colId = col.left; colId < col.right; colId += step)
+					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
 					{
 						auto timeNow = std::chrono::steady_clock::now();
 						std::chrono::duration<double> calcDuration = timeNow - startTime;
@@ -171,94 +78,15 @@ namespace am {
 						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
 							changes(rowId, colId) != common::CHANGE)
 						{
-							Pixels obj = { Pixel{rowId, colId} };
-							Pixels toCheck;
-
-							if (rowId - 1 >= 0)
-								toCheck.push_back(Pixel{ rowId - 1, colId });
-							if (rowId + 1 <= pairRef.getHeight())
-								toCheck.push_back(Pixel{ rowId + 1, colId });
-							if (colId - 1 >= col.left)
-								toCheck.push_back(Pixel{ rowId , colId - 1 });
-							if (colId + 1 < col.right)
-								toCheck.push_back(Pixel{ rowId , colId - 1 });
-
-							resultList.push_back(bsfInPair(pairRef, changes, toCheck, obj, col, startTime, conf));
+							Pixel px{ rowId, colId };
+							Pixels obj = { px };
+							auto conns = checkConnections(px, pairRef.getHeight(), col);
+							resultList.push_back(bsf(pairRef, changes, conns, obj, col, startTime, conf));
 						}
 					}
 				}
 				return resultList;
 			}
-
-			DescObjects createObjectRects(std::vector<std::vector<Pixels>>& objPixels, const size_t minObjSize)
-			{
-				std::vector <std::vector<Object>> rects;
-
-				for (auto thrList : objPixels)
-				{
-					std::vector<Object> threadObjs;
-					for (auto objs : thrList)
-					{
-						if (objs.size() > minObjSize) // skip objects if smaller that minObjSize, avoid noise
-							threadObjs.push_back(Object(objs));
-					}
-					rects.push_back(threadObjs);
-				}
-
-				DescObjects res;
-
-				if (rects.size() == 1)
-				{
-					for (auto& r : *rects.begin())
-						res.emplace(r);
-
-					return res;
-				}
-
-				for (size_t leftId = 0; leftId < rects.size() - 1u; ++leftId) {
-					for (auto& leftItem : rects[leftId])
-					{
-						if (leftItem.getMaxWidth() != 0 && leftItem.getMaxHeight() != 0)
-						{
-							for (auto& rightItem : rects[leftId + 1])
-							{
-								leftItem.mergeIfPossible(rightItem);
-							}
-							res.emplace(leftItem);
-						}
-					}
-				}
-
-				return res;
-			}
-
-			DescObjects ObjectDetector::getObjectsRects(SharedColorDiffsMatrix diffs)
-			{
-				const size_t width = diffs.get()->getWidth();
-				const size_t height = diffs.get()->getHeight();
-				const size_t columnWidth = width / mThreadsCount;
-				std::vector<std::vector<Pixels>> res;
-				std::vector<std::future<std::vector<Pixels>>> futures;
-
-				mLogger->logInfo("ObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
-
-				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
-					mThreadsCount, mConfiguration.AffinityThreshold);
-
-				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
-				{
-					Pixels toCheck;
-					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.push_back(std::async(startObjectsSearch, changes, mConfiguration.PixelStep, column));
-				}
-
-				for (auto &e : futures)
-					res.push_back(e.get());
-
-				mLogger->logInfo("ObjectDetector::getObjectsRects fin");
-				return createObjectRects(res, mConfiguration.MinPixelsForObject);
-			}
-
 			DescObjects ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
 			{
 				const size_t columnWidth = pair.get()->getWidth() / mThreadsCount;
@@ -271,14 +99,14 @@ namespace am {
 				{
 					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.push_back(std::async(startObjectsSearchInPair, pair, mConfiguration.PixelStep, column, mConfiguration));
+					futures.push_back(std::async(startObjectsSearchInPair, pair, column, *mConfiguration));
 				}
 
 				for (auto &e : futures)
 					res.push_back(e.get());
 
 				mLogger->logInfo("ObjectDetector::getObjectsRects fin");
-				return createObjectRects(res, mConfiguration.MinPixelsForObject);
+				return createObjectRects(res);
 			}
 		}
 	}

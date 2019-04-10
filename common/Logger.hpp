@@ -24,7 +24,7 @@ namespace am {
 
 		public:
 
-			Logger() = default;
+			Logger(){};
 
 			~Logger() = default;
 
