@@ -2,20 +2,24 @@
 #include <stdio.h>
 #include "extraction/MultipleBmpExtractor.h"
 #include "analyze/ThresholdDiffChecker.h"
+#include "analyze/algorithm/BfsObjectDetector.h"
+#include "analyze/algorithm/DiffObjectDetector.h"
 #include "analyze/algorithm/ObjectDetector.h"
 #include "analyze/algorithm/ImagePair.h"
-#include "common/Context.hpp"
 #include "configuration/ConfigurationReader.hpp"
+#include<memory>
 
-am::common::Context* am::common::Context::inst = nullptr;
-
-// below are set of tests better way put this tests in UT,
+// below are set of tests better way is to put this tests in UT,
 // and run here only required detection logic
 
 int main()
 {
 	using namespace am::common::types;
 	using namespace am::analyze;
+
+	am::configuration::ConfigurationReader reader;
+	auto config= *reader.getConfigurationFromFile("inputs/configuration.csv").begin();
+
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/fhd_clean.BMP");
 	std::string toCompare("inputs/fhd_5obj.BMP");
@@ -41,18 +45,25 @@ int main()
 
 	printf("images similarity persent %f\n", sim *100.0f);
 
-	//experimental - but, main feature currently, external review needed
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector();
+	///todo remove singleton usage
+	//auto conf1 = am::common::Context::getInstance()->getConfiguration();
+	std::shared_ptr<am::configuration::Configuration> conf(config);
+	std::shared_ptr<am::common::Logger> lPtr(new am::common::Logger());
 
-	algorithm::DescObjects rects = detector.getObjectsRects(diffs);
+	//experimental - but, main feature currently, external review needed
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(5,conf, lPtr);
+	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(5,conf, lPtr);
+
+	//algorithm::DescObjects rects = detector.getObjectsRects(diffs);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
+	algorithm::DescObjects rects2 = diffDetector.getObjectsRects(pair);
 
 	for (auto& rect : rects1)
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth(), rect.getValue());
 	}
-
+	
 	//clean up all used data
-	am::common::Context::release();
+	//am::common::Context::release();
 	return 0;
 }

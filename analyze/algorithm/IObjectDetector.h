@@ -11,12 +11,13 @@ namespace am {
 
 			class ImagePair;
 
+			// interface for Object properties extraction
+			// pair of images is a minimal requirement for collecting objects
 			class IObjectDetector
 			{
 			public:
 				virtual ~IObjectDetector() = default;
 
-				virtual DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs) = 0;
 				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) = 0;
 			};
 		}

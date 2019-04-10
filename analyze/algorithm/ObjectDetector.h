@@ -1,36 +1,20 @@
 #pragma once
-#include "IObjectDetector.h"
-#include <cstdlib>
-#include "configuration/Configuration.hpp"
-#include "common/Logger.hpp"
+#include "BfsObjectDetector.h"
 
 namespace am {
-
 	namespace analyze {
 		namespace algorithm {
 
-			class ImagePair;
-						
-			// class for object detection, extracted data should be reusable for next iterations
-			// return value of detection is vector of Objects - Rectangled area
-			class ObjectDetector : public IObjectDetector
-			{
+			class ObjectDetector : public BfsObjectDetector {
 			public:
+				ObjectDetector(const size_t threads,std::shared_ptr<am::configuration::Configuration>& conf, std::shared_ptr<am::common::Logger>& logger);
+				~ObjectDetector();
 
-				ObjectDetector();
-				virtual ~ObjectDetector() = default;
-
-				//all calculation with diffs, no time limits
-				virtual DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs) override;
-
-				//fast search with time limitations
+				// time for every collecting results defined in configuration
+				// can be adjusted, but some objects can be not found because of terminated calculations
 				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) override;
-
-			private:
-				size_t mThreadsCount;
-				am::configuration::Configuration mConfiguration;
-				std::shared_ptr<am::common::Logger> mLogger;
 			};
+
 		}
 	}
 }

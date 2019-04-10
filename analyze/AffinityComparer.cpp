@@ -1,8 +1,8 @@
 #include "AffinityComparer.h"
-#include "common/Context.hpp"
 #include "common/Constants.hpp"
 #include "common/exceptions/AllocationException.hpp"
 #include <future>
+#include "common/exceptions/AmException.hpp"
 
 using namespace am::common::types;
 
@@ -48,6 +48,7 @@ namespace am {
 			return (base->getWidth() == compare->getWidth() && base->getHeight() == compare->getHeight());
 		}
 
+		//deprecated
 		std::shared_ptr<Matrix<ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<ColorChannels>> newSource) {
 			const size_t width = mBase.get()->getWidth();
 			const size_t height = mBase.get()->getHeight();
@@ -61,7 +62,7 @@ namespace am {
 			// can be wrapped in try() for bad alloc
 			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
 
-			size_t availableThrCount = common::Context::getInstance()->getOpimalThreadsCount();
+			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
 
 			std::vector<std::future<void>> futures;
@@ -75,18 +76,55 @@ namespace am {
 
 				futures.clear();
 			}
-			
+
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.push_back(std::async(fillPixelLineWithDiffs, mBase, newSource, result, lastLines, width));
 
-				for (auto &e : futures)
-					e.get();
+			for (auto &e : futures)
+				e.get();
 
 			if (mMode == SWITCH_TO_COMPARED)
 				mBase = newSource;
 
 			return result;
+		}
+		std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> first, std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> second)
+		{
+			const size_t width = first.get()->getWidth();
+			const size_t height = first.get()->getHeight();
+			if (width != second.get()->getWidth() || height != second.get()->getHeight()) {
+				std::string msg("AffinityComparer size of images are different.");
+				throw am::common::exceptions::AmException(msg);
+			}
+
+			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
+
+			//threads count should be provided as parameter, no singleton usage
+			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
+			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
+
+			std::vector<std::future<void>> futures;
+
+			for (size_t portion = 0; portion < height; portion += threadsCount) {
+				for (size_t i = 0; i < threadsCount; ++i)
+					futures.push_back(std::async(fillPixelLineWithDiffs, first, second, result, portion + i, width));
+
+				for (auto &e : futures)
+					e.get();
+
+				futures.clear();
+			}
+
+			// final section in case if width not divided normally on threads count
+			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
+				futures.push_back(std::async(fillPixelLineWithDiffs, first, second, result, lastLines, width));
+
+			for (auto &e : futures)
+				e.get();
+
+			return result;
+
 		}
 	} // namespace analyze
 } // namespace am

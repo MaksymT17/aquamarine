@@ -11,8 +11,7 @@ namespace am {
 	namespace analyze {
 		namespace algorithm {
 			namespace movement {
-
-
+				
 				/// note: bitset for movements storage
 				// bytes definition: 0, 1 - left, right
 				// 2, 3 - top, bottom; 4 - disappear

@@ -17,6 +17,9 @@ namespace am {
 				size_t getHeight() const;
 				uint16_t getAbsoluteDiff(const size_t rowId, const size_t colId) const;
 
+				std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> getFirst()const;
+				std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> getSecond()const;
+
 			private:
 				std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> mBase;
 				std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> mCompare;
