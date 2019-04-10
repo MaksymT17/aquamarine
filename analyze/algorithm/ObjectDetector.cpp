@@ -14,9 +14,6 @@ namespace am {
 			{
 			}
 
-			ObjectDetector::~ObjectDetector()
-			{
-			}
 			// Time dependent execution, if max calculation time exceeded calculation should finilize calculation.
 			Pixels bsf(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
@@ -54,7 +51,8 @@ namespace am {
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col, const configuration::Configuration& conf)
+			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col, 
+				const configuration::Configuration& conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				auto& pairRef = *pair.get();

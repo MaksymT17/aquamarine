@@ -13,7 +13,6 @@ namespace am {
 			Context()
 				: mOptimalThreadsCount(calculateOptimalThreadsCount())
 			{
-				//mLogger.logInfo("Aquamarine starting ...");
 			}
 
 			size_t calculateOptimalThreadsCount()
@@ -29,14 +28,8 @@ namespace am {
 			}
 			size_t mOptimalThreadsCount;
 			static Context *inst;
-			//Logger mLogger;
 
 		public:
-			am::configuration::Configuration* getConfiguration()
-			{
-				am::configuration::ConfigurationReader reader;
-				return *reader.getConfigurationFromFile("inputs/configuration.csv").begin();
-			}
 
 			static void release()
 			{
@@ -46,7 +39,6 @@ namespace am {
 
 			~Context()
 			{
-				//mLogger.logInfo("Aquamarine finish jobs, cleaning resources.");
 			}
 
 			static Context *getInstance() {

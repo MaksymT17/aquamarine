@@ -1,9 +1,12 @@
 #include "ThresholdDiffChecker.h"
 #include <future>
 
-using namespace am::common::types;
+
 
 namespace am {
+
+	using namespace common::types;
+
 	namespace analyze {
 
 		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) :
@@ -34,19 +37,19 @@ namespace am {
 			}
 		}
 
-		float ThresholdDiffChecker::getAffinityPersent(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
+		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
 		{
 			std::shared_ptr<std::atomic_size_t> diffCounter(new std::atomic_size_t(0));
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
 
-			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
-			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
+			size_t threads = threadsCount > height ? height : threadsCount;
 
 			std::vector<std::future<void>> futures;
 
-			for (size_t portion = 0; portion < height; portion += threadsCount) {
-				for (size_t i = 0; i < threadsCount; ++i)
+			for (size_t portion = 0; portion < height; portion += threads)
+			{
+				for (size_t i = 0; i < threads; ++i)
 					futures.push_back(std::async(checlImageRow, portion + i, width, diffs, mTreshold, diffCounter));
 
 				for (auto &e : futures)
@@ -55,7 +58,7 @@ namespace am {
 				futures.clear();
 			}
 			// final section in case if width not divided normally on threads count
-			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
+			for (size_t lastLines = (height / threads) * threads; lastLines < height; ++lastLines)
 				futures.push_back(std::async(checlImageRow, lastLines, width, diffs, mTreshold, diffCounter));
 
 			for (auto &e : futures)

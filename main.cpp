@@ -17,9 +17,6 @@ int main()
 	using namespace am::common::types;
 	using namespace am::analyze;
 
-	am::configuration::ConfigurationReader reader;
-	auto config= *reader.getConfigurationFromFile("inputs/configuration.csv").begin();
-
 	am::extraction::MultipleBmpExtractor extractor;
 	std::string base("inputs/fhd_clean.BMP");
 	std::string toCompare("inputs/fhd_5obj.BMP");
@@ -41,18 +38,18 @@ int main()
 	//according to last tests in day light threshold should be near to 200
 	ThresholdDiffChecker similarityCheck(200);
 
-	float sim = similarityCheck.getAffinityPersent(diffs);
+	float sim = similarityCheck.getAffinityPersent(5, diffs);
 
 	printf("images similarity persent %f\n", sim *100.0f);
 
-	///todo remove singleton usage
-	//auto conf1 = am::common::Context::getInstance()->getConfiguration();
-	std::shared_ptr<am::configuration::Configuration> conf(config);
+	am::configuration::ConfigurationReader reader;
+
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	std::shared_ptr<am::common::Logger> lPtr(new am::common::Logger());
 
 	//experimental - but, main feature currently, external review needed
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(5,conf, lPtr);
-	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(5,conf, lPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(5, conf, lPtr);
+	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(5, conf, lPtr);
 
 	//algorithm::DescObjects rects = detector.getObjectsRects(diffs);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
@@ -62,8 +59,6 @@ int main()
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth(), rect.getValue());
 	}
-	
-	//clean up all used data
-	//am::common::Context::release();
+
 	return 0;
 }
