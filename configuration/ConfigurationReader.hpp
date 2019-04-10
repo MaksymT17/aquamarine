@@ -4,7 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <memory>
 #include "common/exceptions/FileAccessException.hpp"
+#include "common/exceptions/AmException.hpp"
 
 namespace {
 	const char PARAM_LIMITER = ':';
@@ -18,7 +20,7 @@ namespace am {
 			ConfigurationReader() {}
 
 			///todo: add support of multiple resolutions, and different configuration values as well
-			std::vector<Configuration*> getConfigurationFromFile(const char *filePath) {
+			std::shared_ptr<Configuration> getConfigurationFromFile(const char *filePath) {
 				printf("Loading of CSV file: '%s'  ...\n", filePath);
 
 				std::ifstream file(filePath, std::ifstream::in);
@@ -29,21 +31,20 @@ namespace am {
 					printf("file open failed, %s. \n", errorMsg.c_str());
 					throw common::exceptions::FileAccessException(errorMsg);
 				}
-				std::vector<Configuration*> data;
 
 				while (file.good()) {
-					//risky: wrap to shared_ptr
-					Configuration* rec = new Configuration();
+					std::shared_ptr<Configuration> rec(new Configuration());
 					getConfiguration(rec, file);
-					data.push_back(rec);
+					return rec;
 				}
 
-				return data;
+				std::string errorMsg("Configuration parse failed, check file parameters!");
+				throw common::exceptions::AmException(errorMsg);
 			}
 
 		private:
 
-			void setParameter(std::istream &line, Configuration* conf)
+			void setParameter(std::istream &line, std::shared_ptr<Configuration>& conf)
 			{
 				std::string paramName, paramVal;
 				std::getline(line, paramName, PARAM_LIMITER);
@@ -61,7 +62,7 @@ namespace am {
 					conf->IdleTimeout = std::atoi(paramVal.c_str());
 			}
 
-			void getConfiguration(Configuration* rec, std::istream &str)
+			void getConfiguration(std::shared_ptr<Configuration>& rec, std::istream &str)
 			{
 				for (size_t i = 0; i < PARAM_COUNT; ++i)
 				{
