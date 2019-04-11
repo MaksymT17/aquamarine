@@ -4,6 +4,7 @@ namespace am {
 		namespace algorithm {
 
 			Object::Object(std::vector<Pixel>& pixels) :
+				mPixels(pixels),
 				mPixelsCount(pixels.size()),
 				mMin_width(pixels.begin()->colId),
 				mMin_height(pixels.begin()->rowId),
@@ -67,6 +68,10 @@ namespace am {
 					return true;
 				}
 				return false;
+			}
+			std::vector<Pixel>& Object::getPixels() const
+			{
+				return mPixels;
 			}
 			size_t Object::getMinWidth() const
 			{

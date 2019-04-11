@@ -29,19 +29,19 @@ namespace am {
 			~Logger() = default;
 
 			template<typename... Args>
-			void logInfo(const char* format, Args... args)
+			void info(const char* format, Args... args)
 			{
 				log(INFO_TAG, format, args...);
 			}
 
 			template<typename... Args>
-			void logWarn(const char* format, Args... args)
+			void warn(const char* format, Args... args)
 			{
 				log(WARN_TAG, format, args...);
 			}
 
 			template<typename... Args>
-			void logError(const char* format, Args... args)
+			void error(const char* format, Args... args)
 			{
 				log(ERROR_TAG, format, args...);
 			}

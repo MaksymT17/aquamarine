@@ -6,7 +6,7 @@
 #include"analyze/algorithm/ImagePair.h"
 #include"analyze/algorithm/ObjectDetector.h"
 #include "common/Logger.hpp"
-#include<bitset>
+
 #include "IMovementDetector.h"
 
 namespace am {
@@ -14,20 +14,32 @@ namespace am {
 		namespace algorithm {
 			namespace movement {
 
-				// method for collecting movements based on Object bounds, not on real pixel data
-				static std::vector<MovementType> getMovementsFromRects(std::multiset<Object, 
-					comparators::Descending>& base, std::multiset<Object, comparators::Descending>& toCheck, 
-					std::shared_ptr<am::common::Logger>& logger) noexcept;
+				using Pixels = std::vector<Pixel>;
 
-				class MovementDetector: public ObjectDetector, IMovementDetector {
+				// implementation for IMovementDetector, which will check only areas of interested, previously found objects
+				// Area out of provided Object list, shall be ignored, except only if object from list moved out of his own area or extended
+				class MovementDetector : public ObjectDetector, IMovementDetector
+				{
 				public:
 					MovementDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration>& conf, std::shared_ptr<am::common::Logger>& logger);
 					~MovementDetector() = default;
 
-					virtual std::vector<MovementType> getMovementsFromRects(std::multiset<Object, comparators::Descending>& first, 
-						std::multiset<Object, comparators::Descending>& second) override;
+					// set objects which will be used for BFS search, like stencil on whole Image
+					// without objects check movement has no sense
+					virtual void setTrackingObjects(DescObjects& objs) override;
 
-					virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) override;
+					// get Movement details for particular Object
+					// will be checked area of this object based on Image pair provided
+					// out of this area BFS will be not started
+					virtual MovementType getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found) override;
+
+					// get movement for every objects provided by setTrackingObjects
+					// ref of newObjects will be fulfilled with newly added objects
+					virtual Movements analyze(ImagePairPtr& pair, DescObjects& newObjects) override;
+
+				private:
+					std::multiset<Object, comparators::Descending> mObjects;
+
 				};
 			}
 		}

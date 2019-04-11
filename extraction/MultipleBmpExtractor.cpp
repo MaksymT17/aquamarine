@@ -27,7 +27,7 @@ namespace am
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{
-				mLogger->logInfo("BmpExtractor::readFile file:%s.", fileNames[i].c_str());
+				mLogger->info("BmpExtractor::readFile file:%s.", fileNames[i].c_str());
 				futures.push_back(std::async(getFileData, fileNames[i]));
 			}
 
