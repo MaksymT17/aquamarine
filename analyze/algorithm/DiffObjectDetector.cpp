@@ -78,7 +78,7 @@ namespace am {
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 
-				mLogger->logInfo("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
+				mLogger->info("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
 
 				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 					mThreadsCount, mConfiguration->AffinityThreshold);
@@ -93,7 +93,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				mLogger->logInfo("DiffObjectDetector::getObjectsRects fin");
+				mLogger->info("DiffObjectDetector::getObjectsRects fin");
 				return createObjectRects(res);
 			}
 			DescObjects DiffObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)

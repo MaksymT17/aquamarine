@@ -25,19 +25,26 @@ namespace am {
 						RIGHT = 1,
 						TOP = 2,
 						BOTTOM = 3,
-						DISAPPEAR = 4
+						MOVELESS = 4
 					};
 					std::bitset<5> mov;
 				};
 
+				using Objects = std::vector<Object>;
+				using DescObjects = std::multiset<Object, comparators::Descending>;
+				using ImagePairPtr = std::shared_ptr<ImagePair>;
+				using Movements = std::vector<MovementType>;
+
 				// interface for Movements detection classes,
-				// movements shall be provided depended to
-				class IMovementDetector 
+				// movements shall be realted to Tracking objects				
+				class IMovementDetector
 				{
 				public:
 					~IMovementDetector() = default;
-					virtual std::vector<MovementType> getMovementsFromRects(std::multiset<Object, comparators::Descending>& first,
-						std::multiset<Object, comparators::Descending>& second) = 0;
+
+					virtual void setTrackingObjects(DescObjects& objs) = 0;
+					virtual MovementType getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found) = 0;
+					virtual Movements analyze(ImagePairPtr& pair, DescObjects& newObjects) = 0;
 				};
 
 			}

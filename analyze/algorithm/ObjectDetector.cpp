@@ -70,7 +70,7 @@ namespace am {
 						if (calcDuration.count() >= conf.CalculationTimeLimit)
 						{
 							///todo: make Error notification about failed detection
-							printf("Timelimit for calculation exceded. So much noise in picture.\n");
+							//mLogger->logInfo("Timelimit for calculation exceded, calculations TimeLimit:%f", conf.CalculationTimeLimit);
 							return resultList;
 						}
 						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
@@ -91,7 +91,7 @@ namespace am {
 
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
-				mLogger->logInfo("ObjectDetector::getObjectsRects pair threads:%d", mThreadsCount);
+				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d", mThreadsCount);
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
@@ -103,7 +103,7 @@ namespace am {
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				mLogger->logInfo("ObjectDetector::getObjectsRects fin");
+				mLogger->info("ObjectDetector::getObjectsRects fin");
 				return createObjectRects(res);
 			}
 		}
