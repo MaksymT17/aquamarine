@@ -1,6 +1,7 @@
 #pragma once
+
 #include "BfsObjectDetector.h"
-#include"common/types/Matrix.hpp"
+
 namespace am {
 
 	namespace analyze {

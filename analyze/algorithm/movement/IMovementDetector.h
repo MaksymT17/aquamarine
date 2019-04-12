@@ -2,8 +2,6 @@
 
 #include<memory>
 #include<set>
-#include"common/types/Matrix.hpp"
-#include"common/types/ColorChannelsDiff.hpp"
 #include "analyze/algorithm/Object.h"
 
 namespace am {

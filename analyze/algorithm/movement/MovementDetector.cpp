@@ -47,7 +47,7 @@ namespace am {
 
 				/// every single object can devided to many or be merged to bigger one,
 				/// func: should catch every case and be able to use learning principles as AI
-				/// found out parameter of found ojects related to single input object
+				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
 				MovementType MovementDetector::getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found)
 				{
 					Matrix<uint16_t> changes(pair->getWidth(), pair->getHeight());

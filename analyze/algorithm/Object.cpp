@@ -1,4 +1,5 @@
 #include"Object.h"
+
 namespace am {
 	namespace analyze {
 		namespace algorithm {
