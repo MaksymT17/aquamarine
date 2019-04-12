@@ -15,11 +15,14 @@ BmpReaderTest.cpp
 main.cpp
 )
 
-add_executable(movementDetector_ut 
-../analyze/algorithm/movement/MovementDetector.cpp
-../analyze/algorithm/Object.cpp
-MovementDetectorTest.cpp
-)
+#add_executable(movementDetector_ut 
+#../analyze/algorithm/movement/MovementDetector.cpp
+#../analyze/algorithm/Object.cpp
+#../analyze/algorithm/ImagePair.cpp
+#../analyze/algorithm/BfsObjectDetector.cpp
+#../analyze/algorithm/ObjectDetector.cpp
+#MovementDetectorTest.cpp
+#)
 
 target_link_libraries (aquamarine_ut ${CMAKE_THREAD_LIBS_INIT})
 

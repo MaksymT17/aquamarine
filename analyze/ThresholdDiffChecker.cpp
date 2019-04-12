@@ -1,8 +1,6 @@
 #include "ThresholdDiffChecker.h"
 #include <future>
 
-
-
 namespace am {
 
 	using namespace common::types;

@@ -4,7 +4,6 @@
 #include"common/types/Matrix.hpp"
 #include"common/types/ColorChannelsDiff.hpp"
 
-
 namespace am {
 	namespace analyze {
 		class IComparer

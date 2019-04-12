@@ -3,7 +3,7 @@
 
 
 bool checkTwoObjectsMovements()
-{
+{/*
 	using namespace am::analyze::algorithm;
 	//	|x|
 	//	|+|x|
@@ -14,19 +14,19 @@ bool checkTwoObjectsMovements()
 	Object o1(v1);
 	Object o2(v2);
 
-
+	
 	std::multiset<Object, comparators::Descending> m1, m2;
 	m1.emplace(o1);
 	m2.emplace(o2);
 
 	std::shared_ptr<am::common::Logger> logger(new am::common::Logger());
-
+	 // to be updated
 	auto result = movement::getMovementsFromRects(m1, m2, logger);
 
 	if (result[0].mov[movement::MovementType::RIGHT] == true && result[0].mov[movement::MovementType::TOP] == true
 		&& result[0].mov[movement::MovementType::LEFT] == false && result[0].mov[movement::MovementType::BOTTOM] == false)
 		return true;
-
+		*/
 	return false;
 }
 
