@@ -16,13 +16,9 @@ namespace am {
 			{
 			}
 
-			DiffObjectDetector::~DiffObjectDetector()
-			{
-			}
-
 			//optimized bfs depending to left/right borders for threads, 
 			//every thread will search in defined area(column) of image
-			Pixels bsf(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
+			Pixels bfs(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
 			{
 				Pixels nextCheck;
 
@@ -42,7 +38,7 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					bsf(changes, nextCheck, object, col);
+					bfs(changes, nextCheck, object, col);
 
 				return object;
 			}
@@ -63,7 +59,7 @@ namespace am {
 							Pixel px{ rowId, colId };
 							Pixels obj = { px };
 							auto conns = checkConnections(px, chRef.getHeight(), col);
-							result.push_back(bsf(chRef, conns, obj, col));
+							result.push_back(bfs(chRef, conns, obj, col));
 						}
 					}
 				}

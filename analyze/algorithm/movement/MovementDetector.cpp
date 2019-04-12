@@ -60,7 +60,7 @@ namespace am {
 						{
 							Pixels pxs{ px };
 							auto conns = checkConnections(px, pair->getHeight(), { 0u, pair->getWidth() });
-							auto objFound = bsf(*pair, changes, conns, pxs, { 0u, pair->getWidth() }, startTime, *mConfiguration);
+							auto objFound = bfs(*pair, changes, conns, pxs, { 0u, pair->getWidth() }, startTime, *mConfiguration);
 							found.push_back(objFound);
 						}
 					}
