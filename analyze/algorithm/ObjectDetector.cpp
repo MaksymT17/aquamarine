@@ -15,7 +15,7 @@ namespace am {
 			}
 
 			// Time dependent execution, if max calculation time exceeded calculation should finilize calculation.
-			Pixels bsf(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
+			Pixels bfs(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
@@ -46,7 +46,7 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					bsf(pair, visited, nextCheck, object, col, startTime, conf);
+					bfs(pair, visited, nextCheck, object, col, startTime, conf);
 
 				return object;
 			}
@@ -60,7 +60,7 @@ namespace am {
 
 				std::vector<Pixels> resultList;
 				// check all diffs on potential objects
-				//if change found -> run bsf to figure out how many pixels included in this object
+				//if change found -> run bfs to figure out how many pixels included in this object
 				for (size_t rowId = conf.PixelStep; rowId < pairRef.getHeight(); rowId += conf.PixelStep)
 				{
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
@@ -77,9 +77,9 @@ namespace am {
 							changes(rowId, colId) != common::CHANGE)
 						{
 							Pixel px{ rowId, colId };
-							Pixels obj = { px };
+							Pixels obj{ px };
 							auto conns = checkConnections(px, pairRef.getHeight(), col);
-							resultList.push_back(bsf(pairRef, changes, conns, obj, col, startTime, conf));
+							resultList.push_back(bfs(pairRef, changes, conns, obj, col, startTime, conf));
 						}
 					}
 				}

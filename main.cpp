@@ -7,6 +7,7 @@
 #include "analyze/algorithm/ObjectDetector.h"
 #include "analyze/algorithm/ImagePair.h"
 #include "configuration/ConfigurationReader.hpp"
+#include "common/Context.hpp"
 #include<memory>
 
 // below are set of tests better way is to put this tests in UT,
@@ -34,11 +35,11 @@ int main()
 	AffinityComparer checker(res);
 	std::shared_ptr<Matrix<ColorChannelsDiff>> diffs = checker.compare(resChange);
 
+	const size_t opt_threads = am::common::getOptimalThreadsCount();
 	//check how images similar reagrding to affinity percent
 	//according to last tests in day light threshold should be near to 200
 	ThresholdDiffChecker similarityCheck(200);
-
-	float sim = similarityCheck.getAffinityPersent(5, diffs);
+	float sim = similarityCheck.getAffinityPersent(opt_threads, diffs);
 
 	printf("images similarity persent %f\n", sim *100.0f);
 
@@ -48,8 +49,8 @@ int main()
 	std::shared_ptr<am::common::Logger> lPtr(new am::common::Logger());
 
 	//experimental - but, main feature currently, external review needed
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(5, conf, lPtr);
-	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(5, conf, lPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, lPtr);
+	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, lPtr);
 
 	//algorithm::DescObjects rects = detector.getObjectsRects(diffs);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);

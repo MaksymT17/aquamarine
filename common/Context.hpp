@@ -7,7 +7,7 @@ namespace am {
 
 	namespace common {
 		// Context with general info
-		// singleton implementation
+		// singleton implementation [deprecated]
 		class Context {
 		private:
 			Context()
