@@ -2,31 +2,34 @@
 #include "analyze/ThresholdDiffChecker.h"
 #include "extraction/BmpExtractor.h"
 #include "common/exceptions/FileAccessException.hpp"
-#include "BmpReaderTest.hpp"
 
 namespace am {
 	namespace unit_tests {
 
-		void checkForNotExistingFile(TestCounter& result)
+		void checkForNotExistingFile()
 		{
 			am::extraction::BmpExtractor extractor;
 			std::string base("../inputs/NotExisting.BMP");
 
-			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException, result);
+			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException, test_results);
 		}
 
-		void checkForExistingFile(TestCounter& result)
+		void checkForExistingFile()
 		{
 			am::extraction::BmpExtractor extractor;
 			std::string base("../../inputs/rs_1.BMP");
 
-			EXPECT_NON_THROW(extractor.readFile(base), result);
+			EXPECT_NON_THROW(extractor.readFile(base), test_results);
 		}
 
-		void BmpReaderTest::doTest()
-		{
-			checkForNotExistingFile(mResult);
-			checkForExistingFile(mResult);
-		}
 	}
+}
+
+int main()
+{
+	using namespace am::unit_tests;
+	checkForNotExistingFile();
+	checkForExistingFile();
+	PRINTF_RESULTS("BmpReading");
+	return 0;
 }
