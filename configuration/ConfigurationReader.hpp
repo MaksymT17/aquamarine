@@ -21,14 +21,12 @@ namespace am {
 
 			///todo: add support of multiple resolutions, and different configuration values as well
 			std::shared_ptr<Configuration> getConfigurationFromFile(const char *filePath) {
-				printf("Loading of CSV file: '%s'  ...\n", filePath);
 
 				std::ifstream file(filePath, std::ifstream::in);
 
 				if (!file.is_open())
 				{
 					std::string errorMsg("Configuration file access failed!");
-					printf("file open failed, %s. \n", errorMsg.c_str());
 					throw common::exceptions::FileAccessException(errorMsg);
 				}
 

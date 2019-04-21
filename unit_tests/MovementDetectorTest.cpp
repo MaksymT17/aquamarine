@@ -1,42 +1,37 @@
-#include "analyze/algorithm/movement/MovementDetector.cpp"
+#include "analyze/algorithm/movement/MovementDetector.h"
 #include "common/Logger.hpp"
+#include "configuration/ConfigurationReader.hpp"
+#include "extraction/BmpExtractor.h"
+#include "TestBase.hpp"
 
+namespace am {
+	namespace unit_tests {
 
-bool checkTwoObjectsMovements()
-{/*
-	using namespace am::analyze::algorithm;
-	//	|x|
-	//	|+|x|
-	// o1 & o2: |+|   o2: |x|
-	std::vector<Pixel>v1{ {1, 1} };
-	std::vector<Pixel>v2{ { 1,1 },{ 1,2 },{ 2,1 } };
+		void checkTwoObjectsMovements()
+		{
+			am::extraction::BmpExtractor extractor;
+			std::string base("../../inputs/rs_1.BMP");
+			std::string next("../../inputs/rs_2.BMP");
 
-	Object o1(v1);
-	Object o2(v2);
+			auto firstBmp = extractor.readFile(base);
+			auto secondtBmp = extractor.readFile(next);
+			am::analyze::algorithm::movement::ImagePairPtr pair(new am::analyze::algorithm::ImagePair(firstBmp, secondtBmp));
+			using namespace am::analyze::algorithm;
 
-	
-	std::multiset<Object, comparators::Descending> m1, m2;
-	m1.emplace(o1);
-	m2.emplace(o2);
+			std::multiset<Object, comparators::Descending> m1;
+			am::configuration::ConfigurationReader reader;
+			auto conf = reader.getConfigurationFromFile("../../inputs/configuration.csv");
+			std::shared_ptr<am::common::Logger> lPtr(new am::common::Logger());
+			movement::MovementDetector detector(3, conf, lPtr);
 
-	std::shared_ptr<am::common::Logger> logger(new am::common::Logger());
-	 // to be updated
-	auto result = movement::getMovementsFromRects(m1, m2, logger);
-
-	if (result[0].mov[movement::MovementType::RIGHT] == true && result[0].mov[movement::MovementType::TOP] == true
-		&& result[0].mov[movement::MovementType::LEFT] == false && result[0].mov[movement::MovementType::BOTTOM] == false)
-		return true;
-		*/
-	return false;
+			EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException, test_results);
+		}
+	}
 }
-
 
 int main()
 {
-	if (!checkTwoObjectsMovements())
-		printf("checkTwoObjectsMovements failed: UT failed\n");
-	else
-		printf("MovementDetector UT passed\n");
-
+	am::unit_tests::checkTwoObjectsMovements();
+	am::unit_tests::PRINTF_RESULTS("MovementDetection");
 	return 0;
 }

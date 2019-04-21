@@ -10,7 +10,8 @@ namespace am {
 
 			class ImagePair {
 			public:
-				ImagePair(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> base, std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> toCompare);
+				ImagePair(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> base,
+					std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> toCompare);
 				virtual ~ImagePair() = default;
 
 				size_t getWidth() const;

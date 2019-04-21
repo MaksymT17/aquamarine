@@ -1,9 +1,11 @@
-echo "Unit tests.  Removing existing build folder..."
+echo "UNIT TESTS SCRIPT:  Removing existing build folder..."
 rm -rf build/ &&
 mkdir build &&
-echo "preparing new build with cmake..." &&
+echo "UNIT TESTS SCRIPT: Preparing new build with cmake..." &&
 cd build/ &&
 cmake .. &&
 make -j8 &&
-./aquamarine_ut &&
-echo "Execution of Unit tests finished."
+echo "UNIT TESTS SCRIPT: Binaries ready, starting execution..." &&
+./bmpExtraction_ut &&
+./movementDetector_ut &&
+echo "UNIT TESTS SCRIPT: Execution of tests finished."

@@ -13,7 +13,6 @@ namespace am {
 		};
 
 
-
 #define EXPECT_THROW(statement, expected_exception, result) \
 ++result.total; \
 try { \
@@ -21,12 +20,10 @@ statement; \
  } \
 catch(expected_exception exc) \
 { \
-printf("expect excception [%s]. Test OK.\n", exc.what()); \
 } \
 catch(...) \
 { \
 result.failed++; \
-printf("Unexpected exception thrown. Test FAILED.\n"); \
 } \
 
 #define EXPECT_NON_THROW(statement, result) \
@@ -37,36 +34,31 @@ statement; \
 catch(...) \
 { \
 result.failed++; \
-printf("Unexpected exception thrown. Test FAILED\n"); \
 } \
 
-		class TestBase {
-		public:
-			TestBase(TestCounter& result) :
-				mResult(result) {}
-			~TestBase() = default;
+		static TestCounter test_results;
 
-			void EXPECT_EQ(bool first, bool second)
-			{
-				mResult.total++;
-				if (first != second) {
-					mResult.failed++;
-					printf("UT Failed, EXPECT TRUE not accepted. \n");
-				}
+		static void EXPECT_EQ(bool first, bool second)
+		{
+			test_results.total++;
+			if (first != second) {
+				test_results.failed++;
 			}
+		}
 
-			void EXPECT_NOT_EQ(bool first, bool second)
-			{
-				mResult.total++;
-				if (first == second) {
-					mResult.failed++;
-					printf("UT Failed, EXPECT FALSE not accepted. \n");
-				}
+		static void EXPECT_NOT_EQ(bool first, bool second)
+		{
+			test_results.total++;
+			if (first == second) {
+				test_results.failed++;
 			}
+		}
 
-			virtual void doTest() = 0;
-		protected:
-			TestCounter & mResult;
-		};
+		static void PRINTF_RESULTS(const char* testName)
+		{
+			printf("%s Test result Failed:%d Total:%d.\n", testName,test_results.failed, test_results.total);
+			printf("%s test: %s\n", testName, (test_results.failed > 0) ? "FAILED" : "PASSED");
+		}
+
 	}
 }
