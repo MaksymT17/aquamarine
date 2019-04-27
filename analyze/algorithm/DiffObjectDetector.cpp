@@ -28,7 +28,7 @@ namespace am {
 					{
 						Pixel newPos{ position.rowId, position.colId };
 
-						checkClosest(newPos, nextCheck, object, col, changes.getHeight());
+						checkClosest(newPos, nextCheck, object, col, changes.getHeight(), 1u);
 
 						if (isNew(object, newPos))
 						{
@@ -58,7 +58,7 @@ namespace am {
 						{
 							Pixel px{ rowId, colId };
 							Pixels obj = { px };
-							auto conns = checkConnections(px, chRef.getHeight(), col);
+							auto conns = checkConnections(px, chRef.getHeight(), col, 1u);
 							result.push_back(bfs(chRef, conns, obj, col));
 						}
 					}
@@ -70,7 +70,7 @@ namespace am {
 			{
 				const size_t width = diffs.get()->getWidth();
 				const size_t height = diffs.get()->getHeight();
-				const size_t columnWidth = width /mThreadsCount;
+				const size_t columnWidth = width / mThreadsCount;
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 
@@ -83,7 +83,7 @@ namespace am {
 				{
 					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.push_back(std::async(startObjectsSearch, changes, mConfiguration->PixelStep, column));
+					futures.push_back(std::async(std::launch::async, startObjectsSearch, changes, mConfiguration->PixelStep, column));
 				}
 
 				for (auto &e : futures)

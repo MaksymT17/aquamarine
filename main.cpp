@@ -8,7 +8,8 @@
 #include "analyze/algorithm/ImagePair.h"
 #include "configuration/ConfigurationReader.hpp"
 #include "common/Context.hpp"
-#include<memory>
+#include <memory>
+#include "extraction/BmpDrawer.hpp"
 
 // below are set of tests better way is to put this tests in UT,
 // and run here only required detection logic
@@ -52,14 +53,23 @@ int main()
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, lPtr);
 	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, lPtr);
 
-	//algorithm::DescObjects rects = detector.getObjectsRects(diffs);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
-	algorithm::DescObjects rects2 = diffDetector.getObjectsRects(pair);
 
 	for (auto& rect : rects1)
 	{
 		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n", rect.getMinHeight(), rect.getMinWidth(), rect.getMaxHeight(), rect.getMaxWidth(), rect.getValue());
 	}
 
+	am::extraction::BmpDrawer drawer(fileNames[1]);
+	algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
+	for (auto obj : rects2)
+	{
+		int x1 = static_cast<int>(obj.getMinWidth());
+		int y1 = static_cast<int>(obj.getMinHeight());
+		int x2 = static_cast<int>(obj.getMaxWidth());
+		int y2 = static_cast<int>(obj.getMaxHeight());
+		drawer.drawRectangle(x1, y1, x2, y2);
+	}
+	drawer.save(std::string("compare_result.BMP"));
 	return 0;
 }

@@ -57,7 +57,7 @@ namespace am {
 			}
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threads) * threads; lastLines < height; ++lastLines)
-				futures.push_back(std::async(checlImageRow, lastLines, width, diffs, mTreshold, diffCounter));
+				futures.push_back(std::async(std::launch::async, checlImageRow, lastLines, width, diffs, mTreshold, diffCounter));
 
 			for (auto &e : futures)
 				e.get();
@@ -84,7 +84,7 @@ namespace am {
 
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
-				futures.push_back(std::async(setThresholdChanges, lastLines, width, diffs, threshold, res));
+				futures.push_back(std::async(std::launch::async, setThresholdChanges, lastLines, width, diffs, threshold, res));
 
 			for (auto &e : futures)
 				e.get();
