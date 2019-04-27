@@ -1,4 +1,5 @@
 #include"Object.h"
+#include<stdio.h>
 
 namespace am {
 	namespace analyze {
@@ -27,14 +28,12 @@ namespace am {
 				}
 			}
 
-			bool Object::isMergableToRight(Object& toCompare) const
+			bool Object::isMergableToRight(Object& rightObj) const
 			{
-				if (mMax_width + 1 == toCompare.getMinWidth()) {
-					for (size_t i = mMin_height; i < mMax_height; ++i)
-					{
-						if (i == toCompare.mMin_height || i == toCompare.mMax_height)
-							return true;
-					}
+				if (mMax_width >= rightObj.getMinWidth())
+				{
+					if (!(getMinHeight() > rightObj.getMaxHeight() || getMinWidth() > rightObj.getMaxWidth()))
+						return true;
 				}
 				return false;
 			}
@@ -64,6 +63,10 @@ namespace am {
 			{
 				if (isMergableToRight(toCompare))
 				{
+					printf("----------------------\n");
+					printToConsole();
+					toCompare.printToConsole();
+					printf("----------------------\n");
 					mergeToMe(toCompare);
 					mValue += toCompare.getValue();
 					return true;
@@ -93,6 +96,10 @@ namespace am {
 			size_t Object::getValue() const
 			{
 				return mValue;
+			}
+			void Object::printToConsole() const
+			{
+				printf("Object Rectangle: %d %d   %d %d \n", mMin_width, mMax_width, mMin_height, mMax_height);
 			}
 		}
 	}

@@ -69,7 +69,7 @@ namespace am {
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
 				for (size_t i = 0; i < threadsCount; ++i)
-					futures.push_back(std::async(fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
+					futures.push_back(std::async(std::launch::async,fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
 
 				for (auto &e : futures)
 					e.get();
@@ -108,7 +108,7 @@ namespace am {
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
 				for (size_t i = 0; i < threadsCount; ++i)
-					futures.push_back(std::async(fillPixelLineWithDiffs, first, second, result, portion + i, width));
+					futures.push_back(std::async(std::launch::async,fillPixelLineWithDiffs, first, second, result, portion + i, width));
 
 				for (auto &e : futures)
 					e.get();

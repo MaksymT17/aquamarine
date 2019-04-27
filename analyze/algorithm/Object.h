@@ -34,6 +34,8 @@ namespace am {
 				size_t getMaxHeight() const;
 				size_t getValue() const;
 
+				void printToConsole() const;
+
 			private:
 				void mergeToMe(Object& toCompare);
 

@@ -59,7 +59,7 @@ namespace am {
 							changes(px.rowId, px.colId) != common::CHANGE)
 						{
 							Pixels pxs{ px };
-							auto conns = checkConnections(px, pair->getHeight(), { 0u, pair->getWidth() });
+							auto conns = checkConnections(px, pair->getHeight(), { 0u, pair->getWidth() }, mConfiguration->PixelStep);
 							auto objFound = bfs(*pair, changes, conns, pxs, { 0u, pair->getWidth() }, startTime, *mConfiguration);
 							found.push_back(objFound);
 						}

@@ -8,7 +8,8 @@ namespace am {
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
-			ObjectDetector::ObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration>& conf,
+			ObjectDetector::ObjectDetector(const size_t threads,
+				std::shared_ptr<am::configuration::Configuration>& conf,
 				std::shared_ptr<am::common::Logger>& logger) :
 				BfsObjectDetector(threads, conf, logger)
 			{
@@ -36,7 +37,7 @@ namespace am {
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
 						Pixel newPos{ position.rowId, position.colId };
-						checkClosest(newPos, nextCheck, object, col, visited.getHeight());
+						checkClosest(newPos, nextCheck, object, col, visited.getHeight(), conf.PixelStep);
 
 						if (isNew(object, newPos))
 						{
@@ -51,7 +52,7 @@ namespace am {
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col, 
+			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col,
 				const configuration::Configuration& conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
@@ -78,7 +79,7 @@ namespace am {
 						{
 							Pixel px{ rowId, colId };
 							Pixels obj{ px };
-							auto conns = checkConnections(px, pairRef.getHeight(), col);
+							auto conns = checkConnections(px, pairRef.getHeight(), col, conf.PixelStep);
 							resultList.push_back(bfs(pairRef, changes, conns, obj, col, startTime, conf));
 						}
 					}
@@ -95,15 +96,13 @@ namespace am {
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
-					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.push_back(std::async(startObjectsSearchInPair, pair, column, *mConfiguration));
+					futures.push_back(std::async(std::launch::async, startObjectsSearchInPair, pair, column, *mConfiguration));
 				}
 
 				for (auto &e : futures)
 					res.push_back(e.get());
 
-				mLogger->info("ObjectDetector::getObjectsRects fin");
 				return createObjectRects(res);
 			}
 		}

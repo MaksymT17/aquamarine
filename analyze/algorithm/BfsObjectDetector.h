@@ -12,8 +12,8 @@ namespace am {
 
 			bool isNew(std::vector<Pixel>& object, Pixel newPos);
 			void pushCheckIfNew(std::vector<Pixel>& object, std::vector<Pixel>& toCheck, Pixel newPos);
-			void checkClosest(Pixel& pos, std::vector<Pixel>& nextCheck, std::vector<Pixel>& object, Column col, const size_t& height);
-			std::vector<Pixel> checkConnections(const Pixel& px, const size_t& height, const Column& col);
+			void checkClosest(Pixel& pos, std::vector<Pixel>& nextCheck, std::vector<Pixel>& object, Column col, const size_t& height, const size_t step);
+			std::vector<Pixel> checkConnections(const Pixel& px, const size_t& height, const Column& col, const size_t step);
 
 			// abstract class for object detection, extracted data should be reusable for next iterations
 			// return value of detection is vector of Objects - Rectangled area
