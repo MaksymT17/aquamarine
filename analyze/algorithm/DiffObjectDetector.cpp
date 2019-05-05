@@ -7,7 +7,7 @@
 namespace am {
 	namespace analyze {
 		namespace algorithm {
-			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>;
+			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>>;
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
@@ -30,7 +30,7 @@ namespace am {
 
 						checkClosest(newPos, nextCheck, object, col, changes.getHeight(), 1u);
 
-						if (isNew(object, newPos))
+						if (isNew(object, position.rowId, position.colId))
 						{
 							object.push_back(newPos);
 							changes(position.rowId, position.colId) = 0;

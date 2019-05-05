@@ -12,19 +12,11 @@ namespace am {
 
 		/// todo: move immplementation to source file to make possible make a stub empty class for UT
 		class Logger {
-
-		private:
-			std::mutex mtx;
-			static const size_t s_MaxPrefixSize = 128;
-			static const size_t s_MaxBufferSize = 1024;
-			const char* fileName = "last_logging.log";
-			const char* INFO_TAG = "<INFO> ";
-			const char* WARN_TAG = "<WARNING> ";
-			const char* ERROR_TAG = "<ERROR> ";
-
 		public:
 
-			Logger(){};
+			Logger(const char* fileName) :
+				mFileName(fileName)
+			{};
 
 			~Logger() = default;
 
@@ -67,18 +59,18 @@ namespace am {
 				str << " " << buffer << "\n";
 
 				// thread safe access to file, raii lock
-				std::unique_lock<std::mutex> lock(mtx);
-				open(fileName);
+				std::unique_lock<std::mutex> lock(mMutex);
+				open();
 				write(str.str());
 
-				_fileStream.close();
+				mFileStream.close();
 			}
 			/// todo check if path needed
-			bool open(const std::string& fileName)
+			bool open()
 			{
-				_fileStream.open(fileName.c_str(), std::ofstream::in | std::ofstream::app);
-				if (!_fileStream.is_open()) {
-					std::cerr << "Error: Failed to open file '" << fileName << "\n";
+				mFileStream.open(mFileName, std::ofstream::in | std::ofstream::app);
+				if (!mFileStream.is_open()) {
+					std::cerr << "Error: Failed to open file '" << mFileName << "\n";
 					return false;
 				}
 
@@ -87,16 +79,24 @@ namespace am {
 
 			void write(const std::string& buffer)
 			{
-				if (_fileStream) {
-					_fileStream << buffer;
+				if (mFileStream)
+				{
+					mFileStream << buffer;
 				}
-				else {
+				else
+				{
 					/// exception FileAccess ?
 					std::cerr << "Error: File stream is not open for writing.\n";
 				}
 			}
-
-			std::ofstream _fileStream;
+			std::mutex mMutex;
+			static const size_t s_MaxPrefixSize = 128;
+			static const size_t s_MaxBufferSize = 1024;
+			const char* INFO_TAG = "<INFO> ";
+			const char* WARN_TAG = "<WARNING> ";
+			const char* ERROR_TAG = "<ERROR> ";
+			const char* mFileName;
+			std::ofstream mFileStream;
 		};
 
 	}

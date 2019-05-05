@@ -12,16 +12,16 @@ namespace am
 	namespace extraction
 	{
 		using namespace common::types;
-		void readRowFromImageSource(const size_t rowId, const size_t width, bitmap_image& image, Matrix<ColorChannels>& colors)
+		void readRowFromImageSource(const size_t rowId, const size_t width, bitmap_image& image, Matrix<Color24b>& colors)
 		{
 			for (size_t x = 0; x < width; ++x)
 			{
-				ColorChannels& channels = colors(rowId, x);
+				Color24b& channels = colors(rowId, x);
 				image.get_pixel(x, rowId, reinterpret_cast<rgb_t&>(channels)); // cast there: unsinged chat -> uint8_t
 			}
 		}
 
-		std::shared_ptr<Matrix<ColorChannels>> BmpExtractor::readFile(std::string& fileName)
+		std::shared_ptr<Matrix<Color24b>> BmpExtractor::readFile(std::string& fileName)
 		{
 			bitmap_image image(fileName.c_str());
 
@@ -34,7 +34,7 @@ namespace am
 			const unsigned int height = image.height();
 			const unsigned int width = image.width();
 
-			std::shared_ptr<Matrix<ColorChannels>> data(new Matrix<ColorChannels>(width, height));
+			std::shared_ptr<Matrix<Color24b>> data(new Matrix<Color24b>(width, height));
 
 			auto& colorsRef = *data.get();
 

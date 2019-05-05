@@ -1,6 +1,6 @@
 #pragma once
 #include "IComparer.h"
-#include "common/types/ColorChannelsDiff.hpp"
+#include "common/types/Color24bDiff.hpp"
 #include "common/types/Matrix.hpp"
 
 namespace am
@@ -16,19 +16,19 @@ namespace am
 		class AffinityComparer : public IComparer
 		{
 		public:
-			AffinityComparer(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> base);
+			AffinityComparer(std::shared_ptr<common::types::Matrix<common::types::Color24b>> base);
 
 			virtual ~AffinityComparer() = default;
 
-			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>
-				compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) override;
+			virtual std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>>
+				compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> newSource) override;
 
-			static std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> first, std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> second);
+			static std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> first, std::shared_ptr<common::types::Matrix<common::types::Color24b>> second);
 
-			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) const;
+			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::Color24b>> newSource) const;
 
 		private:
-			std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> mBase;
+			std::shared_ptr<common::types::Matrix<common::types::Color24b>> mBase;
 			DataMode mMode;
 		};
 	}

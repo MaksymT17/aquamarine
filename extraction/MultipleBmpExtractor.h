@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "common/types/Matrix.hpp"
-#include "common/types/ColorChannels.hpp"
+#include "common/types/Color24b.hpp"
 #include "common/Logger.hpp"
 namespace am
 {
@@ -13,9 +13,9 @@ namespace am
 		class MultipleBmpExtractor
 		{
 		public:
-			MultipleBmpExtractor();
+			MultipleBmpExtractor(std::shared_ptr<am::common::Logger>& logger);
 			virtual ~MultipleBmpExtractor() = default;
-			std::vector<std::shared_ptr<common::types::Matrix<common::types::ColorChannels>>> readFiles(std::vector<std::string> fileNames);
+			std::vector<std::shared_ptr<common::types::Matrix<common::types::Color24b>>> readFiles(std::vector<std::string> fileNames);
 
 		private:
 			std::shared_ptr<am::common::Logger> mLogger;

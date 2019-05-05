@@ -2,7 +2,7 @@
 
 #include<memory>
 #include"common/types/Matrix.hpp"
-#include"common/types/ColorChannelsDiff.hpp"
+#include"common/types/Color24bDiff.hpp"
 
 namespace am {
 	namespace analyze {
@@ -11,7 +11,7 @@ namespace am {
 		public:
 			virtual ~IComparer() = default;
 
-			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> newSource) = 0;
+			virtual std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> newSource) = 0;
 		};
 	}
 }
