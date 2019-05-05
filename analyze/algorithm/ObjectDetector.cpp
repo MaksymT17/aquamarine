@@ -24,7 +24,7 @@ namespace am {
 				if (calcDuration.count() >= conf.CalculationTimeLimit)
 				{
 					///todo: make Error notification about failed detection
-					printf("Timelimit for calculation exceded. So much noise in picture.\n");
+					printf("Timelimit for calculation exceded. Try to increase calculation time in configuration.\n");
 					return object;
 				}
 
@@ -36,12 +36,12 @@ namespace am {
 						pair.getAbsoluteDiff(position.rowId, position.colId) > conf.AffinityThreshold)
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
-						Pixel newPos{ position.rowId, position.colId };
-						checkClosest(newPos, nextCheck, object, col, visited.getHeight(), conf.PixelStep);
+						//Pixel newPos{ position.rowId, position.colId };
+						checkClosest(position.rowId, position.colId, nextCheck, object, col, visited.getHeight(), conf.PixelStep);
 
-						if (isNew(object, newPos.rowId, newPos.colId))
+						if (isNew(object, position.rowId, position.colId))
 						{
-							object.push_back(newPos);
+							object.push_back({ position.rowId, position.colId });
 							visited(position.rowId, position.colId) = common::CHANGE;
 						}
 					}
@@ -59,6 +59,9 @@ namespace am {
 				auto& pairRef = *pair.get();
 				Matrix<uint16_t> changes(pairRef.getWidth(), pairRef.getHeight());
 
+				auto timeNow = std::chrono::steady_clock::now();
+				std::chrono::duration<double> calcDuration = timeNow - startTime;
+
 				std::vector<Pixels> resultList;
 				// check all diffs on potential objects
 				//if change found -> run bfs to figure out how many pixels included in this object
@@ -66,8 +69,6 @@ namespace am {
 				{
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
 					{
-						auto timeNow = std::chrono::steady_clock::now();
-						std::chrono::duration<double> calcDuration = timeNow - startTime;
 						if (calcDuration.count() >= conf.CalculationTimeLimit)
 						{
 							///todo: make Error notification about failed detection
@@ -77,9 +78,8 @@ namespace am {
 						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
 							changes(rowId, colId) != common::CHANGE)
 						{
-							Pixel px{ rowId, colId };
-							Pixels obj{ px };
-							auto conns = checkConnections(px, pairRef.getHeight(), col, conf.PixelStep);
+							Pixels obj{ { rowId, colId } };
+							auto conns = checkConnections(rowId, colId, pairRef.getHeight(), col, conf.PixelStep);
 							resultList.push_back(bfs(pairRef, changes, conns, obj, col, startTime, conf));
 						}
 					}
