@@ -16,7 +16,7 @@ namespace am {
 			}
 
 			// Time dependent execution, if max calculation time exceeded calculation should finilize calculation.
-			Pixels bfs(ImagePair& pair, Matrix<uint16_t>& visited, Pixels& toCheck, Pixels& object,
+			Pixels bfs(ImagePair& pair, MatrixU16& visited, Pixels& toCheck, Pixels& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
@@ -57,10 +57,7 @@ namespace am {
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				auto& pairRef = *pair.get();
-				Matrix<uint16_t> changes(pairRef.getWidth(), pairRef.getHeight());
-
-				auto timeNow = std::chrono::steady_clock::now();
-				std::chrono::duration<double> calcDuration = timeNow - startTime;
+				MatrixU16 changes(pairRef.getWidth(), pairRef.getHeight());
 
 				std::vector<Pixels> resultList;
 				// check all diffs on potential objects
@@ -69,7 +66,9 @@ namespace am {
 				{
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
 					{
-						if (calcDuration.count() >= conf.CalculationTimeLimit)
+						auto timeNow = std::chrono::steady_clock::now();
+						std::chrono::duration<double> duration = timeNow - startTime;
+						if (duration.count() >= conf.CalculationTimeLimit)
 						{
 							///todo: make Error notification about failed detection
 							//mLogger->logInfo("Timelimit for calculation exceded, calculations TimeLimit:%f", conf.CalculationTimeLimit);

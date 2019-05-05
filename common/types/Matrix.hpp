@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <cstdlib>
+#include <stdint.h>
 
 namespace am {
 	namespace common {
@@ -35,6 +36,7 @@ namespace am {
 				size_t mHeight;
 				std::vector<T> mData;
 			};
+			using MatrixU16 = Matrix<uint16_t>;
 
 		}
 	}

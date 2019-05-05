@@ -41,10 +41,12 @@ namespace am {
 					std::abs(baseRef(rowId, colId).g - compareRef(rowId, colId).g) +
 					std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
 			}
+
 			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getFirst() const
 			{
 				return mBase;
 			}
+
 			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getSecond() const
 			{
 				return mCompare;

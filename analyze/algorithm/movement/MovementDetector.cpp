@@ -50,7 +50,7 @@ namespace am {
 				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
 				MovementType MovementDetector::getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found)
 				{
-					Matrix<uint16_t> changes(pair->getWidth(), pair->getHeight());
+					MatrixU16 changes(pair->getWidth(), pair->getHeight());
 					auto startTime = std::chrono::steady_clock::now();
 
 					for (const auto& px : obj.getPixels())

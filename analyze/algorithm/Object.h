@@ -1,6 +1,6 @@
 #pragma once
-#include<vector>
-#include<cstdlib>
+#include <vector>
+#include <cstdlib>
 #include <set>
 
 namespace am {

@@ -15,11 +15,11 @@ namespace am {
 			float getAffinityPersent(const size_t threadsCount, std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
 
 			// get matrix with values bigger then threshold
-			static std::shared_ptr<common::types::Matrix<uint16_t>> getThresholdDiff(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs,
+			static std::shared_ptr<common::types::MatrixU16> getThresholdDiff(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs,
 				size_t threadsCount, size_t threshold);
 
 		private:
-			uint16_t mTreshold;
+			uint16_t mThreshold;
 		};
 	}
 }
