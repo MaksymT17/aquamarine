@@ -35,30 +35,30 @@ namespace am {
 					toCheck.push_back({ rowId, colId });
 			}
 
-			void checkClosest(Pixel& pos, Pixels& nextCheck, Pixels& object, Column col, const size_t& height, const size_t step)
+			void checkClosest(size_t rowId, size_t colId, Pixels& nextCheck, Pixels& object, Column col, const size_t& height, const size_t step)
 			{
-				if (pos.rowId - step >= 0)
-					pushCheckIfNew(object, nextCheck, pos.rowId - step, pos.colId);
-				if (pos.rowId + step < height)
-					pushCheckIfNew(object, nextCheck, pos.rowId + step, pos.colId);
-				if (pos.colId - step >= col.left)
-					pushCheckIfNew(object, nextCheck, pos.rowId, pos.colId - step);
-				if (pos.colId + step < col.left + col.right)
-					pushCheckIfNew(object, nextCheck, pos.rowId, pos.colId + step);
+				if (rowId - step >= 0)
+					pushCheckIfNew(object, nextCheck, rowId - step, colId);
+				if (rowId + step < height)
+					pushCheckIfNew(object, nextCheck, rowId + step, colId);
+				if (colId - step >= col.left)
+					pushCheckIfNew(object, nextCheck, rowId, colId - step);
+				if (colId + step < col.left + col.right)
+					pushCheckIfNew(object, nextCheck, rowId, colId + step);
 			}
 
-			Pixels checkConnections(const Pixel& px, const size_t& height, const Column& col, const size_t step)
+			Pixels checkConnections(size_t rowId, size_t colId, const size_t& height, const Column& col, const size_t step)
 			{
 				Pixels toCheck;
 
-				if (px.rowId - step >= 0)
-					toCheck.push_back(Pixel{ px.rowId - step, px.colId });
-				if (px.rowId + step < height)
-					toCheck.push_back(Pixel{ px.rowId + step, px.colId });
-				if (px.colId - step >= col.left)
-					toCheck.push_back(Pixel{ px.rowId , px.colId - step });
-				if (px.colId + step < col.left + col.right)
-					toCheck.push_back(Pixel{ px.rowId , px.colId - step });
+				if (rowId - step >= 0)
+					toCheck.push_back(Pixel{ rowId - step, colId });
+				if (rowId + step < height)
+					toCheck.push_back(Pixel{ rowId + step, colId });
+				if (colId - step >= col.left)
+					toCheck.push_back(Pixel{ rowId , colId - step });
+				if (colId + step < col.left + col.right)
+					toCheck.push_back(Pixel{ rowId , colId - step });
 
 				return toCheck;
 			}

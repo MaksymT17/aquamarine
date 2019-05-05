@@ -26,13 +26,11 @@ namespace am {
 				{
 					if (changes(position.rowId, position.colId) == common::CHANGE)
 					{
-						Pixel newPos{ position.rowId, position.colId };
-
-						checkClosest(newPos, nextCheck, object, col, changes.getHeight(), 1u);
+						checkClosest(position.rowId, position.colId, nextCheck, object, col, changes.getHeight(), 1u);
 
 						if (isNew(object, position.rowId, position.colId))
 						{
-							object.push_back(newPos);
+							object.push_back({ position.rowId, position.colId });
 							changes(position.rowId, position.colId) = 0;
 						}
 					}
@@ -56,9 +54,8 @@ namespace am {
 					{
 						if (chRef(rowId, colId) == common::CHANGE)
 						{
-							Pixel px{ rowId, colId };
-							Pixels obj = { px };
-							auto conns = checkConnections(px, chRef.getHeight(), col, 1u);
+							Pixels obj = { { rowId, colId } };
+							auto conns = checkConnections(rowId, colId, chRef.getHeight(), col, 1u);
 							result.push_back(bfs(chRef, conns, obj, col));
 						}
 					}
