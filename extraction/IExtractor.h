@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include "common/types/Matrix.hpp"
-#include "common/types/ColorChannels.hpp"
+#include "common/types/Color24b.hpp"
 
 namespace am
 {
@@ -15,7 +15,7 @@ namespace am
 		public:
 			virtual ~IExtractor() = default;
 
-			virtual std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> readFile(std::string& filePath) = 0;
+			virtual std::shared_ptr<common::types::Matrix<common::types::Color24b>> readFile(std::string& filePath) = 0;
 		};
 	}
 }

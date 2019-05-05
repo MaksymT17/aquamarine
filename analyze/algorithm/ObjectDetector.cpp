@@ -39,7 +39,7 @@ namespace am {
 						Pixel newPos{ position.rowId, position.colId };
 						checkClosest(newPos, nextCheck, object, col, visited.getHeight(), conf.PixelStep);
 
-						if (isNew(object, newPos))
+						if (isNew(object, newPos.rowId, newPos.colId))
 						{
 							object.push_back(newPos);
 							visited(position.rowId, position.colId) = common::CHANGE;

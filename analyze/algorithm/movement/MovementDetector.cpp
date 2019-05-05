@@ -13,11 +13,11 @@ namespace am {
 					std::shared_ptr<am::common::Logger>& logger) noexcept
 				{
 					MovementType type;
-					if (!(base.getMinHeight() > toCheck.getMaxHeight() || base.getMinWidth() > toCheck.getMaxWidth()))
+					if (!(base.getMinHeight() > toCheck.getMaxHeight() || base.getLeft() > toCheck.getRight()))
 					{
-						if (base.getMinWidth() > toCheck.getMinWidth())
+						if (base.getLeft() > toCheck.getLeft())
 							type.mov[MovementType::LEFT] = true;
-						if (base.getMaxWidth() < toCheck.getMaxWidth())
+						if (base.getRight() < toCheck.getRight())
 							type.mov[MovementType::RIGHT] = true;
 						if (base.getMinHeight() > toCheck.getMinHeight())
 							type.mov[MovementType::BOTTOM] = true;
@@ -99,10 +99,9 @@ namespace am {
 					Movements movs;
 					Objects newlyFoundObjs;
 
-					size_t id = 0;
 					for (const auto& obj : mObjects)
 					{
-						movs[id++] = getMovementForObject(obj, pair, newlyFoundObjs);
+						movs.push_back(getMovementForObject(obj, pair, newlyFoundObjs));
 					}
 
 					// make sense to set mObjects for next iteration

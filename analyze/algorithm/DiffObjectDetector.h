@@ -5,7 +5,7 @@ namespace am {
 	namespace analyze {
 		namespace algorithm {
 
-			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>>;
+			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>>;
 
 			class DiffObjectDetector : public BfsObjectDetector {
 			public:

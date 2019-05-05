@@ -10,7 +10,7 @@ namespace am {
 		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) :
 			mTreshold(channelTreshold) {}
 
-		void setThresholdChanges(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff,
+		void setThresholdChanges(size_t rowId, size_t width, std::shared_ptr<Matrix<Color24bDiff>> diff,
 			const uint16_t threshold, std::shared_ptr<Matrix<uint16_t>> result)
 		{
 			auto &diffRef = *diff.get();
@@ -23,7 +23,7 @@ namespace am {
 			}
 		}
 
-		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<ColorChannelsDiff>> diff,
+		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<Color24bDiff>> diff,
 			const uint16_t threshold, std::shared_ptr<std::atomic_size_t> diffCounter)
 		{
 			auto &diffRef = *diff.get();
@@ -35,7 +35,7 @@ namespace am {
 			}
 		}
 
-		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, std::shared_ptr<Matrix<ColorChannelsDiff>> diffs)
+		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, std::shared_ptr<Matrix<Color24bDiff>> diffs)
 		{
 			std::shared_ptr<std::atomic_size_t> diffCounter(new std::atomic_size_t(0));
 			const size_t width = diffs.get()->getWidth();
@@ -65,7 +65,7 @@ namespace am {
 			return 1.0f - (static_cast<float>(*diffCounter.get()) / static_cast<float>(width * height));
 		}
 
-		std::shared_ptr<Matrix<uint16_t>> ThresholdDiffChecker::getThresholdDiff(std::shared_ptr<Matrix<ColorChannelsDiff>> diffs, size_t threadsCount, size_t threshold)
+		std::shared_ptr<Matrix<uint16_t>> ThresholdDiffChecker::getThresholdDiff(std::shared_ptr<Matrix<Color24bDiff>> diffs, size_t threadsCount, size_t threshold)
 		{
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();

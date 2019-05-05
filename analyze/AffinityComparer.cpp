@@ -9,8 +9,8 @@ using namespace am::common::types;
 namespace am {
 	namespace analyze {
 
-		ColorChannelsDiff getChannelsDiff(const ColorChannels &source, const ColorChannels &toCompare) {
-			ColorChannelsDiff diff;
+		Color24bDiff getChannelsDiff(const Color24b &source, const Color24b &toCompare) {
+			Color24bDiff diff;
 
 			setUpChannelDiff(source.r, toCompare.r, diff.r, diff.positives, common::R_BIT_POSITION);
 			setUpChannelDiff(source.g, toCompare.g, diff.g, diff.positives, common::G_BIT_POSITION);
@@ -19,8 +19,8 @@ namespace am {
 			return diff;
 		}
 
-		void fillPixelLineWithDiffs(std::shared_ptr<Matrix<ColorChannels>> base, std::shared_ptr<Matrix<ColorChannels>> toCompare,
-			std::shared_ptr<Matrix<ColorChannelsDiff>> result, size_t rowId, size_t width) {
+		void fillPixelLineWithDiffs(std::shared_ptr<Matrix<Color24b>> base, std::shared_ptr<Matrix<Color24b>> toCompare,
+			std::shared_ptr<Matrix<Color24bDiff>> result, size_t rowId, size_t width) {
 
 			for (size_t i = 0; i < width; ++i) {
 				const auto &baseRef = *base.get();
@@ -31,7 +31,7 @@ namespace am {
 			}
 		}
 
-		AffinityComparer::AffinityComparer(std::shared_ptr<Matrix<ColorChannels>> base)
+		AffinityComparer::AffinityComparer(std::shared_ptr<Matrix<Color24b>> base)
 			: mBase(base),
 			mMode(DataMode::KEEP_BASE_FRAME)
 		{}
@@ -41,7 +41,7 @@ namespace am {
 			return (sourceW == targetW) && (sourceH == targetH);
 		}
 
-		bool AffinityComparer::isRequestSizeValid(std::shared_ptr<Matrix<ColorChannels>> newSource) const
+		bool AffinityComparer::isRequestSizeValid(std::shared_ptr<Matrix<Color24b>> newSource) const
 		{
 			const auto & base = mBase.get();
 			const auto & compare = newSource.get();
@@ -49,7 +49,7 @@ namespace am {
 		}
 
 		//deprecated
-		std::shared_ptr<Matrix<ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<ColorChannels>> newSource) {
+		std::shared_ptr<Matrix<Color24bDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<Color24b>> newSource) {
 			const size_t width = mBase.get()->getWidth();
 			const size_t height = mBase.get()->getHeight();
 			//common::Context::getInstance()->logging().logInfo("AffinityComparer::compare width:%zd height:%zd.", width, height);
@@ -60,7 +60,7 @@ namespace am {
 				throw common::exceptions::AllocationException(msg);
 			}
 			// can be wrapped in try() for bad alloc
-			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
+			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
 
 			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
@@ -89,7 +89,7 @@ namespace am {
 
 			return result;
 		}
-		std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> AffinityComparer::compare(std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> first, std::shared_ptr<common::types::Matrix<common::types::ColorChannels>> second)
+		std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> AffinityComparer::compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> first, std::shared_ptr<common::types::Matrix<common::types::Color24b>> second)
 		{
 			const size_t width = first.get()->getWidth();
 			const size_t height = first.get()->getHeight();
@@ -98,7 +98,7 @@ namespace am {
 				throw am::common::exceptions::AmException(msg);
 			}
 
-			std::shared_ptr<Matrix<ColorChannelsDiff>> result(new Matrix<ColorChannelsDiff>(width, height));
+			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
 
 			//threads count should be provided as parameter, no singleton usage
 			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();

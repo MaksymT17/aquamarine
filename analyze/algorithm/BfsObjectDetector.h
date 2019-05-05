@@ -10,8 +10,8 @@ namespace am {
 
 			class ImagePair;
 
-			bool isNew(std::vector<Pixel>& object, Pixel newPos);
-			void pushCheckIfNew(std::vector<Pixel>& object, std::vector<Pixel>& toCheck, Pixel newPos);
+			bool isNew(std::vector<Pixel>& object, size_t rowId, size_t colId);
+			void pushCheckIfNew(std::vector<Pixel>& object, std::vector<Pixel>& toCheck, size_t rowId, size_t colId);
 			void checkClosest(Pixel& pos, std::vector<Pixel>& nextCheck, std::vector<Pixel>& object, Column col, const size_t& height, const size_t step);
 			std::vector<Pixel> checkConnections(const Pixel& px, const size_t& height, const Column& col, const size_t step);
 
@@ -23,7 +23,7 @@ namespace am {
 				virtual ~BfsObjectDetector() = default;
 
 				//all calculation with diffs, no time limits
-				//DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::ColorChannelsDiff>> diffs);
+				//DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
 
 				//search of ebjects within ImagePair data provided
 				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) = 0;

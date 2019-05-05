@@ -1,5 +1,5 @@
 #pragma once
-#include "ColorChannels.hpp"
+#include "Color24b.hpp"
 #include "common/Constants.hpp"
 #include <bitset>
 
@@ -18,7 +18,7 @@ namespace am {
 					diff = compared - source;
 			}
 
-			struct ColorChannelsDiff : public ColorChannels
+			struct Color24bDiff : public Color24b
 			{
 				// bits for representations +/- for channel diffs
 				// + = true = positive  ;   - = false = negative

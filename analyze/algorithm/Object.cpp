@@ -8,18 +8,17 @@ namespace am {
 			Object::Object(std::vector<Pixel>& pixels) :
 				mPixels(pixels),
 				mPixelsCount(pixels.size()),
-				mMin_width(pixels.begin()->colId),
+				mLeft(pixels.begin()->colId),
 				mMin_height(pixels.begin()->rowId),
-				mMax_width(pixels.begin()->colId),
-				mMax_height(pixels.begin()->rowId),
-				mValue(pixels.size())
+				mRight(pixels.begin()->colId),
+				mMax_height(pixels.begin()->rowId)
 			{
-				for (auto pixel : pixels)
+				for (const auto& pixel : pixels)
 				{
-					if (mMin_width > pixel.colId)
-						mMin_width = pixel.colId;
-					else if (mMax_width < pixel.colId)
-						mMax_width = pixel.colId;
+					if (mLeft > pixel.colId)
+						mLeft = pixel.colId;
+					else if (mRight < pixel.colId)
+						mRight = pixel.colId;
 
 					if (mMin_height > pixel.rowId)
 						mMin_height = pixel.rowId;
@@ -30,9 +29,9 @@ namespace am {
 
 			bool Object::isMergableToRight(Object& rightObj) const
 			{
-				if (mMax_width >= rightObj.getMinWidth())
+				if (mRight >= rightObj.getLeft())
 				{
-					if (!(getMinHeight() > rightObj.getMaxHeight() || getMinWidth() > rightObj.getMaxWidth()))
+					if (!(getMinHeight() > rightObj.getMaxHeight() || getLeft() > rightObj.getRight()))
 						return true;
 				}
 				return false;
@@ -42,48 +41,39 @@ namespace am {
 			{
 				mPixelsCount += toCompare.mPixelsCount;
 
-				if (mMin_width > toCompare.mMin_width)
-					mMin_width = toCompare.mMin_width;
-				else if (mMax_width < toCompare.mMax_width)
-					mMax_width = toCompare.mMax_width;
+				if (mLeft > toCompare.mLeft)
+					mLeft = toCompare.mLeft;
+				else if (mRight < toCompare.mRight)
+					mRight = toCompare.mRight;
 
 				if (mMin_height > toCompare.mMin_height)
 					mMin_height = toCompare.mMin_height;
 				else if (mMax_height < toCompare.mMax_height)
 					mMax_height = toCompare.mMax_height;
 
-				// reset default value, means - to ignore
-				/// why?: removing of vector element seems costly
-				toCompare.mMin_width = 0;
-				toCompare.mMax_width = 0;
-				toCompare.mMin_height = 0;
-				toCompare.mMax_height = 0;
 			}
 			bool Object::mergeIfPossible(Object& toCompare)
 			{
 				if (isMergableToRight(toCompare))
 				{
-					printf("----------------------\n");
 					printToConsole();
 					toCompare.printToConsole();
-					printf("----------------------\n");
 					mergeToMe(toCompare);
-					mValue += toCompare.getValue();
 					return true;
 				}
 				return false;
 			}
-			std::vector<Pixel>& Object::getPixels() const
+			std::vector<Pixel> Object::getPixels() const
 			{
 				return mPixels;
 			}
-			size_t Object::getMinWidth() const
+			size_t Object::getLeft() const
 			{
-				return mMin_width;
+				return mLeft;
 			}
-			size_t Object::getMaxWidth() const
+			size_t Object::getRight() const
 			{
-				return mMax_width;
+				return mRight;
 			}
 			size_t Object::getMinHeight() const
 			{
@@ -93,13 +83,13 @@ namespace am {
 			{
 				return mMax_height;
 			}
-			size_t Object::getValue() const
+			size_t Object::getPixelsCount() const
 			{
-				return mValue;
+				return mPixelsCount;
 			}
 			void Object::printToConsole() const
 			{
-				printf("Object Rectangle: %d %d   %d %d \n", mMin_width, mMax_width, mMin_height, mMax_height);
+				printf("Object Rectangle: %d %d   %d %d \n", mLeft, mRight, mMin_height, mMax_height);
 			}
 		}
 	}

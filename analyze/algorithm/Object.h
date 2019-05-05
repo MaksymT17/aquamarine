@@ -24,46 +24,50 @@ namespace am {
 				Object(std::vector<Pixel>& pixels);
 				virtual ~Object() = default;
 
-				bool isMergableToRight(Object& toCompare) const;
-				bool mergeIfPossible(Object& toCompare);
+				bool isMergableToRight( Object& toCompare) const;
+				bool mergeIfPossible( Object& toCompare);
 
-				std::vector<Pixel>& getPixels() const;
-				size_t getMinWidth() const;
-				size_t getMaxWidth() const;
+				std::vector<Pixel> getPixels() const;
+				size_t getLeft() const;
+				size_t getRight() const;
 				size_t getMinHeight() const;
 				size_t getMaxHeight() const;
-				size_t getValue() const;
+				size_t getPixelsCount() const;
 
 				void printToConsole() const;
 
 			private:
-				void mergeToMe(Object& toCompare);
+				void mergeToMe( Object& toCompare);
 
-				std::vector<Pixel>& mPixels;
+				std::vector<Pixel> mPixels;
 				size_t mPixelsCount;
-				size_t mMin_width;
+				size_t mLeft;
 				size_t mMin_height;
-				size_t mMax_width;
+				size_t mRight;
 				size_t mMax_height;
-				size_t mValue;
 			};
 
 			//todo: move comparators to other place
-			namespace comparators {
-				struct Ascending {
+			namespace comparators 
+			{
+				struct Ascending 
+				{
 					bool operator() (const Object& l, const Object& r) const
 					{
-						return l.getValue() < r.getValue();
+						return l.getPixelsCount() < r.getPixelsCount();
 					}
 				};
 
-				struct Descending {
+				struct Descending 
+				{
 					bool operator() (const Object& l, const Object& r) const
 					{
-						return l.getValue() > r.getValue();
+						return l.getPixelsCount() > r.getPixelsCount();
 					}
 				};
-				struct Unordered {
+
+				struct Unordered 
+				{
 					bool operator() (const Object& l, const Object& r) const
 					{
 						return true;
@@ -79,8 +83,7 @@ namespace am {
 			struct OrderedObjects {
 				std::multiset<Object, T> objects;
 			};
-
-
+			
 			using DescObjects = std::multiset<Object, comparators::Descending>;
 		}
 	}
