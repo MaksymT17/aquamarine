@@ -33,7 +33,7 @@ int main()
 	std::shared_ptr<algorithm::ImagePair> pair(new algorithm::ImagePair(res, resChange));
 
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
-	
+
 	am::configuration::ConfigurationReader reader;
 
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
@@ -53,10 +53,6 @@ int main()
 	algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
 	for (auto obj : rects2)
 	{
-		int x1 = static_cast<int>(obj.getLeft());
-		int y1 = static_cast<int>(obj.getMinHeight());
-		int x2 = static_cast<int>(obj.getRight());
-		int y2 = static_cast<int>(obj.getMaxHeight());
 		drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(), obj.getMaxHeight());
 	}
 	drawer.save(std::string("compare_result.BMP"));

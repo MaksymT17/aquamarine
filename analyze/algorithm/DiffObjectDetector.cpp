@@ -18,7 +18,7 @@ namespace am {
 
 			//optimized bfs depending to left/right borders for threads, 
 			//every thread will search in defined area(column) of image
-			Pixels bfs(Matrix<uint16_t>& changes, Pixels& toCheck, Pixels& object, Column col)
+			Pixels bfs(MatrixU16& changes, Pixels& toCheck, Pixels& object, Column col)
 			{
 				Pixels nextCheck;
 
@@ -41,7 +41,7 @@ namespace am {
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearch(std::shared_ptr<Matrix<uint16_t>> changes, size_t step, const Column& col)
+			std::vector<Pixels> startObjectsSearch(std::shared_ptr<MatrixU16> changes, size_t step, const Column& col)
 			{
 				auto& chRef = *changes.get();
 
@@ -73,7 +73,7 @@ namespace am {
 
 				mLogger->info("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
 
-				std::shared_ptr<Matrix<uint16_t>> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
+				std::shared_ptr<MatrixU16> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 					mThreadsCount, mConfiguration->AffinityThreshold);
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
