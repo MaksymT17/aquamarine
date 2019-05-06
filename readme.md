@@ -9,8 +9,8 @@ conditions.
 ## Target: 
 Find optimal solutions for implementation and figure out how to make recognition of image
 characteristics in approprite form and inside of predefined limitations in config file. Parameters
-in config file should cover all significant properties about calculation taken in consideration
-target Platform and HW limitations and specific. In simple words: how to collect most important
+in config file should cover significant properties about calculation, should be taken in consideration
+target Platform and HW limitations. In simple words, goal is: how to collect most important
 information based on picture data and use it for further analysis, paying into attention that
 collecting of every particular properties of image are time/CPU/power consuming operations. Every
 improvement idea are welcome!
@@ -20,7 +20,8 @@ improvement idea are welcome!
 ### [extraction](https://github.com/MaksymT17/aquamarine/tree/master/extraction):
 Extraction data of pixels(RGB channels, currently Alpha channel not required), as result of 
 reading will be fulfilled Matrix with RGB values. Currently will be used bmp_reader as open 
-library to reading BMP images.
+library to reading BMP images. For simple represntation for marking objects on image - added specified
+class which can draw object bounds as rectangled area on input BMP image.
 
 ### [common](https://github.com/MaksymT17/aquamarine/tree/master/common):
 Common types and definitions, which shared between components(constants/structs/classes/
