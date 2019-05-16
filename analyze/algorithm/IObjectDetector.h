@@ -18,7 +18,7 @@ namespace am {
 			public:
 				virtual ~IObjectDetector() = default;
 
-				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) = 0;
+				virtual DescObjects getObjectsRects(const ImagePair& pair) = 0;
 			};
 		}
 	}

@@ -16,7 +16,7 @@ namespace am {
 			}
 
 			// Time dependent execution, if max calculation time exceeded calculation should finilize calculation.
-			Pixels bfs(ImagePair& pair, MatrixU16& visited, Pixels& toCheck, Pixels& object,
+			Pixels bfs(const ImagePair& pair, MatrixU16& visited, Pixels& toCheck, Pixels& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
@@ -52,17 +52,17 @@ namespace am {
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearchInPair(std::shared_ptr<ImagePair> pair, const Column& col,
+			std::vector<Pixels> startObjectsSearchInPair(const ImagePair& pair, const Column& col,
 				const configuration::Configuration& conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
-				auto& pairRef = *pair.get();
-				MatrixU16 changes(pairRef.getWidth(), pairRef.getHeight());
+				//auto& pairRef = *pair.get();
+				MatrixU16 changes(pair.getWidth(), pair.getHeight());
 
 				std::vector<Pixels> resultList;
 				// check all diffs on potential objects
 				//if change found -> run bfs to figure out how many pixels included in this object
-				for (size_t rowId = conf.PixelStep; rowId < pairRef.getHeight(); rowId += conf.PixelStep)
+				for (size_t rowId = conf.PixelStep; rowId < pair.getHeight(); rowId += conf.PixelStep)
 				{
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
 					{
@@ -74,20 +74,20 @@ namespace am {
 							//mLogger->logInfo("Timelimit for calculation exceded, calculations TimeLimit:%f", conf.CalculationTimeLimit);
 							return resultList;
 						}
-						else if (pairRef.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
+						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
 							changes(rowId, colId) != common::CHANGE)
 						{
 							Pixels obj{ { rowId, colId } };
-							auto conns = checkConnections(rowId, colId, pairRef.getHeight(), col, conf.PixelStep);
-							resultList.push_back(bfs(pairRef, changes, conns, obj, col, startTime, conf));
+							auto conns = checkConnections(rowId, colId, pair.getHeight(), col, conf.PixelStep);
+							resultList.push_back(bfs(pair, changes, conns, obj, col, startTime, conf));
 						}
 					}
 				}
 				return resultList;
 			}
-			DescObjects ObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
+			DescObjects ObjectDetector::getObjectsRects(const ImagePair& pair)
 			{
-				const size_t columnWidth = pair.get()->getWidth() / mThreadsCount;
+				const size_t columnWidth = pair.getWidth() / mThreadsCount;
 
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;

@@ -63,7 +63,7 @@ namespace am {
 				}
 				return false;
 			}
-			std::vector<Pixel> Object::getPixels() const
+			const std::vector<Pixel>& Object::getPixels() const
 			{
 				return mPixels;
 			}

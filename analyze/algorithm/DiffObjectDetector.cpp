@@ -89,9 +89,9 @@ namespace am {
 				mLogger->info("DiffObjectDetector::getObjectsRects fin");
 				return createObjectRects(res);
 			}
-			DescObjects DiffObjectDetector::getObjectsRects(std::shared_ptr<ImagePair> pair)
+			DescObjects DiffObjectDetector::getObjectsRects(const ImagePair& pair)
 			{
-				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair->getFirst(), pair->getSecond());
+				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond());
 				return getObjectsRects(diffs);
 			}
 

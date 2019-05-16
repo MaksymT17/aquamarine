@@ -7,7 +7,7 @@ namespace am {
 	namespace analyze {
 		namespace algorithm {
 
-			std::vector<Pixel> bfs(ImagePair& pair, common::types::MatrixU16& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
+			std::vector<Pixel> bfs(const ImagePair& pair, common::types::MatrixU16& visited, std::vector<Pixel>& toCheck, std::vector<Pixel>& object,
 				Column col, std::chrono::steady_clock::time_point& startTime, const configuration::Configuration& conf);
 
 			class ObjectDetector : public BfsObjectDetector {
@@ -17,7 +17,7 @@ namespace am {
 
 				// time for every collecting results defined in configuration
 				// can be adjusted, but some objects can be not found because of terminated calculations
-				virtual DescObjects getObjectsRects(std::shared_ptr<ImagePair> pair) override;
+				virtual DescObjects getObjectsRects(const ImagePair& pair) override;
 			};
 
 		}
