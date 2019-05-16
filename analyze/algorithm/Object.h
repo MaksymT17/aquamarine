@@ -27,7 +27,7 @@ namespace am {
 				bool isMergableToRight( Object& toCompare) const;
 				bool mergeIfPossible( Object& toCompare);
 
-				std::vector<Pixel> getPixels() const;
+				const std::vector<Pixel>& getPixels() const;
 				size_t getLeft() const;
 				size_t getRight() const;
 				size_t getMinHeight() const;
@@ -39,7 +39,7 @@ namespace am {
 			private:
 				void mergeToMe( Object& toCompare);
 
-				std::vector<Pixel> mPixels;
+				const std::vector<Pixel>& mPixels;
 				size_t mPixelsCount;
 				size_t mLeft;
 				size_t mMin_height;

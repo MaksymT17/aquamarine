@@ -30,7 +30,7 @@ int main()
 	std::shared_ptr<Matrix<Color24b>> res = data[0];
 	std::shared_ptr<Matrix<Color24b>> resChange = data[1];
 
-	std::shared_ptr<algorithm::ImagePair> pair(new algorithm::ImagePair(res, resChange));
+	algorithm::ImagePair pair(res, resChange);
 
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
 
