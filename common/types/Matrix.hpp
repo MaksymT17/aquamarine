@@ -11,10 +11,10 @@ namespace am {
 			class Matrix
 			{
 			public:
-				Matrix(size_t width, size_t height)
+				Matrix(const size_t width, const size_t height)
 					: mWidth(width),
 					mHeight(height),
-					mData(width * height)
+					mData(height, std::vector<T>(width))
 				{
 				}
 
@@ -23,19 +23,20 @@ namespace am {
 
 				T& operator()(size_t i, size_t j)
 				{
-					return mData[i * mWidth + j];
+					return mData[i][j];
 				}
 
 				T operator()(size_t i, size_t j) const
 				{
-					return mData[i * mWidth + j];
+					return mData[i][j];
 				}
 
 			private:
-				size_t mWidth;
-				size_t mHeight;
-				std::vector<T> mData;
+				const size_t mWidth;
+				const size_t mHeight;
+				std::vector<std::vector<T>> mData;
 			};
+
 			using MatrixU16 = Matrix<uint16_t>;
 
 		}
