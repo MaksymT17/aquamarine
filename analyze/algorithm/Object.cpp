@@ -61,7 +61,7 @@ size_t Object::getMinHeight() const { return mMin_height; }
 size_t Object::getMaxHeight() const { return mMax_height; }
 size_t Object::getPixelsCount() const { return mPixelsCount; }
 void Object::printToConsole() const {
-  printf("Object Rectangle: %d %d   %d %d \n", mLeft, mRight, mMin_height,
+  printf("Object Rectangle: %zd %zd   %zd %zd \n", mLeft, mRight, mMin_height,
          mMax_height);
 }
 } // namespace algorithm
