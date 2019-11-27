@@ -35,3 +35,10 @@ Warning: in case of inappropriate configuration parameters calculations/recognit
 as predelivery version and after all testing stages based on code provided in this public repo shall be created shared library focused on performance of execution, with minimized logs prints and exceptions handling.
 
 More details can be found at [wiki page](https://github.com/MaksymT17/aquamarine/wiki)
+
+#### Restrictions:
+_Commercial usage of sources added in this repo is forbidded without agreement with author of idea._
+
+_Activity with usage of current SW, which can be recognized as vialations of privacy laws also not allowed._
+
+_For quesstions or suggestions: benzin.pump@gmail.com_
