@@ -31,8 +31,6 @@ Minimal collection of files needed for starting comparison with images: set of i
 
 Warning: in case of inappropriate configuration parameters calculations/recognition can be incomplete or too long. User has to specify parameters in range what is applicable to his expectations(especially time related constants). Planned integration of AI, for runtime parameters adjustments to improve accuracy with apllying timing requirements provided by user.
 
-### plans:
-as predelivery version and after all testing stages based on code provided in this public repo shall be created shared library focused on performance of execution, with minimized logs prints and exceptions handling.
 
 More details can be found at [wiki page](https://github.com/MaksymT17/aquamarine/wiki)
 
