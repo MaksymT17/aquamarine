@@ -11,11 +11,13 @@ namespace am {
 
 		Color24bDiff getChannelsDiff(const Color24b &source, const Color24b &toCompare) {
 			Color24bDiff diff;
+			uint8_t positives = 0u;
 
-			setUpChannelDiff(source.r, toCompare.r, diff.r, diff.positives, common::R_BIT_POSITION);
-			setUpChannelDiff(source.g, toCompare.g, diff.g, diff.positives, common::G_BIT_POSITION);
-			setUpChannelDiff(source.b, toCompare.b, diff.b, diff.positives, common::B_BIT_POSITION);
+			setUpChannelDiff(source.r, toCompare.r, diff.r, positives, common::R_POS_VAL);
+			setUpChannelDiff(source.g, toCompare.g, diff.g, positives, common::G_POS_VAL);
+			setUpChannelDiff(source.b, toCompare.b, diff.b, positives, common::B_POS_VAL);
 
+			diff.positives = positives;
 			return diff;
 		}
 
@@ -62,14 +64,14 @@ namespace am {
 			// can be wrapped in try() for bad alloc
 			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
 
-			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
+			size_t availableThrCount = am::common::getOptimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
 
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
 				for (size_t i = 0; i < threadsCount; ++i)
-					futures.push_back(std::async(std::launch::async,fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
+					futures.push_back(std::async(std::launch::async, fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
 
 				for (auto &e : futures)
 					e.get();
@@ -89,7 +91,8 @@ namespace am {
 
 			return result;
 		}
-		std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> AffinityComparer::compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> first, std::shared_ptr<common::types::Matrix<common::types::Color24b>> second)
+
+		std::shared_ptr<Matrix<Color24bDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<Color24b>> first, std::shared_ptr<Matrix<Color24b>> second)
 		{
 			const size_t width = first.get()->getWidth();
 			const size_t height = first.get()->getHeight();
@@ -101,14 +104,14 @@ namespace am {
 			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
 
 			//threads count should be provided as parameter, no singleton usage
-			size_t availableThrCount = 5;// common::Context::getInstance()->getOpimalThreadsCount();
+			size_t availableThrCount = am::common::getOptimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
 
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
 				for (size_t i = 0; i < threadsCount; ++i)
-					futures.push_back(std::async(std::launch::async,fillPixelLineWithDiffs, first, second, result, portion + i, width));
+					futures.push_back(std::async(std::launch::async, fillPixelLineWithDiffs, first, second, result, portion + i, width));
 
 				for (auto &e : futures)
 					e.get();

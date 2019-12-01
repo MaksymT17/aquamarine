@@ -26,7 +26,7 @@ namespace am {
 					}
 					else
 					{
-						type.mov[MovementType::MOVELESS] = true;
+						type.mov[MovementType::STEALTH] = true;
 					}
 
 					return type;
@@ -68,7 +68,7 @@ namespace am {
 					MovementType movement;
 					if (!found.size())
 					{
-						movement.mov[MovementType::MOVELESS] = true;
+						movement.mov[MovementType::STEALTH] = true;
 						return movement;
 					}
 					else if (found.size() == 1) {

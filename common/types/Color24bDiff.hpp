@@ -6,38 +6,37 @@
 namespace am {
 	namespace common {
 		namespace types {
-
-			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, std::bitset<3>& positives, const uint8_t chId)
+			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, uint8_t& posisitvness, const uint8_t addition)
 			{
 				if (source > compared)
 				{
 					diff = source - compared;
-					positives[chId] = true;
+					posisitvness += addition;
 				}
 				else
 					diff = compared - source;
 			}
+			//simple check if value in diff positive(true), otherwise - negative(false)
+			static bool isChannelDiffPositive(uint8_t diff, int position)
+			{
+				return ((diff) & (1 << (position)));
+			}
 
 			struct Color24bDiff : public Color24b
 			{
-				// bits for representations +/- for channel diffs
-				// + = true = positive  ;   - = false = negative
-				// 1 bit - r channel positiveness
-				// 2 bit - g channel positiveness
-				// 3 bit - b channel positiveness
-				std::bitset<3> positives;
+				uint8_t positives;
 
 				bool isPositveR()
 				{
-					return positives[0];
+					return isChannelDiffPositive(positives, R_BIT_POSITION);
 				}
 				bool isPositveG()
 				{
-					return positives[1];
+					return isChannelDiffPositive(positives, G_BIT_POSITION);
 				}
 				bool isPositveB()
 				{
-					return positives[2];
+					return isChannelDiffPositive(positives, B_BIT_POSITION);
 				}
 			};
 
