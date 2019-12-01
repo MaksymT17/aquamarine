@@ -14,52 +14,50 @@
 #include <stdio.h>
 
 int main() {
-  using namespace am::common::types;
-  using namespace am::analyze;
+	using namespace am::common::types;
+	using namespace am::analyze;
 
-  std::shared_ptr<am::common::Logger> loggerPtr(
-      new am::common::Logger("log.log"));
-  am::extraction::MultipleBmpExtractor extractor(loggerPtr);
-  std::string base("inputs/rs_1.BMP");
-  std::string toCompare("inputs/rs_2.BMP");
-  std::vector<std::string> fileNames = {base, toCompare};
+	std::shared_ptr<am::common::Logger> loggerPtr(
+		new am::common::Logger("log.log"));
 
-  // multiple reading of files
-  std::vector<std::shared_ptr<Matrix<Color24b>>> data =
-      extractor.readFiles(fileNames);
+	am::extraction::MultipleBmpExtractor extractor(loggerPtr);
+	std::string base("inputs/fhd_clean.BMP");
+	std::string toCompare("inputs/fhd_5obj.BMP");
+	std::vector<std::string> fileNames = { base, toCompare };
 
-  std::shared_ptr<Matrix<Color24b>> res = data[0];
-  std::shared_ptr<Matrix<Color24b>> resChange = data[1];
+	// multiple reading of files
+	std::vector<std::shared_ptr<Matrix<Color24b>>> data =
+		extractor.readFiles(fileNames);
 
-  algorithm::ImagePair pair(res, resChange);
+	std::shared_ptr<Matrix<Color24b>> res = data[0];
+	std::shared_ptr<Matrix<Color24b>> resChange = data[1];
 
-  const size_t opt_threads = am::common::getOptimalThreadsCount();
+	algorithm::ImagePair pair(res, resChange);
 
-  am::configuration::ConfigurationReader reader;
+	const size_t opt_threads = am::common::getOptimalThreadsCount();
 
-  auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	am::configuration::ConfigurationReader reader;
 
-  // experimental - but, main feature currently, external review needed
-  algorithm::ObjectDetector detector =
-      algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
-  algorithm::DiffObjectDetector diffDetector =
-      algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 
-  algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
+	// experimental - but, main feature currently, external review needed
+	algorithm::ObjectDetector detector =
+		algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 
-  for (auto &rect : rects1) {
-    printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n",
-           rect.getMinHeight(), rect.getLeft(), rect.getMaxHeight(),
-           rect.getRight(), rect.getPixelsCount());
-  }
+	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
-  /// draw found objects in BMP image file
-  am::extraction::BmpDrawer drawer(fileNames[1]);
-  algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
-  for (auto obj : rects2) {
-    drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
-                         obj.getMaxHeight());
-  }
-  drawer.save(std::string("compare_result.BMP"));
-  return 0;
+	for (auto &rect : rects1) {
+		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n",
+			rect.getMinHeight(), rect.getLeft(), rect.getMaxHeight(),
+			rect.getRight(), rect.getPixelsCount());
+	}
+
+	/// draw found objects in BMP image file
+	am::extraction::BmpDrawer drawer(fileNames[1]);
+	for (auto obj : rects1) {
+		drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
+			obj.getMaxHeight());
+	}
+	drawer.save(std::string("compare_result.BMP"));
+	return 0;
 }

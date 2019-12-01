@@ -26,7 +26,7 @@ namespace am {
 				//DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
 
 				//search of ebjects within ImagePair data provided
-				virtual DescObjects getObjectsRects( const ImagePair& pair) = 0;
+				virtual DescObjects getObjectsRects(const ImagePair& pair) = 0;
 
 				// creation of ordered objects list based
 				DescObjects createObjectRects(std::vector<std::vector<std::vector<Pixel>>>& objPixels);

@@ -15,7 +15,8 @@ namespace am {
 				/// note: bitset for movements storage
 				// bytes definition: 0, 1 - left, right
 				// 2, 3 - top, bottom; 4 - disappear
-				// all types can be mixed, except disappear
+				// all types can be mixed, except stealth
+				// bitmask with enabled bits:0,1,2,3 means expand of object
 				struct MovementType
 				{
 					enum {
@@ -23,7 +24,7 @@ namespace am {
 						RIGHT = 1,
 						TOP = 2,
 						BOTTOM = 3,
-						MOVELESS = 4
+						STEALTH = 4
 					};
 					std::bitset<5> mov;
 				};
