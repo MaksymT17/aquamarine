@@ -15,7 +15,7 @@ namespace am {
 				: BfsObjectDetector(threads, conf, logger) {}
 
 			// Time dependent execution, if max calculation time exceeded calculation should
-			// finalize calculation.
+			// finalize processing, and show up collected objects(if found).
 			Pixels bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
 				Pixels &object, Column col,
 				std::chrono::steady_clock::time_point &startTime,
@@ -29,7 +29,6 @@ namespace am {
 						"time in configuration.\n");
 					return object;
 				}
-
 				Pixels nextCheck;
 
 				for (auto &position : toCheck) {
@@ -59,9 +58,8 @@ namespace am {
 				MatrixU16 changes(pair.getWidth(), pair.getHeight());
 
 				std::vector<Pixels> resultList;
-				// check all diffs on potential objects
-				// if change found -> run bfs to figure out how many pixels included in this
-				// object
+				// check all diffs on potential objects if change found -> run bfs,
+				// to figure out how many pixels included in this object
 				for (size_t rowId = conf.PixelStep; rowId < pair.getHeight();
 					rowId += conf.PixelStep) {
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep) {
@@ -88,7 +86,6 @@ namespace am {
 
 			DescObjects ObjectDetector::getObjectsRects(const ImagePair &pair) {
 				const size_t columnWidth = pair.getWidth() / mThreadsCount;
-
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
@@ -96,11 +93,13 @@ namespace am {
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId) {
 					Column column{ columnId * columnWidth, columnId * columnWidth + columnWidth };
-					futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
-						pair, column, *mConfiguration));
+					futures.push_back(std::move(std::async(std::launch::async, startObjectsSearchInPair,
+						pair, column, *mConfiguration)));
 				}
-				for (auto &e : futures)
+				for (auto &e : futures) {
+					e.wait();
 					res.push_back(e.get());
+				}
 				return createObjectRects(res);
 			}
 		} // namespace algorithm

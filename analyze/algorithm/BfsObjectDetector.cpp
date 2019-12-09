@@ -29,35 +29,44 @@ namespace am {
 
 			void pushCheckIfNew(Pixels &object, Pixels &toCheck, size_t rowId,
 				size_t colId) {
-				if (isNew(object, rowId, colId))
+				if (isNew(object, rowId, colId)) {
 					toCheck.push_back({ rowId, colId });
+				}
 			}
 
 			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, Pixels &object,
 				Column col, const size_t &height, const size_t step) {
-				if (static_cast<int>(rowId - step) >= 0)
+
+				if (static_cast<int>(rowId - step) >= 0) {
 					pushCheckIfNew(object, nextCheck, rowId - step, colId);
-				if (rowId + step < height)
+				}
+				if (rowId + step < height) {
 					pushCheckIfNew(object, nextCheck, rowId + step, colId);
-				if (static_cast<int>(colId - step) >= static_cast<int>(col.left))
+				}
+				if (static_cast<int>(colId - step) >= static_cast<int>(col.left)) {
 					pushCheckIfNew(object, nextCheck, rowId, colId - step);
-				if (colId + step < col.left + col.right)
+				}
+				if (colId + step < col.right) {
 					pushCheckIfNew(object, nextCheck, rowId, colId + step);
+				}
 			}
 
 			Pixels checkConnections(size_t rowId, size_t colId, const size_t &height,
 				const Column &col, const size_t step) {
 				Pixels toCheck;
 
-				if ((int)(rowId - step) >= 0)
+				if ((int)(rowId - step) >= 0) {
 					toCheck.push_back(Pixel{ rowId - step, colId });
-				if (rowId + step < height)
+				}
+				if (rowId + step < height) {
 					toCheck.push_back(Pixel{ rowId + step, colId });
+				}
 				if (static_cast<int>(colId - step) >= (int)col.left) {
 					toCheck.push_back(Pixel{ rowId, colId - step });
 				}
-				if (colId + step < col.left + col.right)
-					toCheck.push_back(Pixel{ rowId, colId - step });
+				if (colId + step < col.right) {
+					toCheck.push_back(Pixel{ rowId, colId + step });
+				}
 
 				return toCheck;
 			}
@@ -65,7 +74,6 @@ namespace am {
 			DescObjects BfsObjectDetector::createObjectRects(
 				std::vector<std::vector<Pixels>> &objPixels) {
 				std::vector<std::vector<Object>> rects;
-
 				for (auto &thrList : objPixels) {
 					std::vector<Object> threadObjs;
 					for (auto objs : thrList) {
@@ -76,7 +84,6 @@ namespace am {
 					rects.push_back(threadObjs);
 				}
 				DescObjects res;
-
 				if (rects.size() == 1u) {
 					for (auto &r : *rects.begin())
 						res.emplace(r);
@@ -96,6 +103,7 @@ namespace am {
 						}
 					}
 				}
+
 				for (auto &rightItem : rects[rects.size() - 1u]) {
 					res.emplace(rightItem);
 				}
