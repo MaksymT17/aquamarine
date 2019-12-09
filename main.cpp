@@ -21,8 +21,8 @@ int main() {
 		new am::common::Logger("log.log"));
 
 	am::extraction::MultipleBmpExtractor extractor(loggerPtr);
-	std::string base("inputs/fhd_clean.BMP");
-	std::string toCompare("inputs/fhd_5obj.BMP");
+	std::string base("inputs/rs_1.BMP");
+	std::string toCompare("inputs/rs_2.BMP");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	// multiple reading of files
@@ -34,13 +34,12 @@ int main() {
 
 	algorithm::ImagePair pair(res, resChange);
 
-	const size_t opt_threads = am::common::getOptimalThreadsCount();
+	const size_t opt_threads =  am::common::getOptimalThreadsCount();
 
 	am::configuration::ConfigurationReader reader;
 
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 
-	// experimental - but, main feature currently, external review needed
 	algorithm::ObjectDetector detector =
 		algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 

@@ -17,7 +17,7 @@ namespace am
 			for (size_t x = 0; x < width; ++x)
 			{
 				Color24b& channels = colors(rowId, x);
-				image.get_pixel(x, rowId, reinterpret_cast<rgb_t&>(channels)); // cast there: unsinged chat -> uint8_t
+				image.get_pixel(x, rowId, reinterpret_cast<rgb_t&>(channels));
 			}
 		}
 
