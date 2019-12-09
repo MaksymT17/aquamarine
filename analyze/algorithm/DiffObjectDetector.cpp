@@ -87,15 +87,14 @@ namespace am {
 					res.push_back(e.get());
 
 				mLogger->info("DiffObjectDetector::getObjectsRects fin");
-				return createObjectRects(res);
+				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}
+
 			DescObjects DiffObjectDetector::getObjectsRects(const ImagePair& pair)
 			{
 				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond());
 				return getObjectsRects(diffs);
 			}
-
-
 		}
 	}
 }

@@ -34,7 +34,7 @@ int main() {
 
 	algorithm::ImagePair pair(res, resChange);
 
-	const size_t opt_threads =  am::common::getOptimalThreadsCount();
+	const size_t opt_threads = am::common::getOptimalThreadsCount();
 
 	am::configuration::ConfigurationReader reader;
 

@@ -28,8 +28,8 @@ namespace am {
 				//search of ebjects within ImagePair data provided
 				virtual DescObjects getObjectsRects(const ImagePair& pair) = 0;
 
-				// creation of ordered objects list based
-				DescObjects createObjectRects(std::vector<std::vector<std::vector<Pixel>>>& objPixels);
+				// creation of ordered objects list: Descending(bigger first)
+				DescObjects createObjectRects(std::vector<std::vector<std::vector<Pixel>>>& objPixels, const size_t minPixels);
 
 			protected:
 				// abstract class construction limited, aggregate common functions and interface requirement 

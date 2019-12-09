@@ -25,7 +25,7 @@ namespace am {
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
 				if (calcDuration.count() >= conf.CalculationTimeLimit) {
 					/// todo: make Error notification about failed detection
-					printf("Timelimit for calculation exceded. Try to increase calculation "
+					printf("Timelimit for calculation exceeded. Try to increase calculation "
 						"time in configuration.\n");
 					return object;
 				}
@@ -91,16 +91,21 @@ namespace am {
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 					mThreadsCount);
 
-				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId) {
+				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId) {
 					Column column{ columnId * columnWidth, columnId * columnWidth + columnWidth };
-					futures.push_back(std::move(std::async(std::launch::async, startObjectsSearchInPair,
-						pair, column, *mConfiguration)));
+					futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
+						pair, column, *mConfiguration));
 				}
+
+				Column final_column{ (mThreadsCount - 1) * columnWidth, pair.getWidth() };
+				futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
+					pair, final_column, *mConfiguration));
+
 				for (auto &e : futures) {
 					e.wait();
 					res.push_back(e.get());
 				}
-				return createObjectRects(res);
+				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}
 		} // namespace algorithm
 	} // namespace analyze
