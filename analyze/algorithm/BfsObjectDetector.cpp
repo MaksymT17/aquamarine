@@ -55,7 +55,7 @@ namespace am {
 				const Column &col, const size_t step) {
 				Pixels toCheck;
 
-				if ((int)(rowId - step) >= 0) {
+				if (static_cast<int>(rowId - step) >= 0) {
 					toCheck.push_back(Pixel{ rowId - step, colId });
 				}
 				if (rowId + step < height) {
@@ -72,44 +72,55 @@ namespace am {
 			}
 
 			DescObjects BfsObjectDetector::createObjectRects(
-				std::vector<std::vector<Pixels>> &objPixels) {
+				std::vector<std::vector<Pixels>> &objPixels, const size_t minPixels)
+			{
 				std::vector<std::vector<Object>> rects;
+				DescObjects orderedResult;
 				for (auto &thrList : objPixels) {
-					std::vector<Object> threadObjs;
-					for (auto objs : thrList) {
-						// skip objects if smaller that minObjSize, avoid noise
-						if (objs.size() > mConfiguration->MinPixelsForObject)
+					if (!thrList.empty()) {
+						std::vector<Object> threadObjs;
+						for (auto objs : thrList) {
+							// skip objects if smaller that minObjSize, avoid noise
+							//if (objs.size() >= mConfiguration->MinPixelsForObject)
 							threadObjs.push_back(Object(objs));
-					}
-					rects.push_back(threadObjs);
-				}
-				DescObjects res;
-				if (rects.size() == 1u) {
-					for (auto &r : *rects.begin())
-						res.emplace(r);
+						}
 
-					return res;
+						rects.push_back(threadObjs);
+					}
 				}
+
+				if (rects.size() == 1u) {
+					for (auto &r : *rects.begin()) {
+						orderedResult.emplace(r);
+					}
+
+					return orderedResult;
+				}
+				
 				for (size_t leftId = 0u; leftId < rects.size() - 1u; ++leftId) {
 					for (auto &leftItem : rects[leftId]) {
-						if (leftItem.getRight() != 0 && leftItem.getMaxHeight() != 0) {
-							bool isMerged = false;
-							for (auto &rightItem : rects[leftId + 1]) {
-								if (rightItem.mergeIfPossible(leftItem))
-									isMerged = true;
+						bool isMerged = false;
+						for (auto &rightItem : rects[leftId + 1]) {
+							if (rightItem.mergeIfPossibleLeftToMe(leftItem)) {
+								isMerged = true;
+								leftItem.clear();
 							}
-							if (!isMerged)
-								res.emplace(leftItem);
 						}
+
+						if (!isMerged && leftItem.getPixelsCount() >= minPixels)
+							orderedResult.emplace(leftItem);
 					}
 				}
-
-				for (auto &rightItem : rects[rects.size() - 1u]) {
-					res.emplace(rightItem);
+				//last thread results already merged if possible
+				for (auto &rightItem : rects[rects.size() - 1]) {
+					if (rightItem.getPixelsCount() >= minPixels)
+						orderedResult.emplace(rightItem);
 				}
+
 				mLogger->info("BfsObjectDetector::%s, objects found:%d", __func__,
-					res.size());
-				return res;
+					orderedResult.size());
+
+				return orderedResult;
 			}
 
 		} // namespace algorithm

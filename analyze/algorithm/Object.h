@@ -25,6 +25,8 @@ namespace am {
 				virtual ~Object() = default;
 
 				bool isMergableToRight( Object& toCompare) const;
+				bool isMeargableToLeft(Object& toCompare) const;
+				bool mergeIfPossibleLeftToMe(Object& toCompare) ;
 				bool mergeIfPossible( Object& toCompare);
 
 				const std::vector<Pixel>& getPixels() const;
@@ -35,6 +37,7 @@ namespace am {
 				size_t getPixelsCount() const;
 
 				void printToConsole() const;
+				void clear();
 
 			private:
 				void mergeToMe( Object& toCompare);

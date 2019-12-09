@@ -21,8 +21,8 @@ namespace am {
 		/// HW dependent constant, bigger value can make calculations faster
 		static size_t getOptimalThreadsCount(double max_load_persent = 1.0f) {
 			unsigned int MAX_THREADS = std::thread::hardware_concurrency();
-			const float concurrentCallsCount =
-				static_cast<float>(MAX_THREADS) * max_load_persent;
+			const double concurrentCallsCount =
+				static_cast<double>(MAX_THREADS) * max_load_persent;
 			size_t threadsCount = concurrentCallsCount < 1.0f
 				? 1
 				: static_cast<size_t>(concurrentCallsCount);
