@@ -13,7 +13,8 @@
 #include <memory>
 #include <stdio.h>
 
-int main() {
+int main() 
+{
 	using namespace am::common::types;
 	using namespace am::analyze;
 
@@ -26,19 +27,17 @@ int main() {
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	// multiple reading of files
-	std::vector<std::shared_ptr<Matrix<Color24b>>> data =
-		extractor.readFiles(fileNames);
+	std::vector<std::shared_ptr<Matrix<Color24b>>> data = extractor.readFiles(fileNames);
 
 	std::shared_ptr<Matrix<Color24b>> res = data[0];
 	std::shared_ptr<Matrix<Color24b>> resChange = data[1];
-	
+
 	am::configuration::ConfigurationReader reader;
 
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	const size_t opt_threads = am::common::getOptimalThreadsCount(conf->ThreadsMultiplier);
 
-	algorithm::ObjectDetector detector =
-		algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 
 	algorithm::ImagePair pair(res, resChange);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
@@ -51,7 +50,7 @@ int main() {
 
 	/// draw found objects in BMP image file
 	am::extraction::BmpDrawer drawer(fileNames[1]);
-	for (auto obj : rects1) 
+	for (auto obj : rects1)
 	{
 		drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
 			obj.getMaxHeight());
