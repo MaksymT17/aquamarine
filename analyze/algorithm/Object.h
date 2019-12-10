@@ -19,30 +19,29 @@ namespace am {
 
 			// simple representatin of found object area on image, ismplified to rectangle bounds
 			// base on diff pixels connected
-			class Object {
+			class Object
+			{
 			public:
 				Object(std::vector<Pixel>& pixels);
-				virtual ~Object() = default;
+				~Object() = default;
 
-				bool isMergableToRight( Object& toCompare) const;
-				bool isMeargableToLeft(Object& toCompare) const;
-				bool mergeIfPossibleLeftToMe(Object& toCompare) ;
-				bool mergeIfPossible( Object& toCompare);
+				bool isMeargableToLeft(Object& toCompare) const noexcept;
+				bool mergeIfPossibleLeftToMe(Object& toCompare) noexcept;
 
-				const std::vector<Pixel>& getPixels() const;
-				size_t getLeft() const;
-				size_t getRight() const;
-				size_t getMinHeight() const;
-				size_t getMaxHeight() const;
-				size_t getPixelsCount() const;
+				std::vector<Pixel>& getPixels() const noexcept;
+				size_t getLeft() const noexcept;
+				size_t getRight() const noexcept;
+				size_t getMinHeight() const noexcept;
+				size_t getMaxHeight() const noexcept;
+				size_t getPixelsCount() const noexcept;
 
-				void printToConsole() const;
-				void clear();
+				void printToConsole() const noexcept;
+				void clearPixelsCount()noexcept;
 
 			private:
-				void mergeToMe( Object& toCompare);
+				void mergeToMe(Object& toCompare)noexcept;
 
-				const std::vector<Pixel>& mPixels;
+				std::vector<Pixel>& mPixels;
 				size_t mPixelsCount;
 				size_t mLeft;
 				size_t mMin_height;
@@ -50,10 +49,9 @@ namespace am {
 				size_t mMax_height;
 			};
 
-			//todo: move comparators to other place
-			namespace comparators 
+			namespace comparators
 			{
-				struct Ascending 
+				struct Ascending
 				{
 					bool operator() (const Object& l, const Object& r) const
 					{
@@ -61,7 +59,7 @@ namespace am {
 					}
 				};
 
-				struct Descending 
+				struct Descending
 				{
 					bool operator() (const Object& l, const Object& r) const
 					{
@@ -69,7 +67,7 @@ namespace am {
 					}
 				};
 
-				struct Unordered 
+				struct Unordered
 				{
 					bool operator() (const Object& l, const Object& r) const
 					{
@@ -78,15 +76,16 @@ namespace am {
 				};
 			}
 
-			//template struct to make automatic ordering when new objects are collected
+			//template struct to make automatic ordering when new objects are inserting
 			// why ? to make priority in collected objects
 			// bigger should be first in collection
-			// if not needed can be used vector instead
+			// if not needed can be used Unordered comparator
 			template <typename T>
-			struct OrderedObjects {
+			struct OrderedObjects
+			{
 				std::multiset<Object, T> objects;
 			};
-			
+
 			using DescObjects = std::multiset<Object, comparators::Descending>;
 		}
 	}

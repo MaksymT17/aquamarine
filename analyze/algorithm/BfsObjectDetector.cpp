@@ -19,7 +19,8 @@ namespace am {
 				std::shared_ptr<am::common::Logger> &logger)
 				: mThreadsCount(threads), mConfiguration(conf), mLogger(logger) {}
 
-			bool isNew(Pixels &object, size_t rowId, size_t colId) {
+			bool isNew(Pixels &object, size_t rowId, size_t colId)
+			{
 				for (auto pos : object) {
 					if (pos.colId == colId && pos.rowId == rowId)
 						return false;
@@ -28,15 +29,16 @@ namespace am {
 			}
 
 			void pushCheckIfNew(Pixels &object, Pixels &toCheck, size_t rowId,
-				size_t colId) {
+				size_t colId)
+			{
 				if (isNew(object, rowId, colId)) {
 					toCheck.push_back({ rowId, colId });
 				}
 			}
 
 			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, Pixels &object,
-				Column col, const size_t &height, const size_t step) {
-
+				Column col, const size_t &height, const size_t step)
+			{
 				if (static_cast<int>(rowId - step) >= 0) {
 					pushCheckIfNew(object, nextCheck, rowId - step, colId);
 				}
@@ -52,7 +54,8 @@ namespace am {
 			}
 
 			Pixels checkConnections(size_t rowId, size_t colId, const size_t &height,
-				const Column &col, const size_t step) {
+				const Column &col, const size_t step) 
+			{
 				Pixels toCheck;
 
 				if (static_cast<int>(rowId - step) >= 0) {
@@ -89,21 +92,27 @@ namespace am {
 					}
 				}
 
-				if (rects.size() == 1u) {
-					for (auto &r : *rects.begin()) {
+				if (rects.size() == 1u) 
+				{
+					for (auto &r : *rects.begin()) 
+					{
 						orderedResult.emplace(r);
 					}
 
 					return orderedResult;
 				}
 				
-				for (size_t leftId = 0u; leftId < rects.size() - 1u; ++leftId) {
-					for (auto &leftItem : rects[leftId]) {
+				for (size_t leftId = 0u; leftId < rects.size() - 1u; ++leftId)
+				{
+					for (auto &leftItem : rects[leftId]) 
+					{
 						bool isMerged = false;
-						for (auto &rightItem : rects[leftId + 1]) {
-							if (rightItem.mergeIfPossibleLeftToMe(leftItem)) {
+						for (auto &rightItem : rects[leftId + 1]) 
+						{
+							if (rightItem.mergeIfPossibleLeftToMe(leftItem))
+							{
 								isMerged = true;
-								leftItem.clear();
+								leftItem.clearPixelsCount();
 							}
 						}
 
@@ -112,7 +121,8 @@ namespace am {
 					}
 				}
 				//last thread results already merged if possible
-				for (auto &rightItem : rects[rects.size() - 1]) {
+				for (auto &rightItem : rects[rects.size() - 1]) 
+				{
 					if (rightItem.getPixelsCount() >= minPixels)
 						orderedResult.emplace(rightItem);
 				}
