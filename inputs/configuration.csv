@@ -3,3 +3,4 @@ Minimum_Pixels_In_Object: 3
 Pixel_Step: 2
 Calculation_Time_Limit: 50
 Idle_Timeout: 5
+Threads_Multiplier: 2.0

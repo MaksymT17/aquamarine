@@ -17,17 +17,16 @@ namespace am {
 
 		const uint16_t CHANGE = (std::numeric_limits<uint16_t>::max)();
 
-		/// note: get optimal threads count for algorithms in range [0-100]%, 1=100%
+		/// note: multplier of threads per core
 		/// HW dependent constant, bigger value can make calculations faster
-		static size_t getOptimalThreadsCount(double max_load_persent = 1.0f) {
-			unsigned int MAX_THREADS = std::thread::hardware_concurrency();
-			const double concurrentCallsCount =
-				static_cast<double>(MAX_THREADS) * max_load_persent;
-			size_t threadsCount = concurrentCallsCount < 1.0f
-				? 1
-				: static_cast<size_t>(concurrentCallsCount);
+		/// Warning: to big value creates threads initialization overhead
+		/// According to tests(i7-7700hq) acceptable range is: from 1.0 up to 8.0 
+		static size_t getOptimalThreadsCount(double thrd_per_core = 1.0f)
+		{
+			unsigned int HW_THREADS = std::thread::hardware_concurrency();
+			const double app_threads = static_cast<double>(HW_THREADS) * thrd_per_core;
 
-			return threadsCount;
+			return app_threads < 1.0f ? 1u : static_cast<size_t>(app_threads);
 		}
 
 	} // namespace common

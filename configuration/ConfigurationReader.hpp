@@ -10,7 +10,7 @@
 
 namespace {
 	const char PARAM_LIMITER = ':';
-	size_t PARAM_COUNT = 5;
+	size_t PARAM_COUNT = 6;
 }
 
 namespace am {
@@ -58,6 +58,8 @@ namespace am {
 					conf->CalculationTimeLimit = std::atof(paramVal.c_str());
 				else if (paramName.compare("Idle_Timeout") == 0)
 					conf->IdleTimeout = std::atoi(paramVal.c_str());
+				else if (paramName.compare("Threads_Multiplier") == 0)
+					conf->ThreadsMultiplier = std::atoi(paramVal.c_str());
 			}
 
 			void getConfiguration(std::shared_ptr<Configuration>& rec, std::istream &str)
