@@ -23,7 +23,8 @@ namespace am {
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
-				if (calcDuration.count() >= conf.CalculationTimeLimit) {
+				if (calcDuration.count() >= conf.CalculationTimeLimit)
+				{
 					/// todo: make Error notification about failed detection
 					printf("Timelimit for calculation exceeded. Try to increase calculation "
 						"time in configuration.\n");
@@ -31,15 +32,18 @@ namespace am {
 				}
 				Pixels nextCheck;
 
-				for (auto &position : toCheck) {
+				for (auto &position : toCheck)
+				{
 					if (visited(position.rowId, position.colId) != common::CHANGE &&
 						pair.getAbsoluteDiff(position.rowId, position.colId) >
-						conf.AffinityThreshold) {
+						conf.AffinityThreshold) 
+					{
 						visited(position.rowId, position.colId) = common::CHANGE;
 						checkClosest(position.rowId, position.colId, nextCheck, object, col,
 							visited.getHeight(), conf.PixelStep);
 
-						if (isNew(object, position.rowId, position.colId)) {
+						if (isNew(object, position.rowId, position.colId)) 
+						{
 							object.push_back({ position.rowId, position.colId });
 							visited(position.rowId, position.colId) = common::CHANGE;
 						}
@@ -53,7 +57,8 @@ namespace am {
 
 			std::vector<Pixels>
 				startObjectsSearchInPair(const ImagePair &pair, const Column &col,
-					const configuration::Configuration &conf) {
+					const configuration::Configuration &conf) 
+			{
 				auto startTime = std::chrono::steady_clock::now();
 				MatrixU16 changes(pair.getWidth(), pair.getHeight());
 
@@ -61,18 +66,22 @@ namespace am {
 				// check all diffs on potential objects if change found -> run bfs,
 				// to figure out how many pixels included in this object
 				for (size_t rowId = conf.PixelStep; rowId < pair.getHeight();
-					rowId += conf.PixelStep) {
-					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep) {
+					rowId += conf.PixelStep) 
+				{
+					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
+					{
 						auto timeNow = std::chrono::steady_clock::now();
 						std::chrono::duration<double> duration = timeNow - startTime;
-						if (duration.count() >= conf.CalculationTimeLimit) {
+						if (duration.count() >= conf.CalculationTimeLimit) 
+						{
 							/// todo: make Error notification about failed detection
 							// mLogger->logInfo("Timelimit for calculation exceded, calculations
 							// TimeLimit:%f", conf.CalculationTimeLimit);
 							return resultList;
 						}
 						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
-							changes(rowId, colId) != common::CHANGE) {
+							changes(rowId, colId) != common::CHANGE) 
+						{
 							Pixels obj{ {rowId, colId} };
 							auto conns = checkConnections(rowId, colId, pair.getHeight(), col,
 								conf.PixelStep);
@@ -84,14 +93,16 @@ namespace am {
 				return resultList;
 			}
 
-			DescObjects ObjectDetector::getObjectsRects(const ImagePair &pair) {
+			DescObjects ObjectDetector::getObjectsRects(const ImagePair &pair) 
+			{
 				const size_t columnWidth = pair.getWidth() / mThreadsCount;
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 					mThreadsCount);
 
-				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId) {
+				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId) 
+				{
 					Column column{ columnId * columnWidth, columnId * columnWidth + columnWidth };
 					futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
 						pair, column, *mConfiguration));
@@ -101,7 +112,8 @@ namespace am {
 				futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
 					pair, final_column, *mConfiguration));
 
-				for (auto &e : futures) {
+				for (auto &e : futures) 
+				{
 					e.wait();
 					res.push_back(e.get());
 				}
