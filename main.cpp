@@ -31,18 +31,16 @@ int main() {
 
 	std::shared_ptr<Matrix<Color24b>> res = data[0];
 	std::shared_ptr<Matrix<Color24b>> resChange = data[1];
-
-	algorithm::ImagePair pair(res, resChange);
-
-	const size_t opt_threads = am::common::getOptimalThreadsCount();
-
+	
 	am::configuration::ConfigurationReader reader;
 
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	const size_t opt_threads = am::common::getOptimalThreadsCount(conf->ThreadsMultiplier);
 
 	algorithm::ObjectDetector detector =
 		algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 
+	algorithm::ImagePair pair(res, resChange);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
 	for (auto &rect : rects1) {
@@ -53,7 +51,8 @@ int main() {
 
 	/// draw found objects in BMP image file
 	am::extraction::BmpDrawer drawer(fileNames[1]);
-	for (auto obj : rects1) {
+	for (auto obj : rects1) 
+	{
 		drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
 			obj.getMaxHeight());
 	}

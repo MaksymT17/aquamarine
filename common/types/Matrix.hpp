@@ -11,7 +11,6 @@ namespace am {
 			public:
 				Matrix(const size_t width, const size_t height)
 					: mWidth(width), mHeight(height), mData(height, std::vector<T>(width)) {
-					size_t a = sizeof(mData);
 				}
 				virtual ~Matrix() = default;
 

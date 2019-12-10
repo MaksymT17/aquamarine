@@ -9,6 +9,7 @@ struct Configuration {
   uint8_t PixelStep;
   double CalculationTimeLimit;
   size_t IdleTimeout;
+  double ThreadsMultiplier;
 };
 
 } // namespace configuration
