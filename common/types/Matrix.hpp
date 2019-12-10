@@ -17,11 +17,13 @@ namespace am {
 				size_t getWidth() const { return mWidth; }
 				size_t getHeight() const { return mHeight; }
 
-				T &operator()(size_t i, size_t j) {
+				T &operator()(size_t i, size_t j) 
+				{
 					return  mData[i][j];
 				}
 
-				T operator()(size_t i, size_t j) const {
+				T operator()(size_t i, size_t j) const
+				{
 					return  mData[i][j];
 				}
 

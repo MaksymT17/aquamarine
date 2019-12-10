@@ -1,6 +1,6 @@
 #include "ImagePair.h"
 #include "common/Context.hpp"
-#include <common/exceptions/AllocationException.hpp>
+#include <common/exceptions/AmException.hpp>
 
 namespace am {
 	namespace analyze {
@@ -15,24 +15,22 @@ namespace am {
 				if (mBase->getHeight() != mCompare->getHeight() || mBase->getWidth() != mCompare->getWidth())
 				{
 					std::string msg("ImagePair allocation failed, size of Images are different. Pair require equal size.");
-					throw common::exceptions::AllocationException(msg);
+					throw common::exceptions::AmException(msg);
 				}
 
-				mWidth = mBase->getWidth();
-				mHeight = mBase->getHeight();
 			}
 
-			size_t ImagePair::getWidth() const
+			size_t ImagePair::getWidth() const noexcept
 			{
-				return mWidth;
+				return mBase->getWidth();
 			}
 
-			size_t ImagePair::getHeight() const
+			size_t ImagePair::getHeight() const noexcept
 			{
-				return mHeight;
+				return mBase->getHeight();
 			}
 
-			uint16_t ImagePair::getAbsoluteDiff(const size_t rowId, const size_t colId) const
+			uint16_t ImagePair::getAbsoluteDiff(const size_t rowId, const size_t colId) const noexcept
 			{
 				Matrix<Color24b>& baseRef = *mBase.get();
 				Matrix<Color24b>& compareRef = *mCompare.get();
@@ -42,12 +40,12 @@ namespace am {
 					std::abs(baseRef(rowId, colId).b - compareRef(rowId, colId).b);
 			}
 
-			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getFirst() const
+			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getFirst() const noexcept
 			{
 				return mBase;
 			}
 
-			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getSecond() const
+			std::shared_ptr<common::types::Matrix<common::types::Color24b>> ImagePair::getSecond() const noexcept
 			{
 				return mCompare;
 			}

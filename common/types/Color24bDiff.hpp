@@ -6,7 +6,8 @@
 namespace am {
 	namespace common {
 		namespace types {
-			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, uint8_t& posisitvness, const uint8_t addition)
+			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff, 
+				uint8_t& posisitvness, const uint8_t addition)
 			{
 				if (source > compared)
 				{
