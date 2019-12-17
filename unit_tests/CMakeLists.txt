@@ -38,6 +38,9 @@ add_executable(objectDetection_ut
 ../common/Timers.hpp
 ObjectDetectorTest.cpp
 )
+add_executable(matrix_ut 
+MatrixTest.cpp
+)
 
 target_link_libraries (movementDetector_ut ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries (objectDetection_ut ${CMAKE_THREAD_LIBS_INIT})
