@@ -9,17 +9,6 @@ using namespace am::common::types;
 namespace am {
 	namespace analyze {
 
-		Color24bDiff getChannelsDiff(const Color24b &source, const Color24b &toCompare) {
-			Color24bDiff diff;
-			uint8_t positives = 0u;
-
-			setUpChannelDiff(source.r, toCompare.r, diff.r, positives, common::R_POS_VAL);
-			setUpChannelDiff(source.g, toCompare.g, diff.g, positives, common::G_POS_VAL);
-			setUpChannelDiff(source.b, toCompare.b, diff.b, positives, common::B_POS_VAL);
-
-			diff.positives = positives;
-			return diff;
-		}
 
 		void fillPixelLineWithDiffs(std::shared_ptr<Matrix<Color24b>> base, std::shared_ptr<Matrix<Color24b>> toCompare,
 			std::shared_ptr<Matrix<Color24bDiff>> result, size_t rowId, size_t width) {
@@ -29,7 +18,7 @@ namespace am {
 				const auto &toCompareRef = *toCompare.get();
 				auto &diffResult = *result.get();
 
-				diffResult(rowId, i) = getChannelsDiff(baseRef(rowId, i), toCompareRef(rowId, i));
+				diffResult(rowId, i) = Color24bDiff(baseRef(rowId, i), toCompareRef(rowId, i));
 			}
 		}
 
