@@ -10,7 +10,7 @@
 namespace am {
 	namespace common {
 
-		void wait_msec(uint16_t milliseconds) noexcept{
+		void wait_msec(uint16_t milliseconds) noexcept {
 #ifdef WIN32
 			Sleep(milliseconds);
 #else

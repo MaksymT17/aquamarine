@@ -3,7 +3,6 @@
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AllocationException.hpp"
 #include "thirdparty/bitmap_reader/bitmap_image.hpp"
-#include "common/Context.hpp"
 #include <future>
 #include <vector>
 

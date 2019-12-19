@@ -92,7 +92,7 @@ namespace am {
 
 			DescObjects DiffObjectDetector::getObjectsRects(const ImagePair& pair)
 			{
-				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond());
+				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond(), mThreadsCount);
 				return getObjectsRects(diffs);
 			}
 		}

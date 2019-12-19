@@ -81,7 +81,8 @@ namespace am {
 			return result;
 		}
 
-		std::shared_ptr<Matrix<Color24bDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<Color24b>> first, std::shared_ptr<Matrix<Color24b>> second)
+		std::shared_ptr<Matrix<Color24bDiff>> AffinityComparer::compare(std::shared_ptr<Matrix<Color24b>> first, 
+			std::shared_ptr<Matrix<Color24b>> second, size_t threadsNum)
 		{
 			const size_t width = first.get()->getWidth();
 			const size_t height = first.get()->getHeight();
@@ -92,9 +93,7 @@ namespace am {
 
 			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
 
-			//threads count should be provided as parameter, no singleton usage
-			size_t availableThrCount = am::common::getOptimalThreadsCount();
-			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
+			size_t threadsCount = threadsNum > height ? height : threadsNum;
 
 			std::vector<std::future<void>> futures;
 

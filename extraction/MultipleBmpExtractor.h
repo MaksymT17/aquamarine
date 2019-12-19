@@ -4,6 +4,7 @@
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24b.hpp"
 #include "common/Logger.hpp"
+
 namespace am
 {
 	namespace extraction
