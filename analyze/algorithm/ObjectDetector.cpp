@@ -114,7 +114,6 @@ namespace am {
 
 				for (auto &e : futures) 
 				{
-					e.wait();
 					res.push_back(e.get());
 				}
 				return createObjectRects(res, mConfiguration->MinPixelsForObject);
