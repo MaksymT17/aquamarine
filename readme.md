@@ -37,6 +37,6 @@ More details can be found at [wiki page](https://github.com/MaksymT17/aquamarine
 #### Restrictions:
 _Commercial usage of sources added in this repo is forbidded without agreement with author of idea._
 
-_Activity with usage of current SW, which can be recognized as vialations of privacy laws also not allowed._
+_Activity with usage of current SW, which can be recognized as vialotions of privacy laws also not allowed._
 
 _For quesstions or suggestions: benzin.pump@gmail.com_
