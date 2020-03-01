@@ -20,7 +20,7 @@ namespace am
 			}
 		}
 
-		std::shared_ptr<Matrix<Color24b>> BmpExtractor::readFile(std::string& fileName)
+		std::shared_ptr<Matrix<Color24b>> BmpExtractor::readFile(const std::string& fileName)
 		{
 			bitmap_image image(fileName.c_str());
 
