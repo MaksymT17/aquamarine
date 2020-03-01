@@ -44,7 +44,7 @@ namespace am {
 
 						if (isNew(object, position.rowId, position.colId)) 
 						{
-							object.push_back({ position.rowId, position.colId });
+							object.emplace_back( position.rowId, position.colId );
 							visited(position.rowId, position.colId) = common::CHANGE;
 						}
 					}
@@ -72,7 +72,7 @@ namespace am {
 					{
 						auto timeNow = std::chrono::steady_clock::now();
 						std::chrono::duration<double> duration = timeNow - startTime;
-						if (duration.count() >= conf.CalculationTimeLimit) 
+						if (duration.count() >= conf.CalculationTimeLimit)
 						{
 							/// todo: make Error notification about failed detection
 							// mLogger->logInfo("Timelimit for calculation exceded, calculations
@@ -80,12 +80,12 @@ namespace am {
 							return resultList;
 						}
 						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
-							changes(rowId, colId) != common::CHANGE) 
+							changes(rowId, colId) != common::CHANGE)
 						{
 							Pixels obj{ {rowId, colId} };
 							auto conns = checkConnections(rowId, colId, pair.getHeight(), col,
 								conf.PixelStep);
-							resultList.push_back(
+							resultList.emplace_back(
 								bfs(pair, changes, conns, obj, col, startTime, conf));
 						}
 					}
@@ -104,17 +104,17 @@ namespace am {
 				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId) 
 				{
 					Column column{ columnId * columnWidth, columnId * columnWidth + columnWidth };
-					futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
+					futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 						pair, column, *mConfiguration));
 				}
 
 				Column final_column{ (mThreadsCount - 1) * columnWidth, pair.getWidth() };
-				futures.push_back(std::async(std::launch::async, startObjectsSearchInPair,
+				futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 					pair, final_column, *mConfiguration));
 
 				for (auto &e : futures) 
 				{
-					res.push_back(e.get());
+					res.emplace_back(e.get());
 				}
 				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}

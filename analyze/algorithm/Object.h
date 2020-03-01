@@ -8,6 +8,9 @@ namespace am {
 		namespace algorithm {
 			// position of Pixel on image 
 			struct Pixel {
+				Pixel(size_t r, size_t c) :
+					rowId(r),
+					colId(c) {};
 				size_t rowId;
 				size_t colId;
 			};

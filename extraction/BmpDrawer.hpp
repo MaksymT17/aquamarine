@@ -4,7 +4,7 @@
 namespace am {
 	namespace extraction {
 
-		// simple Image Bmp drawer for represantation of Objects
+		// Image Bmp drawer for represantation of Objects
 		// allow to draw rectangles based on existing image
 		// compared image -> drawn obects rects -> out: visual where objects found
 		class BmpDrawer {
