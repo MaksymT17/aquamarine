@@ -11,6 +11,7 @@ namespace am
 	{
 		// class for multiple reading files, given vector of fieNames will be
 		// fullfilled as return value with relative data from files
+		// Usage of async calls can reduce extraction time.
 		class MultipleBmpExtractor
 		{
 		public:
