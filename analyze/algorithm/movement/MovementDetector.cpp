@@ -45,7 +45,7 @@ namespace am {
 					mObjects = objs;
 				}
 
-				/// every single object can devided to many or be merged to bigger one,
+				/// every single object can be devided to many or be merged to the bigger one,
 				/// func: should catch every case and be able to use learning principles as AI
 				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
 				MovementType MovementDetector::getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found)
@@ -61,7 +61,7 @@ namespace am {
 							Pixels pxs{ px };
 							auto conns = checkConnections(px.rowId, px.colId, pair->getHeight(), { 0u, pair->getWidth() }, mConfiguration->PixelStep);
 							auto objFound = bfs(*pair, changes, conns, pxs, { 0u, pair->getWidth() }, startTime, *mConfiguration);
-							found.push_back(objFound);
+							found.emplace_back(objFound);
 						}
 					}
 
@@ -101,7 +101,7 @@ namespace am {
 
 					for (const auto& obj : mObjects)
 					{
-						movs.push_back(getMovementForObject(obj, pair, newlyFoundObjs));
+						movs.emplace_back(getMovementForObject(obj, pair, newlyFoundObjs));
 					}
 
 					// make sense to set mObjects for next iteration

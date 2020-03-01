@@ -9,7 +9,7 @@ namespace am
 	namespace extraction
 	{
 		using namespace common::types;
-		std::shared_ptr<Matrix<Color24b>> getFileData(std::string file)
+		std::shared_ptr<Matrix<Color24b>> getFileData(std::string& file)
 		{
 			return BmpExtractor::readFile(file);
 		}
@@ -19,7 +19,7 @@ namespace am
 		{
 		}
 
-		std::vector<std::shared_ptr<Matrix<Color24b>>> MultipleBmpExtractor::readFiles(std::vector<std::string> fileNames)
+		std::vector<std::shared_ptr<Matrix<Color24b>>> MultipleBmpExtractor::readFiles(std::vector<std::string>& fileNames)
 		{
 			std::vector<std::shared_ptr<Matrix<Color24b>>> result;
 			result.reserve(fileNames.size());
@@ -28,12 +28,12 @@ namespace am
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{
 				mLogger->info("BmpExtractor::readFile file:%s.", fileNames[i].c_str());
-				futures.push_back(std::async(std::launch::async, getFileData, fileNames[i]));
+				futures.emplace_back(std::async(std::launch::async, getFileData, fileNames[i]));
 			}
 
 			for (auto &e : futures)
 			{
-				result.push_back(e.get());
+				result.emplace_back(e.get());
 			}
 			return result;
 		}

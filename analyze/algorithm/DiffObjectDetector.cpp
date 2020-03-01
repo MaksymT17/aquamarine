@@ -30,7 +30,7 @@ namespace am {
 
 						if (isNew(object, position.rowId, position.colId))
 						{
-							object.push_back({ position.rowId, position.colId });
+							object.emplace_back(position.rowId, position.colId);
 							changes(position.rowId, position.colId) = 0;
 						}
 					}
@@ -56,7 +56,7 @@ namespace am {
 						{
 							Pixels obj = { { rowId, colId } };
 							auto conns = checkConnections(rowId, colId, chRef.getHeight(), col, 1u);
-							result.push_back(bfs(chRef, conns, obj, col));
+							result.emplace_back(bfs(chRef, conns, obj, col));
 						}
 					}
 				}
@@ -80,7 +80,7 @@ namespace am {
 				{
 					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.push_back(std::async(std::launch::async, startObjectsSearch, changes, mConfiguration->PixelStep, column));
+					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, changes, mConfiguration->PixelStep, column));
 				}
 
 				for (auto &e : futures)

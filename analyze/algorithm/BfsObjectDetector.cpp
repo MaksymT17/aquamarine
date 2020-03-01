@@ -26,12 +26,12 @@ namespace am {
 				size_t colId)
 			{
 				if (isNew(object, rowId, colId)) {
-					toCheck.push_back({ rowId, colId });
+					toCheck.emplace_back(rowId, colId);
 				}
 			}
 
 			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, Pixels &object,
-				Column col, const size_t &height, const size_t step)noexcept
+				Column col, const size_t height, const size_t step)noexcept
 			{
 				if (static_cast<int>(rowId - step) >= 0) {
 					pushCheckIfNew(object, nextCheck, rowId - step, colId);
@@ -53,16 +53,16 @@ namespace am {
 				Pixels toCheck;
 
 				if (static_cast<int>(rowId - step) >= 0) {
-					toCheck.push_back(Pixel{ rowId - step, colId });
+					toCheck.emplace_back(rowId - step, colId);
 				}
 				if (rowId + step < height) {
-					toCheck.push_back(Pixel{ rowId + step, colId });
+					toCheck.emplace_back(rowId + step, colId);
 				}
 				if (static_cast<int>(colId - step) >= (int)col.left) {
-					toCheck.push_back(Pixel{ rowId, colId - step });
+					toCheck.emplace_back(rowId, colId - step);
 				}
 				if (colId + step < col.right) {
-					toCheck.push_back(Pixel{ rowId, colId + step });
+					toCheck.emplace_back(rowId, colId + step);
 				}
 
 				return toCheck;
@@ -82,10 +82,10 @@ namespace am {
 				for (auto &thrList : objPixels) {
 					if (!thrList.empty()) {
 						std::vector<Object> threadObjs;
-						for (auto objs : thrList) {
+						for (auto& objs : thrList) {
 							// skip objects if smaller that minObjSize, avoid noise
 							//if (objs.size() >= mConfiguration->MinPixelsForObject)
-							threadObjs.push_back(Object(objs));
+							threadObjs.emplace_back(objs);
 						}
 
 						rects.push_back(threadObjs);
