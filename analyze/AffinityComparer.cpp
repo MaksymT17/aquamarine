@@ -62,9 +62,6 @@ namespace am {
 				for (size_t i = 0; i < threadsCount; ++i)
 					futures.emplace_back(std::async(std::launch::async, fillPixelLineWithDiffs, mBase, newSource, result, portion + i, width));
 
-				for (auto &e : futures)
-					e.get();
-
 				futures.clear();
 			}
 
