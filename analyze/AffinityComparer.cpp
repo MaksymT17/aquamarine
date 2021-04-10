@@ -88,7 +88,7 @@ namespace am {
 				throw am::common::exceptions::AmException(msg);
 			}
 
-			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
+			std::shared_ptr<Matrix<Color24bDiff>> result(std::make_shared<Matrix<Color24bDiff>>(width, height));
 
 			size_t threadsCount = threadsNum > height ? height : threadsNum;
 
