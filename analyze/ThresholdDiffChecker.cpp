@@ -50,9 +50,6 @@ namespace am {
 				for (size_t i = 0; i < threads; ++i)
 					futures.emplace_back(std::async(std::launch::async, checlImageRow, portion + i, width, diffs, mThreshold, diffCounter));
 
-				for (auto &e : futures)
-					e.get();
-
 				futures.clear();
 			}
 			// final section in case if width not divided normally on threads count
