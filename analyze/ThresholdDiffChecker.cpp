@@ -37,7 +37,7 @@ namespace am {
 
 		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, std::shared_ptr<Matrix<Color24bDiff>> diffs)
 		{
-			std::shared_ptr<std::atomic_size_t> diffCounter(new std::atomic_size_t(0));
+			std::shared_ptr<std::atomic_size_t> diffCounter(std::make_shared<std::atomic_size_t>(0));
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
 
@@ -66,7 +66,7 @@ namespace am {
 		{
 			const size_t width = diffs.get()->getWidth();
 			const size_t height = diffs.get()->getHeight();
-			std::shared_ptr<MatrixU16> res(new MatrixU16(width, height));
+			std::shared_ptr<MatrixU16> res(std::make_shared<MatrixU16>(width, height));
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
