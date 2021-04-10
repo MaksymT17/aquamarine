@@ -12,10 +12,10 @@ namespace am {
 				Matrix(const size_t width, const size_t height)
 					: mWidth(width), mHeight(height), mData(height, std::vector<T>(width)) {
 				}
-				virtual ~Matrix() = default;
+				~Matrix() = default;
 
-				size_t getWidth() const { return mWidth; }
-				size_t getHeight() const { return mHeight; }
+				size_t getWidth() const noexcept{ return mWidth; }
+				size_t getHeight() const noexcept{ return mHeight; }
 
 				T &operator()(size_t i, size_t j) 
 				{
