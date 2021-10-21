@@ -32,6 +32,17 @@ Warning: in case of inappropriate configuration parameters, calculations/recogni
 
 More details can be found at [wiki page](https://github.com/MaksymT17/aquamarine/wiki)
 
+
+### How does it works, what is result of the comparison
+The result of the comparison is a rectangle area(s) that shows a possible object, an area where the color change is being detected.
+In the set of images below there are visible rectangled areas:
+![sample_1](https://github.com/MaksymT17/aquamarine/blob/master/inputs/7compare_result.png)
+![sample_2](https://github.com/MaksymT17/aquamarine/blob/master/inputs/6compare_result.BMP)
+![sample_3](https://github.com/MaksymT17/aquamarine/blob/master/inputs/11compare_result__.png)
+
+
+As visible in these examples, Aquamarine is able to detect person movement and skip such a small movement of grass leaves. Even behind branches of a tree visible that some object - person, in that case, is moved in some direction.
+
 #### Restrictions:
 _Commercial usage of sources added in this repo is forbidden without agreement with the author of the idea._
 
