@@ -1,4 +1,5 @@
 scp -r inputs/ build/ &&
 echo "Image samples copied." &&
-./build/aquamarine &&
+cd build/ &&
+./aquamarine &&
 echo "Execution of tests finished."
