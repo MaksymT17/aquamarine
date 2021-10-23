@@ -38,7 +38,7 @@ The result of the comparison is a rectangle area(s) that shows a possible object
 In the set of images below there are visible rectangled areas:
 ![sample_1](https://github.com/MaksymT17/aquamarine/blob/master/inputs/7compare_result.png)
 ![sample_2](https://github.com/MaksymT17/aquamarine/blob/master/inputs/6compare_result.BMP)
-![sample_3](https://github.com/MaksymT17/aquamarine/blob/master/inputs/11compare_result__.png)
+![sample_3](https://github.com/MaksymT17/aquamarine/blob/master/inputs/11compare_result.png)
 
 
 As visible in these examples, Aquamarine is able to detect person movement and skip such a small movement of grass leaves. Even behind branches of a tree visible that some object - person, in that case, is moved in some direction.
