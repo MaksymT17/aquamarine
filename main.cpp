@@ -22,8 +22,8 @@ int main()
 		new am::common::Logger("log.log"));
 
 	am::extraction::MultipleBmpExtractor extractor(loggerPtr);
-	std::string base("inputs/rs_1.BMP");
-	std::string toCompare("inputs/rs_2.BMP");
+	std::string base("inputs/rs_1.bmp");
+	std::string toCompare("inputs/rs_2.bmp");
 	std::vector<std::string> fileNames = { base, toCompare };
 
 	// multiple reading of files
@@ -55,6 +55,6 @@ int main()
 		drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
 			obj.getMaxHeight());
 	}
-	drawer.save(std::string("compare_result.BMP"));
+	drawer.save(std::string("compare_result.bmp"));
 	return 0;
 }
