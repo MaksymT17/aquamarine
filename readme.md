@@ -4,9 +4,7 @@
 Tool for recognitions/detections/analyzing images, for searching differences in pictures, can help in the detection of movement, appearances/disappearances of objects, change of weather/light conditions.
 
 ## Target: 
-Find optimal solutions for implementation and figure out how to make recognition of image characteristics in an appropriate form and inside of predefined limitations in a config file. Parameters in the config file should cover all significant properties about calculation, should be taken into consideration target Platform and HW limitations.
-
-In simple words, the goal is: to collect the most important information based on picture data and use it for further analysis, paying into attention that collecting of every particular property of an image is time/CPU/power-consuming operations. Every improvement ideas are welcome!
+Find optimal solutions for implementation and figure out how to make recognition of image characteristics in an appropriate form and inside of predefined limitations in a config file. Parameters in the config file should cover all significant properties about calculation, should be taken into consideration target Platform and HW limitations. Every improvement ideas are welcome!
 
 ## Components, sub-folders description:
 
