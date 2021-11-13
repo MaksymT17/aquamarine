@@ -2,6 +2,9 @@
 #include "analyze/algorithm/ImagePair.h"
 #include <future>
 
+//uncomment in case of threadpool usage
+#include "common/ThreadPool.hpp"
+
 namespace am {
 	namespace analyze {
 		namespace algorithm {
@@ -101,18 +104,23 @@ namespace am {
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 					mThreadsCount);
 
-				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId) 
+				// threadpool could be used, but according to tests its working slower than
+				//async calls
+				//ThreadPool pool(mThreadsCount);
+				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId)
 				{
-					Column column{ columnId * columnWidth, columnId * columnWidth + columnWidth };
+					Column column{columnId * columnWidth, columnId * columnWidth + columnWidth};
 					futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 						pair, column, *mConfiguration));
+
+					//futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, column, *mConfiguration)));
 				}
 
-				Column final_column{ (mThreadsCount - 1) * columnWidth, pair.getWidth() };
+				Column final_column{(mThreadsCount - 1) * columnWidth, pair.getWidth()};
 				futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 					pair, final_column, *mConfiguration));
-
-				for (auto &e : futures) 
+				//futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, final_column, *mConfiguration)));
+				for (auto &e : futures)
 				{
 					res.emplace_back(e.get());
 				}
