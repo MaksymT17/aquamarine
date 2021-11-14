@@ -18,7 +18,7 @@ namespace am {
 			public:
 				virtual ~IObjectDetector() = default;
 
-				virtual DescObjects getObjectsRects(const ImagePair& pair) = 0;
+				virtual DescObjects getObjectsRects(ImagePair& pair) = 0;
 			};
 		}
 	}

@@ -20,7 +20,7 @@ namespace am
 			}
 		}
 
-		std::shared_ptr<Matrix<Color24b>> BmpExtractor::readFile(const std::string& fileName)
+		Matrix<Color24b> BmpExtractor::readFile(const std::string& fileName)
 		{
 			bitmap_image image(fileName.c_str());
 
@@ -33,13 +33,11 @@ namespace am
 			const unsigned int height = image.height();
 			const unsigned int width = image.width();
 
-			std::shared_ptr<Matrix<Color24b>> data(std::make_shared<Matrix<Color24b>>(width, height));
-
-			auto& colorsRef = *data.get();
+			Matrix<Color24b> data(width, height);
 
 			for (std::size_t y = 0; y < height; ++y)
 			{
-				readRowFromImageSource(y, width, image, colorsRef);
+				readRowFromImageSource(y, width, image, data);
 			}
 
 			return data;

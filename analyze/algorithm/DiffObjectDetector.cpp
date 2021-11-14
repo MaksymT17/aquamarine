@@ -7,7 +7,7 @@
 namespace am {
 	namespace analyze {
 		namespace algorithm {
-			using SharedColorDiffsMatrix = std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>>;
+			using ColorDiffsMatrix = common::types::Matrix<common::types::Color24bDiff>;
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
@@ -41,46 +41,44 @@ namespace am {
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearch(std::shared_ptr<MatrixU16> changes, size_t step, const Column& col)
+			std::vector<Pixels> startObjectsSearch(MatrixU16& changes, size_t step, const Column& col)
 			{
-				auto& chRef = *changes.get();
-
 				std::vector<Pixels> result;
 				// check all diffs on potential objects
 				//if change found -> run bsf to figure out how many pixels included in this object
-				for (size_t rowId = step; rowId < chRef.getHeight(); rowId += step)
+				for (size_t rowId = step; rowId < changes.getHeight(); rowId += step)
 				{
 					for (size_t colId = col.left; colId < col.right; colId += step)
 					{
-						if (chRef(rowId, colId) == common::CHANGE)
+						if (changes(rowId, colId) == common::CHANGE)
 						{
 							Pixels obj = { { rowId, colId } };
-							auto conns = checkConnections(rowId, colId, chRef.getHeight(), col, 1u);
-							result.emplace_back(bfs(chRef, conns, obj, col));
+							auto conns = checkConnections(rowId, colId, changes.getHeight(), col, 1u);
+							result.emplace_back(bfs(changes, conns, obj, col));
 						}
 					}
 				}
 				return result;
 			}
 
-			DescObjects DiffObjectDetector::getObjectsRects(SharedColorDiffsMatrix diffs)
+			DescObjects DiffObjectDetector::getObjectsRects(ColorDiffsMatrix& diffs)
 			{
-				const size_t width = diffs.get()->getWidth();
-				const size_t height = diffs.get()->getHeight();
+				const size_t width = diffs.getWidth();
+				const size_t height = diffs.getHeight();
 				const size_t columnWidth = width / mThreadsCount;
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 
 				mLogger->info("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
 
-				std::shared_ptr<MatrixU16> changes = ThresholdDiffChecker::getThresholdDiff(diffs,
+				MatrixU16 changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 					mThreadsCount, mConfiguration->AffinityThreshold);
 
 				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
 				{
 					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, changes, mConfiguration->PixelStep, column));
+					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration->PixelStep, column));
 				}
 
 				for (auto &e : futures)
@@ -90,9 +88,9 @@ namespace am {
 				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}
 
-			DescObjects DiffObjectDetector::getObjectsRects(const ImagePair& pair)
+			DescObjects DiffObjectDetector::getObjectsRects(ImagePair& pair)
 			{
-				SharedColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond(), mThreadsCount);
+				ColorDiffsMatrix diffs = am::analyze::AffinityComparer::compare(pair.getFirst(), pair.getSecond(), mThreadsCount);
 				return getObjectsRects(diffs);
 			}
 		}

@@ -15,11 +15,11 @@ namespace am
 		{
 		}
 
-		std::vector<std::shared_ptr<Matrix<Color24b>>> MultipleBmpExtractor::readFiles(std::vector<std::string>& fileNames)
+		std::vector<Matrix<Color24b>> MultipleBmpExtractor::readFiles(std::vector<std::string>& fileNames)
 		{
-			std::vector<std::shared_ptr<Matrix<Color24b>>> result;
+			std::vector<Matrix<Color24b>> result;
 			result.reserve(fileNames.size());
-			std::vector<std::future<std::shared_ptr<Matrix<Color24b>>>> futures;
+			std::vector<std::future<Matrix<Color24b>>> futures;
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{				

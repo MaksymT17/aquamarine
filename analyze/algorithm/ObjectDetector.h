@@ -17,7 +17,7 @@ namespace am {
 
 				// time for every collecting results defined in configuration
 				// can be adjusted, but some objects can be not found because of terminated calculations
-				virtual DescObjects getObjectsRects(const ImagePair& pair) override;
+				virtual DescObjects getObjectsRects(ImagePair& pair) override;
 			};
 
 		}

@@ -96,7 +96,7 @@ namespace am {
 				return resultList;
 			}
 
-			DescObjects ObjectDetector::getObjectsRects(const ImagePair &pair) 
+			DescObjects ObjectDetector::getObjectsRects(ImagePair &pair) 
 			{
 				const size_t columnWidth = pair.getWidth() / mThreadsCount;
 				std::vector<std::vector<Pixels>> res;
