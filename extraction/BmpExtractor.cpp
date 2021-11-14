@@ -33,7 +33,7 @@ namespace am
 			const unsigned int height = image.height();
 			const unsigned int width = image.width();
 
-			std::shared_ptr<Matrix<Color24b>> data(new Matrix<Color24b>(width, height));
+			std::shared_ptr<Matrix<Color24b>> data(std::make_shared<Matrix<Color24b>>(width, height));
 
 			auto& colorsRef = *data.get();
 

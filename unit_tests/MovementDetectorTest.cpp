@@ -14,15 +14,13 @@ namespace am {
 
 			auto firstBmp = extractor.readFile(base);
 			auto secondtBmp = extractor.readFile(next);
-			am::analyze::algorithm::movement::ImagePairPtr pair(
-				new am::analyze::algorithm::ImagePair(firstBmp, secondtBmp));
+			am::analyze::algorithm::movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
 			using namespace am::analyze::algorithm;
 
 			std::multiset<Object, comparators::Descending> m1;
 			am::configuration::ConfigurationReader reader;
 			auto conf = reader.getConfigurationFromFile("../../inputs/configuration.csv");
-			std::shared_ptr<am::common::Logger> lPtr(
-				new am::common::Logger("ut_dummy_logger.log"));
+			std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
 			movement::MovementDetector detector(3, conf, lPtr);
 
 			EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException,
