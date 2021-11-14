@@ -47,10 +47,7 @@ int main(int argc, char * argv[])
 	std::vector<std::string> fileNames = { base_img_path, cmp_img_path };
 
 	// multiple reading of files
-	std::vector<std::shared_ptr<Matrix<Color24b>>> data = extractor.readFiles(fileNames);
-
-	std::shared_ptr<Matrix<Color24b>> res = data[0];
-	std::shared_ptr<Matrix<Color24b>> resChange = data[1];
+	std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
 
 	am::configuration::ConfigurationReader reader;
 
@@ -59,7 +56,7 @@ int main(int argc, char * argv[])
 
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 
-	algorithm::ImagePair pair(res, resChange);
+	algorithm::ImagePair pair(data[0], data[1]);
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
 	for (auto &rect : rects1) {

@@ -15,7 +15,7 @@ namespace am
 			BmpExtractor() = default;
 			virtual ~BmpExtractor() = default;
 
-			static std::shared_ptr<common::types::Matrix<common::types::Color24b>> readFile(const std::string& filePath);
+			static common::types::Matrix<common::types::Color24b> readFile(const std::string& filePath);
 		};
 
 	}

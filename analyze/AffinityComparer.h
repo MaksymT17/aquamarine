@@ -16,20 +16,15 @@ namespace am
 		class AffinityComparer : public IComparer
 		{
 		public:
-			AffinityComparer(std::shared_ptr<common::types::Matrix<common::types::Color24b>> base);
+			AffinityComparer(common::types::Matrix<common::types::Color24b>& base);
 
 			virtual ~AffinityComparer() = default;
 
-			virtual std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>>
-				compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> newSource) override;
-
-			static std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> compare(std::shared_ptr<common::types::Matrix<common::types::Color24b>> first, 
-				std::shared_ptr<common::types::Matrix<common::types::Color24b>> second, size_t threadsNum);
-
-			bool isRequestSizeValid(std::shared_ptr<common::types::Matrix<common::types::Color24b>> newSource) const;
+			static common::types::Matrix<common::types::Color24bDiff> compare(const common::types::Matrix<common::types::Color24b>& first, 
+				const common::types::Matrix<common::types::Color24b>& second, size_t threadsNum);
 
 		private:
-			std::shared_ptr<common::types::Matrix<common::types::Color24b>> mBase;
+			common::types::Matrix<common::types::Color24b>& mBase;
 			DataMode mMode;
 		};
 	}
