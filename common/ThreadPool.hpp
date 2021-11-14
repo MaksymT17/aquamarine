@@ -6,7 +6,9 @@
 
 class ThreadPool {
     public:
-    ThreadPool(unsigned num_threads = std::thread::hardware_concurrency()) {
+    //according to test on CPU with Hyper-threading feature better to use mutiplier of 2
+    // without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
+    ThreadPool(unsigned num_threads = std::thread::hardware_concurrency()*2) {
         while (num_threads--) {
             threads.emplace_back([this] {
                 while(true) {
