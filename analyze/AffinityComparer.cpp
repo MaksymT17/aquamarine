@@ -51,7 +51,7 @@ namespace am {
 				throw common::exceptions::AllocationException(msg);
 			}
 			// can be wrapped in try() for bad alloc
-			std::shared_ptr<Matrix<Color24bDiff>> result(new Matrix<Color24bDiff>(width, height));
+			std::shared_ptr<Matrix<Color24bDiff>> result(std::make_shared<Matrix<Color24bDiff>>(width, height));
 
 			size_t availableThrCount = am::common::getOptimalThreadsCount();
 			size_t threadsCount = availableThrCount > height ? height : availableThrCount;
