@@ -18,9 +18,10 @@ namespace am {
 
 			//optimized bfs depending to left/right borders for threads, 
 			//every thread will search in defined area(column) of image
-			Pixels bfs(MatrixU16& changes, Pixels& toCheck, Pixels& object, Column col)
+			Pixels bfs(MatrixU16& changes, Pixels& toCheck, Pixels& object, Column col, size_t minCount)
 			{
 				Pixels nextCheck;
+				nextCheck.resize(minCount, {0,0});
 
 				for (auto& position : toCheck)
 				{
@@ -36,14 +37,16 @@ namespace am {
 					}
 				}
 				if (nextCheck.size())
-					bfs(changes, nextCheck, object, col);
+					bfs(changes, nextCheck, object, col, minCount);
 
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearch(MatrixU16& changes, size_t step, const Column& col)
+			std::vector<Pixels> startObjectsSearch(MatrixU16& changes, am::configuration::Configuration* conf, const Column& col)
 			{
 				std::vector<Pixels> result;
+				const size_t step = conf->PixelStep;
+				const size_t minCountReserve = conf->MinPixelsForObject - 1;
 				// check all diffs on potential objects
 				//if change found -> run bsf to figure out how many pixels included in this object
 				for (size_t rowId = step; rowId < changes.getHeight(); rowId += step)
@@ -52,9 +55,12 @@ namespace am {
 					{
 						if (changes(rowId, colId) == common::CHANGE)
 						{
-							Pixels obj = { { rowId, colId } };
+							std::vector<Pixel> obj;
+							//allocate object size closeer to the limit of the detection object
+							obj.resize(minCountReserve, {rowId, colId});
+
 							auto conns = checkConnections(rowId, colId, changes.getHeight(), col, 1u);
-							result.emplace_back(bfs(changes, conns, obj, col));
+							result.emplace_back(bfs(changes, conns, obj, col, minCountReserve));
 						}
 					}
 				}
@@ -78,7 +84,7 @@ namespace am {
 				{
 					Pixels toCheck;
 					Column column{ columnId*columnWidth, columnId*columnWidth + columnWidth };
-					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration->PixelStep, column));
+					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration.get(), column));
 				}
 
 				for (auto &e : futures)

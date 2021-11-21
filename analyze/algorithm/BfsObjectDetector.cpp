@@ -15,7 +15,7 @@ namespace am {
 
 			bool isNew(Pixels &object, size_t rowId, size_t colId)noexcept
 			{
-				for (auto pos : object) {
+				for (auto& pos : object) {
 					if (pos.colId == colId && pos.rowId == rowId)
 						return false;
 				}
@@ -78,10 +78,13 @@ namespace am {
 				std::vector<std::vector<Pixels>> &objPixels, const size_t minPixels)
 			{
 				std::vector<std::vector<Object>> rects;
+				rects.resize(objPixels.size());
+
 				DescObjects orderedResult;
 				for (auto &thrList : objPixels) {
 					if (!thrList.empty()) {
 						std::vector<Object> threadObjs;
+
 						for (auto& objs : thrList) {
 							// skip objects if smaller that minObjSize, avoid noise
 							//if (objs.size() >= mConfiguration->MinPixelsForObject)
