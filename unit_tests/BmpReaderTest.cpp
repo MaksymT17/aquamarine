@@ -1,7 +1,9 @@
-#include "TestBase.hpp"
+
 #include "analyze/ThresholdDiffChecker.h"
 #include "extraction/BmpExtractor.h"
 #include "common/exceptions/FileAccessException.hpp"
+
+#include "gtest/gtest.h"
 
 namespace am {
 	namespace unit_tests {
@@ -11,7 +13,7 @@ namespace am {
 			am::extraction::BmpExtractor extractor;
 			std::string base("../inputs/NotExisting.BMP");
 
-			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException, test_results);
+			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException);
 		}
 
 		void checkForExistingFile()
@@ -19,7 +21,7 @@ namespace am {
 			am::extraction::BmpExtractor extractor;
 			std::string base("../../inputs/rs_1.BMP");
 
-			EXPECT_NON_THROW(extractor.readFile(base), test_results);
+			EXPECT_NO_THROW(extractor.readFile(base));
 		}
 
 	}
@@ -30,6 +32,5 @@ int main()
 	using namespace am::unit_tests;
 	checkForNotExistingFile();
 	checkForExistingFile();
-	PRINTF_RESULTS("BmpReading");
 	return 0;
 }

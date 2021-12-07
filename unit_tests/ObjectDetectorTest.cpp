@@ -29,12 +29,17 @@ namespace am {
 			std::vector<std::string> fileNames = { base, toCompare };
 
 			//multiple reading of files
-			std::vector<std::shared_ptr<Matrix<Color24b>>> data = extractor.readFiles(fileNames);
+			std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
 
-			std::shared_ptr<Matrix<Color24b>> res = data[0];
-			std::shared_ptr<Matrix<Color24b>> resChange = data[1];
+	// 		std::shared_ptr<Matrix<Color24b>> res = data[0];
+	// 		std::shared_ptr<Matrix<Color24b>> resChange = data[1];
 
-			algorithm::ImagePair pair(res, resChange);
+	// 			std::vector<std::string> fileNames = { base_img_path, cmp_img_path };
+
+	// // multiple reading of files
+	// std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
+
+			algorithm::ImagePair pair(data[0], data[1]);
 
 			const size_t opt_threads =  am::common::getOptimalThreadsCount();
 
