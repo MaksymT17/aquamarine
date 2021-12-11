@@ -1,5 +1,5 @@
-#include "TestBase.hpp"
 
+#include "gtest/gtest.h"
 #include "analyze/AffinityComparer.h"
 #include <stdio.h>
 #include "extraction/MultipleBmpExtractor.h"
@@ -15,52 +15,39 @@
 #include "common/Context.hpp"
 #include <memory>
 
-namespace am {
-	namespace unit_tests {
-		void testObjectDetectionResuts()
-		{
-			using namespace am::common::types;
-			using namespace am::analyze;
+// check if 2 different implementations providing the same result
+TEST(ObjectDetectionTest, checkObjectDetectionResuts)
+{
+	using namespace am::common::types;
+	using namespace am::analyze;
 
-			std::shared_ptr<am::common::Logger> loggerPtr(new am::common::Logger("od_dummy_log.log"));
-			am::extraction::MultipleBmpExtractor extractor(loggerPtr);
-			std::string base("inputs/fhd_clean.BMP");
-			std::string toCompare("inputs/fhd_3obj.BMP");
-			std::vector<std::string> fileNames = { base, toCompare };
+	std::shared_ptr<am::common::Logger> loggerPtr(new am::common::Logger("od_dummy_log.log"));
+	am::extraction::MultipleBmpExtractor extractor(loggerPtr);
+	std::string base("inputs/fhd_clean.BMP");
+	std::string toCompare("inputs/fhd_3obj.BMP");
+	std::vector<std::string> fileNames = { base, toCompare };
 
-			//multiple reading of files
-			std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
+	//multiple reading of files
+	std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
 
-	// 		std::shared_ptr<Matrix<Color24b>> res = data[0];
-	// 		std::shared_ptr<Matrix<Color24b>> resChange = data[1];
+	algorithm::ImagePair pair(data[0], data[1]);
 
-	// 			std::vector<std::string> fileNames = { base_img_path, cmp_img_path };
+	const size_t opt_threads =  am::common::getOptimalThreadsCount();
 
-	// // multiple reading of files
-	// std::vector<Matrix<Color24b>> data = extractor.readFiles(fileNames);
+	am::configuration::ConfigurationReader reader;
 
-			algorithm::ImagePair pair(data[0], data[1]);
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 
-			const size_t opt_threads =  am::common::getOptimalThreadsCount();
+	// mv: experimental - but, main feature currently
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
+	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
 
-			am::configuration::ConfigurationReader reader;
-
-			auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
-
-			//experimental - but, main feature currently, external review needed
-			algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
-			algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
-
-			algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
-			algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
-			EXPECT_EQ(rects1.size(), rects2.size());
-		}
-	}
+	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
+	algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
+	EXPECT_EQ(rects1.size(), rects2.size());
 }
 
-int main()
-{
-	am::unit_tests::testObjectDetectionResuts();
-	am::unit_tests::PRINTF_RESULTS("ObjectDetection");
-	return 0;
+int main(int argc, char** argv) {
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

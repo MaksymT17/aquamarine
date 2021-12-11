@@ -1,8 +1,10 @@
 #pragma once
 
+// mv: deprecated file. gtests has its own implementation
+// such header could be used for basic tests without linking gtest
+
 #include <functional>
 #include "common/exceptions/AmException.hpp"
-
 
 namespace am {
 	namespace unit_tests {
