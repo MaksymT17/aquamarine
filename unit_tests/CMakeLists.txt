@@ -24,12 +24,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(bmpExtraction_ut 
+add_executable(bmpReader_ut 
     TestBase.hpp
     ${AM_SRC}/extraction/BmpExtractor.cpp
     BmpReaderTest.cpp
 )
-target_link_libraries(bmpExtraction_ut gtest_main)
+target_link_libraries(bmpReader_ut gtest_main)
 
 add_executable(movementDetector_ut 
   ${AM_SRC}/extraction/BmpExtractor.cpp
@@ -74,6 +74,12 @@ add_executable(bmpExtractor_ut
   BmpExtractorTest.cpp
 )
 target_link_libraries(bmpExtractor_ut gtest_main)
+
+add_executable(affinityComparer_ut 
+  ${AM_SRC}/analyze/AffinityComparer.cpp
+  AffinityComparerTest.cpp
+)
+target_link_libraries(affinityComparer_ut gtest_main)
 
 target_link_libraries (movementDetector_ut ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries (objectDetection_ut ${CMAKE_THREAD_LIBS_INIT})
