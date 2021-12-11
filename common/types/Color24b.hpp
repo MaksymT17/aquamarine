@@ -10,6 +10,10 @@ namespace am {
 				uint8_t r;
 				uint8_t g;
 				uint8_t b;
+
+				bool operator== (const Color24b &rhs)const{
+					return (r == rhs.r && g == rhs.g && b == rhs.b);
+				}
 			};
 		}
 	}

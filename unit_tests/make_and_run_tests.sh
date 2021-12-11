@@ -8,6 +8,8 @@ echo "UNIT TESTS SCRIPT: Binaries ready, starting execution..." &&
 ./movementDetector_ut &&
 ./objectDetection_ut &&
 ./matrix_ut &&
+./object_ut &&
+./bmpExtractor_ut &&
 echo "UNIT TESTS SCRIPT: Execution of tests finished." &&
 if [ $(dpkg-query -W -f='${Status}' valgrind 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
