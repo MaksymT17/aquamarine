@@ -1,36 +1,30 @@
+#include "gtest/gtest.h"
 #include "analyze/algorithm/movement/MovementDetector.h"
-#include "TestBase.hpp"
 #include "common/Logger.hpp"
 #include "configuration/ConfigurationReader.hpp"
 #include "extraction/BmpExtractor.h"
 
-namespace am {
-	namespace unit_tests {
+TEST(MovementDetectionTest, checkTwoObjectsMovements)
+{
+	am::extraction::BmpExtractor extractor;
+	std::string base("../../inputs/rs_1.BMP");
+	std::string next("../../inputs/rs_2.BMP");
 
-		void checkTwoObjectsMovements() {
-			am::extraction::BmpExtractor extractor;
-			std::string base("../../inputs/rs_1.BMP");
-			std::string next("../../inputs/rs_2.BMP");
+	auto firstBmp = extractor.readFile(base);
+	auto secondtBmp = extractor.readFile(next);
+	using namespace am::analyze::algorithm;
+	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
 
-			auto firstBmp = extractor.readFile(base);
-			auto secondtBmp = extractor.readFile(next);
-			am::analyze::algorithm::movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
-			using namespace am::analyze::algorithm;
+	std::multiset<Object, comparators::Descending> m1;
+	am::configuration::ConfigurationReader reader;
+	auto conf = reader.getConfigurationFromFile("../../inputs/configuration.csv");
+	std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
+	movement::MovementDetector detector(3, conf, lPtr);
 
-			std::multiset<Object, comparators::Descending> m1;
-			am::configuration::ConfigurationReader reader;
-			auto conf = reader.getConfigurationFromFile("../../inputs/configuration.csv");
-			std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
-			movement::MovementDetector detector(3, conf, lPtr);
+	EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException);
+}
 
-			EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException,
-				test_results);
-		}
-	} // namespace unit_tests
-} // namespace am
-
-int main() {
-	am::unit_tests::checkTwoObjectsMovements();
-	am::unit_tests::PRINTF_RESULTS("MovementDetection");
-	return 0;
+int main(int argc, char** argv) {
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
