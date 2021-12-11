@@ -63,6 +63,18 @@ add_executable(matrix_ut
 )
 target_link_libraries(matrix_ut gtest_main)
 
+add_executable(object_ut 
+  ${AM_SRC}/analyze/algorithm/Object.cpp
+  ObjectTest.cpp
+)
+target_link_libraries(object_ut gtest_main)
+
+add_executable(bmpExtractor_ut 
+  ${AM_SRC}/extraction/BmpExtractor.cpp
+  BmpExtractorTest.cpp
+)
+target_link_libraries(bmpExtractor_ut gtest_main)
+
 target_link_libraries (movementDetector_ut ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries (objectDetection_ut ${CMAKE_THREAD_LIBS_INIT})
 
