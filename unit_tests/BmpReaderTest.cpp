@@ -1,36 +1,26 @@
 
+#include "gtest/gtest.h"
 #include "analyze/ThresholdDiffChecker.h"
 #include "extraction/BmpExtractor.h"
 #include "common/exceptions/FileAccessException.hpp"
 
-#include "gtest/gtest.h"
+TEST(BmpReaderTest, checkForNotExistingFile)
+{
+	am::extraction::BmpExtractor extractor;
+	std::string base("../inputs/NotExisting.BMP");
 
-namespace am {
-	namespace unit_tests {
-
-		void checkForNotExistingFile()
-		{
-			am::extraction::BmpExtractor extractor;
-			std::string base("../inputs/NotExisting.BMP");
-
-			EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException);
-		}
-
-		void checkForExistingFile()
-		{
-			am::extraction::BmpExtractor extractor;
-			std::string base("../../inputs/rs_1.BMP");
-
-			EXPECT_NO_THROW(extractor.readFile(base));
-		}
-
-	}
+	EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException);
 }
 
-int main()
+TEST(BmpReaderTest, checkForExistingFile)
 {
-	using namespace am::unit_tests;
-	checkForNotExistingFile();
-	checkForExistingFile();
-	return 0;
+	am::extraction::BmpExtractor extractor;
+	std::string base("../../inputs/rs_1.BMP");
+
+	EXPECT_NO_THROW(extractor.readFile(base));
+}
+
+int main(int argc, char** argv) {
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
