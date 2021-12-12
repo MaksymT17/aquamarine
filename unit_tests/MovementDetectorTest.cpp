@@ -7,8 +7,8 @@
 TEST(MovementDetectionTest, checkTwoObjectsMovements)
 {
 	am::extraction::BmpExtractor extractor;
-	std::string base("../../inputs/rs_1.BMP");
-	std::string next("../../inputs/rs_2.BMP");
+	std::string base("inputs/rs_1.BMP");
+	std::string next("inputs/rs_2.BMP");
 
 	auto firstBmp = extractor.readFile(base);
 	auto secondtBmp = extractor.readFile(next);
@@ -17,14 +17,9 @@ TEST(MovementDetectionTest, checkTwoObjectsMovements)
 
 	std::multiset<Object, comparators::Descending> m1;
 	am::configuration::ConfigurationReader reader;
-	auto conf = reader.getConfigurationFromFile("../../inputs/configuration.csv");
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
 	movement::MovementDetector detector(3, conf, lPtr);
 
 	EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException);
-}
-
-int main(int argc, char** argv) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
 }
