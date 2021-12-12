@@ -43,8 +43,3 @@ TEST(MatrixTest, checkMixedPositives)
 	EXPECT_EQ(diff1.isPositveG(), false);
 	EXPECT_EQ(diff1.isPositveB(), true);
 }
-
-int main(int argc, char** argv) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
