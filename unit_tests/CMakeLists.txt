@@ -5,10 +5,10 @@ set(CMAKE_PROJECT_VERSION 0.7)
 set(CMAKE_PROJECT_VERSION_MAJOR ${CMAKE_PROJECT_VERSION})
 set(CMAKE_PROJECT_VERSION_MINOR ${CMAKE_PROJECT_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${CMAKE_PROJECT_VERSION})
-set(AM_SRC ..)
-set(AM_INC ..)
+set(AM_SRC ../)
+set(AM_INC ../)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O3 -fprofile-arcs -ftest-coverage")
 
 find_package (Threads)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -24,63 +24,33 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(bmpReader_ut 
-    TestBase.hpp
+add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
+    ${AM_SRC}/analyze/algorithm/movement/MovementDetector.cpp
+    ${AM_SRC}/analyze/algorithm/ImagePair.cpp
+    ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp
+    ${AM_SRC}/analyze/AffinityComparer.cpp 
+    ${AM_SRC}/analyze/ThresholdDiffChecker.cpp 
+    ${AM_SRC}/analyze/algorithm/Object.cpp
+    ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
+    ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
+    ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
+    ${AM_SRC}/common/Timers.hpp
+    MovementDetectorTest.cpp
     BmpReaderTest.cpp
+    ObjectDetectorTest.cpp
+    MatrixTest.cpp
+    AffinityComparerTest.cpp
 )
-target_link_libraries(bmpReader_ut gtest_main)
+target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(movementDetector_ut 
-  ${AM_SRC}/extraction/BmpExtractor.cpp
-  ${AM_SRC}/analyze/algorithm/movement/MovementDetector.cpp
-  ${AM_SRC}/analyze/algorithm/Object.cpp
-  ${AM_SRC}/analyze/algorithm/ImagePair.cpp
-  ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp
-  ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp
-  MovementDetectorTest.cpp
+# gcov - coverage
+set(CMAKE_COMPILER_IS_GNUCXX true)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(CodeCoverage)
+setup_target_for_coverage_gcovr_html(
+    NAME coverage_aquamarine_ut
+    EXECUTABLE aquamarine_ut
+    BASE_DIRECTORY "${AM_SRC}/"
+    EXCLUDE "${CMAKE_SOURCE_DIR}/" "${CMAKE_SOURCE_DIR}/../thirdparty/"
 )
-target_link_libraries(movementDetector_ut gtest_main)
-
-add_executable(objectDetection_ut
-  ${AM_SRC}/analyze/AffinityComparer.cpp 
-  ${AM_SRC}/analyze/ThresholdDiffChecker.cpp 
-  ${AM_SRC}/analyze/algorithm/Object.cpp
-  ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp 
-  ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
-  ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
-  ${AM_SRC}/analyze/algorithm/ImagePair.cpp 
-  ${AM_SRC}/analyze/algorithm/movement/MovementDetector.cpp
-  ${AM_SRC}/extraction/BmpExtractor.cpp
-  ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
-  ${AM_SRC}/common/Timers.hpp
-  ObjectDetectorTest.cpp
-)
-target_link_libraries(objectDetection_ut gtest_main)
-
-add_executable(matrix_ut 
-  MatrixTest.cpp
-)
-target_link_libraries(matrix_ut gtest_main)
-
-add_executable(object_ut 
-  ${AM_SRC}/analyze/algorithm/Object.cpp
-  ObjectTest.cpp
-)
-target_link_libraries(object_ut gtest_main)
-
-add_executable(bmpExtractor_ut 
-  ${AM_SRC}/extraction/BmpExtractor.cpp
-  BmpExtractorTest.cpp
-)
-target_link_libraries(bmpExtractor_ut gtest_main)
-
-add_executable(affinityComparer_ut 
-  ${AM_SRC}/analyze/AffinityComparer.cpp
-  AffinityComparerTest.cpp
-)
-target_link_libraries(affinityComparer_ut gtest_main)
-
-target_link_libraries (movementDetector_ut ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries (objectDetection_ut ${CMAKE_THREAD_LIBS_INIT})
-

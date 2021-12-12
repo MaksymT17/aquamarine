@@ -5,5 +5,5 @@ mkdir build &&
 scp -r ../inputs/ build/ &&
 echo "PREPARE UNIT TESTS SCRIPT: Preparing new build with cmake..." &&
 cd build/ &&
-cmake .. &&
+cmake -DCMAKE_BUILD_TYPE=Debug .. &&
 echo "PREPARE UNIT TEST SRIPT: Cmake generated files for build"
