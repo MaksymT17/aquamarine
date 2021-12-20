@@ -21,23 +21,22 @@ namespace am {
 			}
 		}
 
-		void checlImageRow(size_t rowId, size_t width, std::shared_ptr<Matrix<Color24bDiff>> diff,
-			const uint16_t threshold, std::shared_ptr<std::atomic_size_t> diffCounter)
+		void checlImageRow(size_t rowId, size_t width, Matrix<Color24bDiff>& diff,
+			const uint16_t threshold, std::atomic_size_t& diffCounter)
 		{
-			auto &diffRef = *diff.get();
 			for (std::size_t x = 0; x < width; ++x)
 			{
 				// if value bigger then threshold we can assume - color changed
-				if ((diffRef(rowId, x).r + diffRef(rowId, x).g + diffRef(rowId, x).b) > threshold)
-					++(*diffCounter.get());
+				if ((diff(rowId, x).r + diff(rowId, x).g + diff(rowId, x).b) > threshold)
+					++diffCounter;
 			}
 		}
 
-		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, std::shared_ptr<Matrix<Color24bDiff>> diffs)
+		float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, Matrix<Color24bDiff>& diffs)
 		{
-			std::shared_ptr<std::atomic_size_t> diffCounter(std::make_shared<std::atomic_size_t>(0));
-			const size_t width = diffs.get()->getWidth();
-			const size_t height = diffs.get()->getHeight();
+			std::atomic_size_t diffCounter(0);
+			const size_t width = diffs.getWidth();
+			const size_t height = diffs.getHeight();
 
 			size_t threads = threadsCount > height ? height : threadsCount;
 
@@ -46,18 +45,20 @@ namespace am {
 			for (size_t portion = 0; portion < height; portion += threads)
 			{
 				for (size_t i = 0; i < threads; ++i)
-					futures.emplace_back(std::async(std::launch::async, checlImageRow, portion + i, width, diffs, mThreshold, diffCounter));
+					futures.emplace_back(std::async(std::launch::async, checlImageRow, 
+					portion + i, width, std::ref(diffs), mThreshold, std::ref(diffCounter)));
 
 				futures.clear();
 			}
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threads) * threads; lastLines < height; ++lastLines)
-				futures.emplace_back(std::async(std::launch::async, checlImageRow, lastLines, width, diffs, mThreshold, diffCounter));
+				futures.emplace_back(std::async(std::launch::async, checlImageRow, lastLines, width, 
+				std::ref(diffs), mThreshold, std::ref(diffCounter)));
 
 			for (auto &e : futures)
 				e.get();
 
-			return 1.0f - (static_cast<float>(*diffCounter.get()) / static_cast<float>(width * height));
+			return 1.0f - (static_cast<float>(diffCounter) / static_cast<float>(width * height));
 		}
 
 		MatrixU16 ThresholdDiffChecker::getThresholdDiff(Matrix<Color24bDiff>& diffs, size_t threadsCount, size_t threshold)
@@ -73,16 +74,11 @@ namespace am {
 
 				for (auto &e : futures)
 					e.get();
-
-				futures.clear();
 			}
 
 			// final section in case if width not divided normally on threads count
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.emplace_back(std::async(std::launch::async, setThresholdChanges, lastLines, width, std::ref(diffs), threshold, std::ref(res)));
-
-			for (auto &e : futures)
-				e.get();
 
 			return res;
 		}
