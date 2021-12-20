@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-#include "analyze/ThresholdDiffChecker.h"
 #include "extraction/BmpExtractor.h"
 #include "common/types/Color24bDiff.hpp"
 

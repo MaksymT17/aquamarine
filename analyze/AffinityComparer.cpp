@@ -55,9 +55,6 @@ namespace am {
 			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
 				futures.push_back(std::async(fillPixelLineWithDiffs, std::ref(first), std::ref(second), std::ref(result), lastLines, width));
 
-			for (auto &e : futures)
-				e.get();
-
 			return result;
 
 		}

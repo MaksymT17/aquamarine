@@ -12,7 +12,7 @@ namespace am {
 			virtual ~ThresholdDiffChecker() = default;
 
 			// shows persent of similarity based on diffs of two images
-			float getAffinityPersent(const size_t threadsCount, std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
+			float getAffinityPersent(const size_t threadsCount, common::types::Matrix<common::types::Color24bDiff>& diffs);
 
 			// get matrix with values bigger then threshold
 			static common::types::MatrixU16 getThresholdDiff(common::types::Matrix<common::types::Color24bDiff>& diffs,

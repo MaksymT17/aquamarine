@@ -41,6 +41,7 @@ add_executable(aquamarine_ut
     ObjectDetectorTest.cpp
     MatrixTest.cpp
     AffinityComparerTest.cpp
+    ThresholdDiffCheckerTest.cpp
 )
 target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
