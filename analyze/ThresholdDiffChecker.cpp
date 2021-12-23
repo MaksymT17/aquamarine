@@ -74,6 +74,8 @@ namespace am {
 
 				for (auto &e : futures)
 					e.get();
+
+				futures.clear();
 			}
 
 			// final section in case if width not divided normally on threads count
