@@ -47,14 +47,11 @@ TEST_F(ObjectDetectorWrapper, Check3ObjsFHD) {
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf, loggerPtr);
 	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
 
-	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
-	algorithm::DescObjects rects2 = detector.getObjectsRects(pair);
-	EXPECT_EQ(rects1.size(), rects2.size());
-	// because of noise, there found more objects but ist ok, it tracks any dfference according to conf
-	EXPECT_TRUE(rects1.size() == 15);
+	algorithm::DescObjects rects2 = diffDetector.getObjectsRects(pair);
+
+	EXPECT_EQ(3, rects2.size());
 }
 
 TEST_F(ObjectDetectorWrapper, Check2Objs10x10) {
@@ -88,6 +85,32 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20) {
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
 	EXPECT_EQ(rects1.size(), 5);
+}
+
+TEST_F(ObjectDetectorWrapper, CheckTimeLimitation) {
+	constexpr float duration_70ms = 0.07f;
+	constexpr float duration_additional_ms = 0.03f;
+
+	std::string base("inputs/rs_1.BMP");
+	std::string toCompare("inputs/rs_2.BMP");
+	std::vector<std::string> fileNames = { base, toCompare };
+	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+
+	algorithm::ImagePair pair(data[0], data[1]);
+	//configuration where object with 1 pixel could be detected
+	Configuration conf_s10x10{1, 1, 1, duration_70ms, 1, 1};
+	std::shared_ptr<Configuration> conf1=std::make_shared<Configuration>(conf_s10x10);
+
+	// note: big count of threads also require longer time to sync
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
+
+	auto startTime = std::chrono::steady_clock::now();
+	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
+
+	auto timeNow = std::chrono::steady_clock::now();
+	std::chrono::duration<double> duration = timeNow - startTime;
+	EXPECT_TRUE(duration.count() > duration_70ms);
+	EXPECT_TRUE(duration.count() < duration_70ms + duration_additional_ms);
 }
 
 TEST(ObjectTest, check3Pixels)
