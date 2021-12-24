@@ -45,8 +45,11 @@ namespace am {
 			std::vector<std::future<void>> futures;
 
 			for (size_t portion = 0; portion < height; portion += threadsCount) {
-				for (size_t i = 0; i < threadsCount; ++i)
+				for (size_t i = 0; i < threadsCount; ++i){
 					futures.push_back(std::async(std::launch::async, fillPixelLineWithDiffs, std::ref(first), std::ref(second), std::ref(result), portion + i, width));
+				}
+				for (auto &e : futures)
+					e.get();
 
 				futures.clear();
 			}
@@ -56,7 +59,6 @@ namespace am {
 				futures.push_back(std::async(fillPixelLineWithDiffs, std::ref(first), std::ref(second), std::ref(result), lastLines, width));
 
 			return result;
-
 		}
 	} // namespace analyze
 } // namespace am

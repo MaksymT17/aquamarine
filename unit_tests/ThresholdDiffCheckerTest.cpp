@@ -26,13 +26,13 @@ TEST(ThresholdDiffCheckerTest, check75percent_2x2)
     compare(1,0)=color;
     compare(1,1)=color1;
     
-    Matrix<Color24bDiff> res = AffinityComparer::compare(base, compare, 2);
+    Matrix<Color24bDiff> res = AffinityComparer::compare(base, compare, 4);
 
     EXPECT_EQ(thr.getAffinityPersent(4,res), 0.25f);
     EXPECT_EQ(thr_false.getAffinityPersent(4,res), 1.00f);
 
     // check comparison by pixels
-    auto diff = ThresholdDiffChecker::getThresholdDiff(res, 2, 100);
+    auto diff = ThresholdDiffChecker::getThresholdDiff(res, 4, 100);
     EXPECT_EQ(diff(0,0), am::common::CHANGE);
     EXPECT_EQ(diff(0,1), am::common::CHANGE);
     EXPECT_EQ(diff(1,0), 0);
