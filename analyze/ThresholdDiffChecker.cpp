@@ -68,8 +68,10 @@ namespace am {
 			MatrixU16 res(width, height);
 			std::vector<std::future<void>> futures;
 
-			for (size_t portion = 0; portion < height; portion += threadsCount) {
-				for (size_t i = 0; i < threadsCount; ++i)
+			size_t threads = threadsCount > height ? height : threadsCount;
+
+			for (size_t portion = 0; portion < height; portion += threads) {
+				for (size_t i = 0; i < threads; ++i)
 					futures.emplace_back(std::async(std::launch::async, setThresholdChanges, portion + i, width, std::ref(diffs), threshold, std::ref(res)));
 
 				for (auto &e : futures)
@@ -79,7 +81,7 @@ namespace am {
 			}
 
 			// final section in case if width not divided normally on threads count
-			for (size_t lastLines = (height / threadsCount) * threadsCount; lastLines < height; ++lastLines)
+			for (size_t lastLines = (height / threads) * threads; lastLines < height; ++lastLines)
 				futures.emplace_back(std::async(std::launch::async, setThresholdChanges, lastLines, width, std::ref(diffs), threshold, std::ref(res)));
 
 			return res;
