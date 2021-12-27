@@ -37,8 +37,8 @@ TEST(MovementDetectionTest, checkMovementOnEqualImages)
 
 	std::multiset<Object, comparators::Descending> m_objs, result;
 
-	//example of tracking object. No real movement shall be found
-	std::vector<Pixel> pixels{{5,5},{10,10},{20,20}};
+	// example of tracking object. No real movement shall be found
+	std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}};
 	Object obj(pixels);
 	m_objs.emplace(obj);
 	am::configuration::ConfigurationReader reader;

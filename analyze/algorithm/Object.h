@@ -3,19 +3,23 @@
 #include <cstdlib>
 #include <set>
 
-namespace am {
-	namespace analyze {
-		namespace algorithm {
-			// position of Pixel on image 
-			struct Pixel {
-				Pixel(size_t r, size_t c) :
-					rowId(r),
-					colId(c) {};
+namespace am
+{
+	namespace analyze
+	{
+		namespace algorithm
+		{
+			// position of Pixel on image
+			struct Pixel
+			{
+				Pixel(size_t r, size_t c) : rowId(r),
+											colId(c){};
 				size_t rowId;
 				size_t colId;
 			};
 
-			struct Column {
+			struct Column
+			{
 				size_t left;
 				size_t right;
 			};
@@ -25,13 +29,13 @@ namespace am {
 			class Object
 			{
 			public:
-				Object(std::vector<Pixel>& pixels);
+				Object(std::vector<Pixel> &pixels);
 				~Object() = default;
 
-				bool isMeargableToLeft(Object& toCompare) const noexcept;
-				bool mergeIfPossibleLeftToMe(Object& toCompare) noexcept;
+				bool isMeargableToLeft(Object &toCompare) const noexcept;
+				bool mergeIfPossibleLeftToMe(Object &toCompare) noexcept;
 
-				std::vector<Pixel>& getPixels() const noexcept;
+				std::vector<Pixel> &getPixels() const noexcept;
 				size_t getLeft() const noexcept;
 				size_t getRight() const noexcept;
 				size_t getMinHeight() const noexcept;
@@ -39,12 +43,12 @@ namespace am {
 				size_t getPixelsCount() const noexcept;
 
 				void printToConsole() const noexcept;
-				void clearPixelsCount()noexcept;
+				void clearPixelsCount() noexcept;
 
 			private:
-				void mergeToMe(Object& toCompare)noexcept;
+				void mergeToMe(Object &toCompare) noexcept;
 
-				std::vector<Pixel>& mPixels;
+				std::vector<Pixel> &mPixels;
 				size_t mPixelsCount;
 				size_t mLeft;
 				size_t mMin_height;
@@ -56,7 +60,7 @@ namespace am {
 			{
 				struct Ascending
 				{
-					bool operator() (const Object& l, const Object& r) const
+					bool operator()(const Object &l, const Object &r) const
 					{
 						return l.getPixelsCount() < r.getPixelsCount();
 					}
@@ -64,7 +68,7 @@ namespace am {
 
 				struct Descending
 				{
-					bool operator() (const Object& l, const Object& r) const
+					bool operator()(const Object &l, const Object &r) const
 					{
 						return l.getPixelsCount() > r.getPixelsCount();
 					}
@@ -72,17 +76,17 @@ namespace am {
 
 				struct Unordered
 				{
-					bool operator() (const Object& l, const Object& r) const
+					bool operator()(const Object &l, const Object &r) const
 					{
 						return true;
 					}
 				};
 			}
 
-			//template struct to make automatic ordering when new objects are inserting
-			// why ? to make priority in collected objects
-			// bigger should be first in collection
-			// if not needed can be used Unordered comparator
+			// template struct to make automatic ordering when new objects are inserting
+			//  why ? to make priority in collected objects
+			//  bigger should be first in collection
+			//  if not needed can be used Unordered comparator
 			template <typename T>
 			struct OrderedObjects
 			{

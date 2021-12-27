@@ -15,7 +15,7 @@ namespace am
 		public:
 			virtual ~IExtractor() = default;
 
-			virtual common::types::Matrix<common::types::Color24b> readFile(std::string& filePath) = 0;
+			virtual common::types::Matrix<common::types::Color24b> readFile(std::string &filePath) = 0;
 		};
 	}
 }
