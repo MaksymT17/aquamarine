@@ -2,12 +2,15 @@
 #include "analyze/algorithm/ImagePair.h"
 #include <future>
 
-//uncomment in case of threadpool usage
+// uncomment in case of threadpool usage
 #include "common/ThreadPool.hpp"
 
-namespace am {
-	namespace analyze {
-		namespace algorithm {
+namespace am
+{
+	namespace analyze
+	{
+		namespace algorithm
+		{
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
@@ -20,9 +23,9 @@ namespace am {
 			// Time dependent execution, if max calculation time exceeded calculation should
 			// finalize processing, and show up collected objects(if found).
 			Pixels bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
-				Pixels &object, Column col,
-				std::chrono::steady_clock::time_point &startTime,
-				const configuration::Configuration &conf)
+					   Pixels &object, Column col,
+					   std::chrono::steady_clock::time_point &startTime,
+					   const configuration::Configuration &conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
@@ -30,7 +33,7 @@ namespace am {
 				{
 					/// todo: make Error notification about failed detection
 					printf("Timelimit for calculation exceeded. Try to increase calculation "
-						"time in configuration.\n");
+						   "time in configuration.\n");
 					return object;
 				}
 				Pixels nextCheck;
@@ -39,15 +42,15 @@ namespace am {
 				{
 					if (visited(position.rowId, position.colId) != common::CHANGE &&
 						pair.getAbsoluteDiff(position.rowId, position.colId) >
-						conf.AffinityThreshold) 
+							conf.AffinityThreshold)
 					{
 						visited(position.rowId, position.colId) = common::CHANGE;
 						checkClosest(position.rowId, position.colId, nextCheck, object, col,
-							visited.getHeight(), conf.PixelStep);
+									 visited.getHeight(), conf.PixelStep);
 
-						if (isNew(object, position.rowId, position.colId)) 
+						if (isNew(object, position.rowId, position.colId))
 						{
-							object.emplace_back( position.rowId, position.colId );
+							object.emplace_back(position.rowId, position.colId);
 							visited(position.rowId, position.colId) = common::CHANGE;
 						}
 					}
@@ -59,8 +62,8 @@ namespace am {
 			}
 
 			std::vector<Pixels>
-				startObjectsSearchInPair(const ImagePair &pair, const Column &col,
-					const configuration::Configuration &conf) 
+			startObjectsSearchInPair(const ImagePair &pair, const Column &col,
+									 const configuration::Configuration &conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				MatrixU16 changes(pair.getWidth(), pair.getHeight());
@@ -69,7 +72,7 @@ namespace am {
 				// check all diffs on potential objects if change found -> run bfs,
 				// to figure out how many pixels included in this object
 				for (size_t rowId = conf.PixelStep; rowId < pair.getHeight();
-					rowId += conf.PixelStep) 
+					 rowId += conf.PixelStep)
 				{
 					for (size_t colId = col.left; colId < col.right; colId += conf.PixelStep)
 					{
@@ -83,11 +86,11 @@ namespace am {
 							return resultList;
 						}
 						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
-							changes(rowId, colId) != common::CHANGE)
+								 changes(rowId, colId) != common::CHANGE)
 						{
-							Pixels obj{ {rowId, colId} };
+							Pixels obj{{rowId, colId}};
 							auto conns = checkConnections(rowId, colId, pair.getHeight(), col,
-								conf.PixelStep);
+														  conf.PixelStep);
 							resultList.emplace_back(
 								bfs(pair, changes, conns, obj, col, startTime, conf));
 						}
@@ -96,27 +99,27 @@ namespace am {
 				return resultList;
 			}
 
-			DescObjects ObjectDetector::getObjectsRects(ImagePair &pair) 
+			DescObjects ObjectDetector::getObjectsRects(ImagePair &pair)
 			{
 				const size_t columnWidth = pair.getWidth() / mThreadsCount;
 				std::vector<std::vector<Pixels>> res;
 				std::vector<std::future<std::vector<Pixels>>> futures;
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
-					mThreadsCount);
+							  mThreadsCount);
 
 				// threadpool could be replaced with std::async calls
 				ThreadPool pool;
 				for (size_t columnId = 0; columnId < mThreadsCount - 1; ++columnId)
 				{
 					Column column{columnId * columnWidth, columnId * columnWidth + columnWidth};
-					//futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
+					// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 					//	pair, column, *mConfiguration));
 
 					futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, column, *mConfiguration)));
 				}
 
 				Column final_column{(mThreadsCount - 1) * columnWidth, pair.getWidth()};
-				//futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
+				// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 				//	pair, final_column, *mConfiguration));
 				futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, final_column, *mConfiguration)));
 				for (auto &e : futures)
@@ -126,5 +129,5 @@ namespace am {
 				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}
 		} // namespace algorithm
-	} // namespace analyze
+	}	  // namespace analyze
 } // namespace am

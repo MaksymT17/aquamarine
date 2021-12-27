@@ -1,16 +1,20 @@
 #pragma once
 
-#include<memory>
-#include<set>
+#include <memory>
+#include <set>
 #include "analyze/algorithm/Object.h"
 
-namespace am {
-	namespace analyze {
-		namespace algorithm {
+namespace am
+{
+	namespace analyze
+	{
+		namespace algorithm
+		{
 
 			class ImagePair;
 
-			namespace movement {
+			namespace movement
+			{
 
 				/// note: bitset for movements storage
 				// bytes definition: 0, 1 - left, right
@@ -19,7 +23,8 @@ namespace am {
 				// bitmask with enabled bits:0,1,2,3 means expand of object
 				struct MovementType
 				{
-					enum {
+					enum
+					{
 						LEFT = 0,
 						RIGHT = 1,
 						TOP = 2,
@@ -35,15 +40,15 @@ namespace am {
 				using Movements = std::vector<MovementType>;
 
 				// interface for Movements detection classes,
-				// movements shall be realted to Tracking objects				
+				// movements shall be realted to Tracking objects
 				class IMovementDetector
 				{
 				public:
 					~IMovementDetector() = default;
 
-					virtual void setTrackingObjects(DescObjects& objs) = 0;
-					virtual MovementType getMovementForObject(const Object& obj, ImagePairPtr& pair, Objects& found) = 0;
-					virtual Movements analyze(ImagePairPtr& pair, DescObjects& newObjects) = 0;
+					virtual void setTrackingObjects(DescObjects &objs) = 0;
+					virtual MovementType getMovementForObject(const Object &obj, ImagePairPtr &pair, Objects &found) = 0;
+					virtual Movements analyze(ImagePairPtr &pair, DescObjects &newObjects) = 0;
 				};
 
 			}

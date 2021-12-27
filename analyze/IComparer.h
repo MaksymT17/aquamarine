@@ -1,11 +1,13 @@
 #pragma once
 
-#include<memory>
-#include"common/types/Matrix.hpp"
-#include"common/types/Color24bDiff.hpp"
+#include <memory>
+#include "common/types/Matrix.hpp"
+#include "common/types/Color24bDiff.hpp"
 
-namespace am {
-	namespace analyze {
+namespace am
+{
+	namespace analyze
+	{
 		class IComparer
 		{
 		public:

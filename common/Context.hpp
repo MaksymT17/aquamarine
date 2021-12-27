@@ -3,12 +3,15 @@
 #include "Logger.hpp"
 #include "configuration/ConfigurationReader.hpp"
 
-namespace am {
+namespace am
+{
 
-	namespace common {
+	namespace common
+	{
 		// Context with general info
 		// singleton implementation [deprecated]
-		class Context {
+		class Context
+		{
 		private:
 			Context()
 				: mOptimalThreadsCount(calculateOptimalThreadsCount())
@@ -30,7 +33,6 @@ namespace am {
 			static Context *inst;
 
 		public:
-
 			static void release()
 			{
 				if (inst != nullptr)
@@ -41,14 +43,16 @@ namespace am {
 			{
 			}
 
-			static Context *getInstance() {
+			static Context *getInstance()
+			{
 				if (inst == nullptr)
 					inst = new Context();
 
 				return inst;
 			}
 
-			size_t getOpimalThreadsCount() {
+			size_t getOpimalThreadsCount()
+			{
 				return mOptimalThreadsCount;
 			}
 		};
