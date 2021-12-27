@@ -5,9 +5,12 @@
 #include "common/types/Color24bDiff.hpp"
 #include "Object.h"
 
-namespace am {
-	namespace analyze {
-		namespace algorithm {
+namespace am
+{
+	namespace analyze
+	{
+		namespace algorithm
+		{
 
 			class ImagePair;
 
@@ -18,7 +21,7 @@ namespace am {
 			public:
 				virtual ~IObjectDetector() = default;
 
-				virtual DescObjects getObjectsRects(ImagePair& pair) = 0;
+				virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
 			};
 		}
 	}

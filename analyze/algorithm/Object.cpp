@@ -1,14 +1,17 @@
 #include "Object.h"
 #include <stdio.h>
 
-namespace am {
-	namespace analyze {
-		namespace algorithm {
+namespace am
+{
+	namespace analyze
+	{
+		namespace algorithm
+		{
 
 			Object::Object(std::vector<Pixel> &pixels)
 				: mPixels(pixels), mPixelsCount(pixels.size()),
-				mLeft(pixels.begin()->colId), mMin_height(pixels.begin()->rowId),
-				mRight(pixels.begin()->colId), mMax_height(pixels.begin()->rowId)
+				  mLeft(pixels.begin()->colId), mMin_height(pixels.begin()->rowId),
+				  mRight(pixels.begin()->colId), mMax_height(pixels.begin()->rowId)
 			{
 				for (const auto &pixel : pixels)
 				{
@@ -24,9 +27,10 @@ namespace am {
 				}
 			}
 
-			bool Object::isMeargableToLeft(Object & leftObj) const noexcept
+			bool Object::isMeargableToLeft(Object &leftObj) const noexcept
 			{
-				if (leftObj.getRight() + 1 == mLeft) {
+				if (leftObj.getRight() + 1 == mLeft)
+				{
 					if (getMinHeight() <= leftObj.getMinHeight() && leftObj.getMinHeight() <= getMaxHeight() ||
 						getMinHeight() <= leftObj.getMaxHeight() && leftObj.getMaxHeight() <= getMaxHeight())
 						return true;
@@ -38,8 +42,8 @@ namespace am {
 			{
 				mPixelsCount += toCompare.mPixelsCount;
 
-				//note: next line can be time costly, but important in Movement detection
-				//mPixels.insert(mPixels.end(), toCompare.getPixels().begin(), toCompare.getPixels().end());
+				// note: next line can be time costly, but important in Movement detection
+				// mPixels.insert(mPixels.end(), toCompare.getPixels().begin(), toCompare.getPixels().end());
 
 				if (mLeft > toCompare.mLeft)
 					mLeft = toCompare.mLeft;
@@ -54,7 +58,8 @@ namespace am {
 
 			bool Object::mergeIfPossibleLeftToMe(Object &toCompare) noexcept
 			{
-				if (isMeargableToLeft(toCompare)) {
+				if (isMeargableToLeft(toCompare))
+				{
 					/// debug prints of object rects
 					// printToConsole();
 					// toCompare.printToConsole();
@@ -76,20 +81,21 @@ namespace am {
 
 			size_t Object::getPixelsCount() const noexcept { return mPixelsCount; }
 
-			void Object::printToConsole() const noexcept {
+			void Object::printToConsole() const noexcept
+			{
 				printf("Object Rectangle: %zd %zd   %zd %zd \n", mLeft, mRight, mMin_height,
-					mMax_height);
+					   mMax_height);
 			}
 
 			void Object::clearPixelsCount() noexcept
 			{
 				mPixelsCount = 0;
-				//mLeft = 0;
-				//mRight = 0;
-				//mMin_height = 0;
-				//mMax_height = 0;
-				//mPixels.empty();
+				// mLeft = 0;
+				// mRight = 0;
+				// mMin_height = 0;
+				// mMax_height = 0;
+				// mPixels.empty();
 			}
 		} // namespace algorithm
-	} // namespace analyze
+	}	  // namespace analyze
 } // namespace am

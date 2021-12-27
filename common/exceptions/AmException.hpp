@@ -1,15 +1,17 @@
 #pragma once
 
-#include<exception>
+#include <exception>
 
-namespace am {
-	namespace common {
-		namespace exceptions {
+namespace am
+{
+	namespace common
+	{
+		namespace exceptions
+		{
 			class AmException : public std::runtime_error
 			{
 			public:
-				AmException(std::string& msg) :
-					std::runtime_error(msg.c_str()) {}
+				AmException(std::string &msg) : std::runtime_error(msg.c_str()) {}
 			};
 		}
 	}

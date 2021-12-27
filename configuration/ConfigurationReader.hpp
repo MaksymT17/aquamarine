@@ -8,19 +8,23 @@
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AmException.hpp"
 
-namespace {
+namespace
+{
 	const char PARAM_LIMITER = ':';
 	size_t PARAM_COUNT = 6;
 }
 
-namespace am {
-	namespace configuration {
-		class ConfigurationReader {
+namespace am
+{
+	namespace configuration
+	{
+		class ConfigurationReader
+		{
 		public:
 			ConfigurationReader() {}
 
-			///todo: add support of multiple resolutions, and different configuration values as well
-			std::shared_ptr<Configuration> getConfigurationFromFile(const char *filePath) {
+			std::shared_ptr<Configuration> getConfigurationFromFile(const char *filePath)
+			{
 
 				std::ifstream file(filePath, std::ifstream::in);
 
@@ -30,7 +34,8 @@ namespace am {
 					throw common::exceptions::FileAccessException(errorMsg);
 				}
 
-				while (file.good()) {
+				while (file.good())
+				{
 					std::shared_ptr<Configuration> rec(new Configuration());
 					getConfiguration(rec, file);
 					return rec;
@@ -41,8 +46,7 @@ namespace am {
 			}
 
 		private:
-
-			void setParameter(std::istream &line, std::shared_ptr<Configuration>& conf)
+			void setParameter(std::istream &line, std::shared_ptr<Configuration> &conf)
 			{
 				std::string paramName, paramVal;
 				std::getline(line, paramName, PARAM_LIMITER);
@@ -62,7 +66,7 @@ namespace am {
 					conf->ThreadsMultiplier = std::atoi(paramVal.c_str());
 			}
 
-			void getConfiguration(std::shared_ptr<Configuration>& rec, std::istream &str)
+			void getConfiguration(std::shared_ptr<Configuration> &rec, std::istream &str)
 			{
 				for (size_t i = 0; i < PARAM_COUNT; ++i)
 				{

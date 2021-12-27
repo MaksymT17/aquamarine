@@ -11,16 +11,16 @@ namespace am
 	namespace extraction
 	{
 		using namespace common::types;
-		void readRowFromImageSource(const size_t rowId, const size_t width, bitmap_image& image, Matrix<Color24b>& colors)
+		void readRowFromImageSource(const size_t rowId, const size_t width, bitmap_image &image, Matrix<Color24b> &colors)
 		{
 			for (size_t x = 0; x < width; ++x)
 			{
-				Color24b& channels = colors(rowId, x);
-				image.get_pixel(x, rowId, reinterpret_cast<rgb_t&>(channels));
+				Color24b &channels = colors(rowId, x);
+				image.get_pixel(x, rowId, reinterpret_cast<rgb_t &>(channels));
 			}
 		}
 
-		Matrix<Color24b> BmpExtractor::readFile(const std::string& fileName)
+		Matrix<Color24b> BmpExtractor::readFile(const std::string &fileName)
 		{
 			bitmap_image image(fileName.c_str());
 

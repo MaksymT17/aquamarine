@@ -20,18 +20,21 @@ using namespace am::configuration;
 using namespace am::analyze::algorithm;
 struct ObjectDetectorWrapper : public ::testing::Test
 {
-    ObjectDetectorWrapper() = default;
+	ObjectDetectorWrapper() = default;
 
-    ~ObjectDetectorWrapper() override {
-    }
+	~ObjectDetectorWrapper() override
+	{
+	}
 
-    void SetUp() override {
+	void SetUp() override
+	{
 		loggerPtr = std::make_shared<am::common::Logger>("od_dummy_log.log");
 		extractor = std::make_unique<am::extraction::MultipleBmpExtractor>(loggerPtr);
-    }
+	}
 
-    void TearDown() override {
-    }
+	void TearDown() override
+	{
+	}
 
 	std::shared_ptr<am::common::Logger> loggerPtr;
 	std::unique_ptr<am::extraction::MultipleBmpExtractor> extractor;
@@ -40,10 +43,11 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	std::shared_ptr<Configuration> conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 };
 
-TEST_F(ObjectDetectorWrapper, Check3ObjsFHD) {
+TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
+{
 	std::string base("inputs/fhd_clean.BMP");
 	std::string toCompare("inputs/fhd_3obj.BMP");
-	std::vector<std::string> fileNames = { base, toCompare };
+	std::vector<std::string> fileNames = {base, toCompare};
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
@@ -54,32 +58,34 @@ TEST_F(ObjectDetectorWrapper, Check3ObjsFHD) {
 	EXPECT_EQ(3, rects2.size());
 }
 
-TEST_F(ObjectDetectorWrapper, Check2Objs10x10) {
+TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
+{
 	std::string base("inputs/10x10_clean.BMP");
 	std::string toCompare("inputs/10x10_2obj.BMP");
-	std::vector<std::string> fileNames = { base, toCompare };
+	std::vector<std::string> fileNames = {base, toCompare};
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
-	//configuration where object with 1 pixel could be detected
-	Configuration conf_s10x10{1,1,1,1,1,1};
-	std::shared_ptr<Configuration> conf1=std::make_shared<Configuration>(conf_s10x10);
+	// configuration where object with 1 pixel could be detected
+	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
+	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 	EXPECT_EQ(rects1.size(), 2);
 }
 
-TEST_F(ObjectDetectorWrapper, Check5Objs20x20) {
+TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
+{
 	std::string base("inputs/20x20_clean.BMP");
 	std::string toCompare("inputs/20x20_5objs.BMP");
-	std::vector<std::string> fileNames = { base, toCompare };
+	std::vector<std::string> fileNames = {base, toCompare};
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
-	//configuration where object with 1 pixel could be detected
-	Configuration conf_s10x10{1,1,1,1,1,1};
-	std::shared_ptr<Configuration> conf1=std::make_shared<Configuration>(conf_s10x10);
+	// configuration where object with 1 pixel could be detected
+	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
+	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
@@ -87,19 +93,20 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20) {
 	EXPECT_EQ(rects1.size(), 5);
 }
 
-TEST_F(ObjectDetectorWrapper, CheckTimeLimitation) {
+TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
+{
 	constexpr float duration_70ms = 0.07f;
 	constexpr float duration_additional_ms = 0.03f;
 
 	std::string base("inputs/rs_1.BMP");
 	std::string toCompare("inputs/rs_2.BMP");
-	std::vector<std::string> fileNames = { base, toCompare };
+	std::vector<std::string> fileNames = {base, toCompare};
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
-	//configuration where object with 1 pixel could be detected
+	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{1, 1, 1, duration_70ms, 1, 1};
-	std::shared_ptr<Configuration> conf1=std::make_shared<Configuration>(conf_s10x10);
+	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
 
 	// note: big count of threads also require longer time to sync
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
@@ -115,7 +122,7 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation) {
 
 TEST(ObjectTest, check3Pixels)
 {
-	std::vector<Pixel> pixels{{5,5},{10,10},{20,20}};
+	std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}};
 	Object obj(pixels);
 
 	EXPECT_EQ(obj.getLeft(), 5);
@@ -128,8 +135,7 @@ TEST(ObjectTest, check3Pixels)
 
 TEST(ObjectTest, check10Pixels)
 {
-	std::vector<Pixel> pixels{{5,5},{10,10},{20,20},{6,6},{7,7},
-	{11,11},{3,3},{12,6},{13,7},{11,99}};
+	std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}, {6, 6}, {7, 7}, {11, 11}, {3, 3}, {12, 6}, {13, 7}, {11, 99}};
 	Object obj(pixels);
 
 	EXPECT_EQ(obj.getLeft(), 3);
@@ -142,9 +148,7 @@ TEST(ObjectTest, check10Pixels)
 
 TEST(ObjectTest, check15Pixels)
 {
-	std::vector<Pixel> pixels{{5,5},{10,10},{20,20},{6,6},{7,7},
-	{11,11},{3,3},{12,6},{13,7},{11,99},
-	{2,100},{3,33},{5,6},{13,17},{14,9}};
+	std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}, {6, 6}, {7, 7}, {11, 11}, {3, 3}, {12, 6}, {13, 7}, {11, 99}, {2, 100}, {3, 33}, {5, 6}, {13, 17}, {14, 9}};
 	Object obj(pixels);
 
 	EXPECT_EQ(obj.getLeft(), 3);
@@ -157,12 +161,12 @@ TEST(ObjectTest, check15Pixels)
 
 TEST(ObjectTest, checkIsMergable)
 {
-	std::vector<Pixel> pixels{{5,5}};
+	std::vector<Pixel> pixels{{5, 5}};
 	Object obj(pixels);
 
-	std::vector<Pixel> new_pixels{{5,6}};
+	std::vector<Pixel> new_pixels{{5, 6}};
 	Object new_obj(new_pixels);
-	
+
 	EXPECT_TRUE(new_obj.isMeargableToLeft(obj));
 	EXPECT_NO_THROW(new_obj.mergeIfPossibleLeftToMe(obj));
 
