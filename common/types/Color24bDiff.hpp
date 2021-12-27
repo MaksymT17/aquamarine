@@ -3,17 +3,20 @@
 #include "common/Constants.hpp"
 #include <bitset>
 
-namespace am {
-	namespace common {
-		namespace types {
+namespace am
+{
+	namespace common
+	{
+		namespace types
+		{
 
 			static bool isChannelDiffPositive(uint8_t diff, int position)
 			{
 				return ((diff) & (1 << (position)));
 			}
 
-			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t& diff,
-				uint8_t& posisitvness, const uint8_t addition)
+			static void setUpChannelDiff(const uint8_t source, const uint8_t compared, uint8_t &diff,
+										 uint8_t &posisitvness, const uint8_t addition)
 			{
 				if (source > compared)
 				{
@@ -26,9 +29,9 @@ namespace am {
 
 			struct Color24bDiff : public Color24b
 			{
-				Color24bDiff() :positives(0u) {};
+				Color24bDiff() : positives(0u){};
 
-				Color24bDiff(Color24b base, Color24b cmpr) :positives(0u)
+				Color24bDiff(Color24b base, Color24b cmpr) : positives(0u)
 				{
 					setUpChannelDiff(base.r, cmpr.r, r, positives, R_POS_VAL);
 					setUpChannelDiff(base.g, cmpr.g, g, positives, G_POS_VAL);
@@ -49,6 +52,7 @@ namespace am {
 				{
 					return isChannelDiffPositive(positives, B_BIT_POSITION);
 				}
+
 			private:
 				uint8_t positives;
 			};

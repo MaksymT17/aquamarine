@@ -15,11 +15,11 @@ namespace am
 		class MultipleBmpExtractor
 		{
 		public:
-			MultipleBmpExtractor(std::shared_ptr<am::common::Logger>& logger);
+			MultipleBmpExtractor(std::shared_ptr<am::common::Logger> &logger);
 			virtual ~MultipleBmpExtractor() = default;
 
 			// fill up the Matrices for each file provided in the input parameter
-			std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string>& fileNames);
+			std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string> &fileNames);
 
 		private:
 			std::shared_ptr<am::common::Logger> mLogger;

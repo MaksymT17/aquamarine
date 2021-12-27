@@ -1,7 +1,9 @@
 #pragma once
 
-namespace am {
-	namespace service {
+namespace am
+{
+	namespace service
+	{
 		class IService
 		{
 		public:

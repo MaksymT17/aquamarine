@@ -1,8 +1,10 @@
 #pragma once
 #include <cstdint>
 
-namespace am {
-	namespace configuration {
+namespace am
+{
+	namespace configuration
+	{
 
 		struct Configuration
 		{

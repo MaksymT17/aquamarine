@@ -4,13 +4,17 @@
 #include <condition_variable>
 #include <functional>
 
-class ThreadPool {
-    public:
-    //according to test on CPU with Hyper-threading feature better to use mutiplier of 2
-    // without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
-    ThreadPool(unsigned num_threads = std::thread::hardware_concurrency()*2) {
-        while (num_threads--) {
-            threads.emplace_back([this] {
+class ThreadPool
+{
+public:
+    // according to test on CPU with Hyper-threading feature better to use mutiplier of 2
+    //  without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
+    ThreadPool(unsigned num_threads = std::thread::hardware_concurrency() * 2)
+    {
+        while (num_threads--)
+        {
+            threads.emplace_back([this]
+                                 {
                 while(true) {
                     std::unique_lock<std::mutex> lock(mutex);
                     condvar.wait(lock, [this] {return !queue.empty();});
@@ -26,13 +30,13 @@ class ThreadPool {
                         // don't pop it off the top; all threads need to see it
                         break;
                     }
-                }
-            });
+                } });
         }
     }
 
-    template<typename F, typename R = std::result_of_t<F&&()>>
-    std::future<R> run(F&& f) const {
+    template <typename F, typename R = std::result_of_t<F && ()>>
+    std::future<R> run(F &&f) const
+    {
         auto task = std::packaged_task<R()>(std::forward<F>(f));
         auto future = task.get_future();
         {
@@ -46,7 +50,8 @@ class ThreadPool {
         return future;
     }
 
-    ~ThreadPool() {
+    ~ThreadPool()
+    {
         // push a single empty task onto the queue and notify all threads,
         // then wait for them to terminate
         {
@@ -54,12 +59,13 @@ class ThreadPool {
             queue.push({});
         }
         condvar.notify_all();
-        for (auto& thread : threads) {
+        for (auto &thread : threads)
+        {
             thread.join();
         }
     }
 
-    private:
+private:
     std::vector<std::thread> threads;
     mutable std::queue<std::packaged_task<void()>> queue;
     mutable std::mutex mutex;
