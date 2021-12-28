@@ -20,7 +20,7 @@ namespace am
 
 			// optimized bfs depending to left/right borders for threads,
 			// every thread will search in defined area(column) of image
-			Pixels bfs(MatrixU16 &changes, Pixels &toCheck, Pixels &object, Column col)
+			ObjectRectangle bfs(MatrixU16 &changes, Pixels &toCheck, ObjectRectangle &object, Column col)
 			{
 				Pixels nextCheck;
 
@@ -30,11 +30,12 @@ namespace am
 					{
 						checkClosest(position.rowId, position.colId, nextCheck, object, col, changes.getHeight(), 1u);
 
-						if (isNew(object, position.rowId, position.colId))
-						{
-							object.emplace_back(position.rowId, position.colId);
+						//if (isNew(object, position.rowId, position.colId))
+						//{
+							//object.emplace_back(position.rowId, position.colId);
+							object.addPixel(position.rowId, position.colId);
 							changes(position.rowId, position.colId) = 0;
-						}
+						//}
 					}
 				}
 				if (nextCheck.size())
@@ -43,9 +44,9 @@ namespace am
 				return object;
 			}
 
-			std::vector<Pixels> startObjectsSearch(MatrixU16 &changes, am::configuration::Configuration *conf, const Column &col)
+			std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, am::configuration::Configuration *conf, const Column &col)
 			{
-				std::vector<Pixels> result;
+				std::vector<ObjectRectangle> result;
 				const size_t step = conf->PixelStep;
 				// check all diffs on potential objects
 				// if change found -> run bsf to figure out how many pixels included in this object
@@ -55,7 +56,8 @@ namespace am
 					{
 						if (changes(rowId, colId) == common::CHANGE)
 						{
-							std::vector<Pixel> obj;
+							//std::vector<Pixel> obj;
+							ObjectRectangle obj(rowId, colId);
 
 							auto conns = checkConnections(rowId, colId, changes.getHeight(), col, 1u);
 							result.emplace_back(bfs(changes, conns, obj, col));
@@ -70,8 +72,8 @@ namespace am
 				const size_t width = diffs.getWidth();
 				const size_t height = diffs.getHeight();
 				const size_t columnWidth = width / mThreadsCount;
-				std::vector<std::vector<Pixels>> res;
-				std::vector<std::future<std::vector<Pixels>>> futures;
+				std::vector<std::vector<ObjectRectangle>> res;
+				std::vector<std::future<std::vector<ObjectRectangle>>> futures;
 
 				mLogger->info("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
 

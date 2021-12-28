@@ -24,18 +24,22 @@ namespace am
 				size_t right;
 			};
 
-			// simple representatin of found object area on image, ismplified to rectangle bounds
-			// base on diff pixels connected
-			class Object
+			class ObjectBase
 			{
 			public:
-				Object(std::vector<Pixel> &pixels);
-				~Object() = default;
+				// ObjectBase() : mPixelsCount(0),
+				///			   mLeft(0),
+				//			   mMin_height(0),
+				//			   mRight(0),
+				//			   mMax_height(0) {}
+				explicit ObjectBase(const size_t row, const size_t col) : mPixelsCount(1),
+																		  mLeft(col),
+																		  mMin_height(row),
+																		  mRight(col),
+																		  mMax_height(row) {}
+				bool isMeargableToLeft(ObjectBase &toCompare) const noexcept;
+				bool mergeIfPossibleLeftToMe(ObjectBase &toCompare) noexcept;
 
-				bool isMeargableToLeft(Object &toCompare) const noexcept;
-				bool mergeIfPossibleLeftToMe(Object &toCompare) noexcept;
-
-				std::vector<Pixel> &getPixels() const noexcept;
 				size_t getLeft() const noexcept;
 				size_t getRight() const noexcept;
 				size_t getMinHeight() const noexcept;
@@ -45,15 +49,35 @@ namespace am
 				void printToConsole() const noexcept;
 				void clearPixelsCount() noexcept;
 
-			private:
-				void mergeToMe(Object &toCompare) noexcept;
-
-				std::vector<Pixel> &mPixels;
+			protected:
+				void mergeToMe(ObjectBase &toCompare) noexcept;
 				size_t mPixelsCount;
 				size_t mLeft;
 				size_t mMin_height;
 				size_t mRight;
 				size_t mMax_height;
+			};
+
+			// full representation of found object area on image, has rectangle bounds
+			// and coordinates of pixels
+			class Object : public ObjectBase
+			{
+			public:
+				Object(std::vector<Pixel> &pixels);
+				~Object() = default;
+				std::vector<Pixel> &getPixels() const noexcept;
+
+			private:
+				std::vector<Pixel> &mPixels;
+			};
+
+			// Rectangled area of object
+			class ObjectRectangle : public ObjectBase
+			{
+			public:
+				//ObjectRectangle() = default;
+				ObjectRectangle(const size_t row, const size_t col);
+				void addPixel(const size_t row, const size_t col);
 			};
 
 			namespace comparators
@@ -69,6 +93,10 @@ namespace am
 				struct Descending
 				{
 					bool operator()(const Object &l, const Object &r) const
+					{
+						return l.getPixelsCount() > r.getPixelsCount();
+					}
+					bool operator()(const ObjectRectangle &l, const ObjectRectangle &r) const
 					{
 						return l.getPixelsCount() > r.getPixelsCount();
 					}
@@ -93,7 +121,7 @@ namespace am
 				std::multiset<Object, T> objects;
 			};
 
-			using DescObjects = std::multiset<Object, comparators::Descending>;
+			using DescObjects = std::multiset<ObjectRectangle, comparators::Descending>;
 		}
 	}
 }
