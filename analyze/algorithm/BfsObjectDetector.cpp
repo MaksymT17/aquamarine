@@ -35,24 +35,29 @@ namespace am
 				}
 			}
 
-			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, Pixels &object,
+			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, ObjectRectangle &object,
 							  Column col, const size_t height, const size_t step) noexcept
 			{
 				if (static_cast<int>(rowId - step) >= 0)
 				{
-					pushCheckIfNew(object, nextCheck, rowId - step, colId);
+					//mv: commented in sake of optimization
+					//pushCheckIfNew(object, nextCheck, rowId - step, colId);
+					nextCheck.emplace_back(rowId - step, colId);
 				}
 				if (rowId + step < height)
 				{
-					pushCheckIfNew(object, nextCheck, rowId + step, colId);
+					//pushCheckIfNew(object, nextCheck, rowId + step, colId);
+					nextCheck.emplace_back(rowId + step, colId);
 				}
 				if (static_cast<int>(colId - step) >= static_cast<int>(col.left))
 				{
-					pushCheckIfNew(object, nextCheck, rowId, colId - step);
+					//pushCheckIfNew(object, nextCheck, rowId, colId - step);
+					nextCheck.emplace_back(rowId, colId - step);
 				}
 				if (colId + step < col.right)
 				{
-					pushCheckIfNew(object, nextCheck, rowId, colId + step);
+					//pushCheckIfNew(object, nextCheck, rowId, colId + step);
+					nextCheck.emplace_back(rowId, colId + step);
 				}
 			}
 
@@ -88,9 +93,9 @@ namespace am
 				: mThreadsCount(threads), mConfiguration(conf), mLogger(logger) {}
 
 			DescObjects BfsObjectDetector::createObjectRects(
-				std::vector<std::vector<Pixels>> &objPixels, const size_t minPixels)
+				std::vector<std::vector<ObjectRectangle>> &objPixels, const size_t minPixels)
 			{
-				std::vector<std::vector<Object>> rects;
+				std::vector<std::vector<ObjectRectangle>> rects;
 				rects.resize(objPixels.size());
 
 				DescObjects orderedResult;
@@ -98,7 +103,7 @@ namespace am
 				{
 					if (!thrList.empty())
 					{
-						std::vector<Object> threadObjs;
+						std::vector<ObjectRectangle> threadObjs;
 
 						for (auto &objs : thrList)
 						{
