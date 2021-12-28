@@ -21,7 +21,7 @@ analyze/algorithm/BfsObjectDetector.cpp
 analyze/algorithm/ObjectDetector.cpp 
 analyze/algorithm/DiffObjectDetector.cpp 
 analyze/algorithm/ImagePair.cpp 
-analyze/algorithm/movement/MovementDetector.cpp
+#analyze/algorithm/movement/MovementDetector.cpp
 extraction/BmpExtractor.cpp
 extraction/MultipleBmpExtractor.cpp
 common/Timers.hpp

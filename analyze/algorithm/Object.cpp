@@ -9,9 +9,7 @@ namespace am
 		{
 
 			Object::Object(std::vector<Pixel> &pixels)
-				: mPixels(pixels), mPixelsCount(pixels.size()),
-				  mLeft(pixels.begin()->colId), mMin_height(pixels.begin()->rowId),
-				  mRight(pixels.begin()->colId), mMax_height(pixels.begin()->rowId)
+				: ObjectBase::ObjectBase(pixels.begin()->rowId, pixels.begin()->colId), mPixels(pixels)
 			{
 				for (const auto &pixel : pixels)
 				{
@@ -27,7 +25,7 @@ namespace am
 				}
 			}
 
-			bool Object::isMeargableToLeft(Object &leftObj) const noexcept
+			bool ObjectBase::isMeargableToLeft(ObjectBase &leftObj) const noexcept
 			{
 				if (leftObj.getRight() + 1 == mLeft)
 				{
@@ -38,7 +36,7 @@ namespace am
 				return false;
 			}
 
-			void Object::mergeToMe(Object &toCompare) noexcept
+			void ObjectBase::mergeToMe(ObjectBase &toCompare) noexcept
 			{
 				mPixelsCount += toCompare.mPixelsCount;
 
@@ -56,7 +54,7 @@ namespace am
 					mMax_height = toCompare.mMax_height;
 			}
 
-			bool Object::mergeIfPossibleLeftToMe(Object &toCompare) noexcept
+			bool ObjectBase::mergeIfPossibleLeftToMe(ObjectBase &toCompare) noexcept
 			{
 				if (isMeargableToLeft(toCompare))
 				{
@@ -71,30 +69,48 @@ namespace am
 
 			std::vector<Pixel> &Object::getPixels() const noexcept { return mPixels; }
 
-			size_t Object::getLeft() const noexcept { return mLeft; }
+			size_t ObjectBase::getLeft() const noexcept { return mLeft; }
 
-			size_t Object::getRight() const noexcept { return mRight; }
+			size_t ObjectBase::getRight() const noexcept { return mRight; }
 
-			size_t Object::getMinHeight() const noexcept { return mMin_height; }
+			size_t ObjectBase::getMinHeight() const noexcept { return mMin_height; }
 
-			size_t Object::getMaxHeight() const noexcept { return mMax_height; }
+			size_t ObjectBase::getMaxHeight() const noexcept { return mMax_height; }
 
-			size_t Object::getPixelsCount() const noexcept { return mPixelsCount; }
+			size_t ObjectBase::getPixelsCount() const noexcept { return mPixelsCount; }
 
-			void Object::printToConsole() const noexcept
+			void ObjectBase::printToConsole() const noexcept
 			{
 				printf("Object Rectangle: %zd %zd   %zd %zd \n", mLeft, mRight, mMin_height,
 					   mMax_height);
 			}
 
-			void Object::clearPixelsCount() noexcept
+			void ObjectBase::clearPixelsCount() noexcept
 			{
 				mPixelsCount = 0;
-				// mLeft = 0;
-				// mRight = 0;
-				// mMin_height = 0;
-				// mMax_height = 0;
-				// mPixels.empty();
+				mLeft = 0;
+				mRight = 0;
+				mMin_height = 0;
+				mMax_height = 0;
+			}
+
+			ObjectRectangle::ObjectRectangle(const size_t row, const size_t col) : ObjectBase(row, col)
+			{
+			}
+
+			void
+			ObjectRectangle::addPixel(const size_t row, const size_t col)
+			{
+				if (mLeft > col)
+					mLeft = col;
+				else if (mRight < col)
+					mRight = col;
+
+				if (mMin_height > row)
+					mMin_height = row;
+				else if (mMax_height < row)
+					mMax_height = row;
+				++mPixelsCount;
 			}
 		} // namespace algorithm
 	}	  // namespace analyze
