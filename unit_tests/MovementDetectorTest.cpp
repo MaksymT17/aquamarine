@@ -15,7 +15,7 @@ TEST(MovementDetectionTest, checkTwoObjectsMovements)
 	using namespace am::analyze::algorithm;
 	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
 
-	std::multiset<Object, comparators::Descending> m1;
+	std::multiset<ObjectRectangle, comparators::Descending> m1;
 	am::configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
@@ -35,12 +35,16 @@ TEST(MovementDetectionTest, checkMovementOnEqualImages)
 	using namespace am::analyze::algorithm;
 	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
 
-	std::multiset<Object, comparators::Descending> m_objs, result;
+	std::multiset<ObjectRectangle, comparators::Descending> m_objs, result;
 
 	// example of tracking object. No real movement shall be found
-	std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}};
-	Object obj(pixels);
-	m_objs.emplace(obj);
+	//std::vector<Pixel> pixels{{5, 5}, {10, 10}, {20, 20}};
+	//Object obj(pixels);
+	ObjectRectangle obj_r(5, 5);
+	obj_r.addPixel(10, 10);
+	obj_r.addPixel(20, 20);
+
+	m_objs.emplace(obj_r);
 	am::configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
