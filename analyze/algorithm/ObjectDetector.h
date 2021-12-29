@@ -10,7 +10,7 @@ namespace am
 		namespace algorithm
 		{
 
-			std::vector<Pixel> bfs(const ImagePair &pair, common::types::MatrixU16 &visited, std::vector<Pixel> &toCheck, std::vector<Pixel> &object,
+			ObjectRectangle bfs(const ImagePair &pair, common::types::MatrixU16 &visited, std::vector<Pixel> &toCheck, ObjectRectangle &object,
 								   Column col, std::chrono::steady_clock::time_point &startTime, const configuration::Configuration &conf);
 
 			class ObjectDetector : public BfsObjectDetector

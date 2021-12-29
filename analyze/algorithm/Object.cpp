@@ -9,7 +9,9 @@ namespace am
 		{
 
 			Object::Object(std::vector<Pixel> &pixels)
-				: ObjectBase::ObjectBase(pixels.begin()->rowId, pixels.begin()->colId), mPixels(pixels)
+				: ObjectBase::ObjectBase(pixels.begin()->rowId, pixels.begin()->colId),
+				  mPixels(pixels)
+				  
 			{
 				for (const auto &pixel : pixels)
 				{
@@ -23,6 +25,7 @@ namespace am
 					else if (mMax_height < pixel.rowId)
 						mMax_height = pixel.rowId;
 				}
+				mPixelsCount = pixels.size();
 			}
 
 			bool ObjectBase::isMeargableToLeft(ObjectBase &leftObj) const noexcept
