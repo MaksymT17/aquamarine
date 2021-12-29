@@ -13,7 +13,7 @@ namespace am
 
 				using namespace am::common::types;
 
-				static MovementType getMovementFromObjRects(const Object &base, const Object &toCheck,
+				static MovementType getMovementFromObjRects(const ObjectRectangle &base, const ObjectRectangle &toCheck,
 															std::shared_ptr<am::common::Logger> &logger) noexcept
 				{
 					MovementType type;
@@ -51,22 +51,29 @@ namespace am
 				/// every single object can be devided to many or be merged to the bigger one,
 				/// func: should catch every case and be able to use learning principles as AI
 				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
-				MovementType MovementDetector::getMovementForObject(const Object &obj, ImagePairPtr &pair, Objects &found)
+				MovementType MovementDetector::getMovementForObject(const ObjectRectangle &obj, ImagePairPtr &pair, std::vector<ObjectRectangle> &found)
 				{
 					MatrixU16 changes(pair->getWidth(), pair->getHeight());
 					auto startTime = std::chrono::steady_clock::now();
 
-					for (const auto &px : obj.getPixels())
+					// for (const auto &px : obj.getPixels())
+					//{
+					for (size_t rowId = obj.getMinHeight(); rowId < obj.getMaxHeight();
+						 rowId += mConfiguration->PixelStep)
 					{
-						if (pair->getAbsoluteDiff(px.rowId, px.colId) > mConfiguration->AffinityThreshold &&
-							changes(px.rowId, px.colId) != common::CHANGE)
+						for (size_t colId = obj.getLeft(); colId < obj.getRight(); colId += mConfiguration->PixelStep)
 						{
-							Pixels pxs{px};
-							auto conns = checkConnections(px.rowId, px.colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration->PixelStep);
-							auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, *mConfiguration);
-							found.emplace_back(objFound);
+							if (pair->getAbsoluteDiff(rowId, colId) > mConfiguration->AffinityThreshold &&
+								changes(rowId, colId) != common::CHANGE)
+							{
+								ObjectRectangle pxs(rowId, colId);
+								auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration->PixelStep);
+								auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, *mConfiguration);
+								found.emplace_back(objFound);
+							}
 						}
 					}
+					//}
 
 					MovementType movement;
 					if (!found.size())
@@ -101,7 +108,7 @@ namespace am
 						throw am::common::exceptions::AmException(msg);
 					}
 					Movements movs;
-					Objects newlyFoundObjs;
+					std::vector<ObjectRectangle> newlyFoundObjs;
 
 					for (const auto &obj : mObjects)
 					{
@@ -115,7 +122,6 @@ namespace am
 
 					return movs;
 				}
-
 			}
 		}
 	}

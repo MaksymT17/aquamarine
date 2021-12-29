@@ -35,14 +35,14 @@ namespace am
 					// get Movement details for particular Object
 					// will be checked area of this object based on Image pair provided
 					// out of this area BFS will be not started
-					virtual MovementType getMovementForObject(const Object &obj, ImagePairPtr &pair, Objects &found) override;
+					virtual MovementType getMovementForObject(const ObjectRectangle &obj, ImagePairPtr &pair, std::vector<ObjectRectangle> &found) override;
 
 					// get movement for every objects provided by setTrackingObjects
 					// ref of newObjects will be fulfilled with newly added objects
 					virtual Movements analyze(ImagePairPtr &pair, DescObjects &newObjects) override;
 
 				private:
-					std::multiset<Object, comparators::Descending> mObjects;
+					DescObjects mObjects;
 				};
 			}
 		}
