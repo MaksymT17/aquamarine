@@ -27,12 +27,7 @@ namespace am
 			class ObjectBase
 			{
 			public:
-				 ObjectBase() : mPixelsCount(0),
-							   mLeft(0),
-							   mMin_height(0),
-							   mRight(0),
-							   mMax_height(0) {}
-				ObjectBase(const size_t row, const size_t col) : mPixelsCount(1),
+				explicit ObjectBase(const size_t row, const size_t col) : mPixelsCount(1),
 																		  mLeft(col),
 																		  mMin_height(row),
 																		  mRight(col),

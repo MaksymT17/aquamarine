@@ -1,5 +1,5 @@
 #include "Object.h"
-#include <stdio.h>
+#include <iostream>
 
 namespace am
 {
@@ -11,19 +11,18 @@ namespace am
 			Object::Object(std::vector<Pixel> &pixels)
 				: ObjectBase::ObjectBase(pixels.begin()->rowId, pixels.begin()->colId),
 				  mPixels(pixels)
-				  
 			{
-				for (const auto &pixel : pixels)
+				for (auto pixel = pixels.begin() + 1; pixel != pixels.end(); ++pixel)
 				{
-					if (mLeft > pixel.colId)
-						mLeft = pixel.colId;
-					else if (mRight < pixel.colId)
-						mRight = pixel.colId;
+					if (mLeft > pixel->colId)
+						mLeft = pixel->colId;
+					else if (mRight < pixel->colId)
+						mRight = pixel->colId;
 
-					if (mMin_height > pixel.rowId)
-						mMin_height = pixel.rowId;
-					else if (mMax_height < pixel.rowId)
-						mMax_height = pixel.rowId;
+					if (mMin_height > pixel->rowId)
+						mMin_height = pixel->rowId;
+					else if (mMax_height < pixel->rowId)
+						mMax_height = pixel->rowId;
 				}
 				mPixelsCount = pixels.size();
 			}
@@ -84,8 +83,7 @@ namespace am
 
 			void ObjectBase::printToConsole() const noexcept
 			{
-				printf("Object Rectangle: %zd %zd   %zd %zd \n", mLeft, mRight, mMin_height,
-					   mMax_height);
+				std::cout << "Object Rectangle: " << mLeft << " " << mRight << " " << mMin_height << "  " << mMax_height << " " << std::endl;
 			}
 
 			void ObjectBase::clearPixelsCount() noexcept
@@ -97,12 +95,12 @@ namespace am
 				mMax_height = 0;
 			}
 
-			ObjectRectangle::ObjectRectangle(const size_t row, const size_t col) : ObjectBase(row, col)
+			ObjectRectangle::ObjectRectangle(const size_t row, const size_t col)
+				: ObjectBase(row, col)
 			{
 			}
 
-			void
-			ObjectRectangle::addPixel(const size_t row, const size_t col)
+			void ObjectRectangle::addPixel(const size_t row, const size_t col)
 			{
 				if (mLeft > col)
 					mLeft = col;
