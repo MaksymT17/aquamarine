@@ -56,8 +56,6 @@ namespace am
 					MatrixU16 changes(pair->getWidth(), pair->getHeight());
 					auto startTime = std::chrono::steady_clock::now();
 
-					// for (const auto &px : obj.getPixels())
-					//{
 					for (size_t rowId = obj.getMinHeight(); rowId < obj.getMaxHeight();
 						 rowId += mConfiguration->PixelStep)
 					{
@@ -73,7 +71,6 @@ namespace am
 							}
 						}
 					}
-					//}
 
 					MovementType movement;
 					if (!found.size())
