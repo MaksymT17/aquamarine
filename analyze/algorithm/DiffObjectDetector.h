@@ -13,7 +13,9 @@ namespace am
 			class DiffObjectDetector : public BfsObjectDetector
 			{
 			public:
-				DiffObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger);
+				DiffObjectDetector(const size_t threads,
+								   std::shared_ptr<am::configuration::Configuration> &conf,
+								   std::shared_ptr<am::common::Logger> &logger);
 				~DiffObjectDetector() = default;
 
 				virtual DescObjects getObjectsRects(ImagePair &pair) override;
