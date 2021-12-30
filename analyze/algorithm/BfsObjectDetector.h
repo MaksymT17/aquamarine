@@ -2,7 +2,7 @@
 #include "IObjectDetector.h"
 #include "configuration/Configuration.hpp"
 #include "common/Logger.hpp"
-
+#include "Object.h"
 namespace am
 {
 
