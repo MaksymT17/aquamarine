@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "analyze/AffinityComparer.h"
+#include "common/exceptions/AmException.hpp"
 
 using namespace am::analyze;
 using namespace am::common::types;
@@ -32,6 +33,13 @@ TEST(AffinityComparer, check2x2)
     EXPECT_EQ(res(0, 1).r, 101);
     EXPECT_EQ(res(0, 1).g, 102);
     EXPECT_EQ(res(0, 1).b, 103);
+}
+
+TEST(AffinityComparer, checkDifferentSize)
+{
+    am::common::types::Matrix<am::common::types::Color24b> base(2, 2);
+    am::common::types::Matrix<am::common::types::Color24b> compare(4, 4);
+    EXPECT_THROW(AffinityComparer::compare(base, compare, 2), am::common::exceptions::AmException);
 }
 
 int main(int argc, char **argv)

@@ -41,6 +41,8 @@ namespace am
 					// ref of newObjects will be fulfilled with newly added objects
 					virtual Movements analyze(ImagePairPtr &pair, DescObjects &newObjects) override;
 
+					static MovementType getMovementFromObjRects(const ObjectRectangle &base, const ObjectRectangle &toCheck) noexcept;
+
 				private:
 					DescObjects mObjects;
 				};
