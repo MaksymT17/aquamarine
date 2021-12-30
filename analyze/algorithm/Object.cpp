@@ -1,6 +1,5 @@
 #include "Object.h"
 
-
 namespace am
 {
 	namespace analyze
@@ -26,12 +25,8 @@ namespace am
 				}
 				mPixelsCount = pixels.size();
 			}
-			
 
 			std::vector<Pixel> &Object::getPixels() const noexcept { return mPixels; }
-
-			
-
 
 		} // namespace algorithm
 	}	  // namespace analyze

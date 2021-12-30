@@ -13,8 +13,7 @@ namespace am
 
 				using namespace am::common::types;
 
-				static MovementType getMovementFromObjRects(const ObjectRectangle &base, const ObjectRectangle &toCheck,
-															std::shared_ptr<am::common::Logger> &logger) noexcept
+				MovementType MovementDetector::getMovementFromObjRects(const ObjectRectangle &base, const ObjectRectangle &toCheck) noexcept
 				{
 					MovementType type;
 					if (!(base.getMinHeight() > toCheck.getMaxHeight() || base.getLeft() > toCheck.getRight()))
@@ -23,14 +22,13 @@ namespace am
 							type.mov[MovementType::LEFT] = true;
 						if (base.getRight() < toCheck.getRight())
 							type.mov[MovementType::RIGHT] = true;
-						if (base.getMinHeight() > toCheck.getMinHeight())
+						if (base.getMinHeight() < toCheck.getMinHeight())
 							type.mov[MovementType::BOTTOM] = true;
-						if (base.getMaxHeight() < toCheck.getMaxHeight())
+						if (base.getMaxHeight() > toCheck.getMaxHeight())
 							type.mov[MovementType::TOP] = true;
-					}
-					else
-					{
-						type.mov[MovementType::STEALTH] = true;
+						if (base.getLeft() == toCheck.getLeft() && base.getRight() == toCheck.getRight() &&
+							base.getMinHeight() == toCheck.getMinHeight() && base.getMaxHeight() == toCheck.getMaxHeight())
+							type.mov[MovementType::STEALTH] = true;
 					}
 
 					return type;
@@ -81,13 +79,13 @@ namespace am
 					else if (found.size() == 1)
 					{
 						// object found
-						return getMovementFromObjRects(obj, *found.begin(), mLogger);
+						return getMovementFromObjRects(obj, *found.begin());
 					}
 
 					/// fullfill all movements from collected vector of objects
 					for (const auto &newObj : found)
 					{
-						MovementType current = getMovementFromObjRects(obj, *found.begin(), mLogger);
+						MovementType current = getMovementFromObjRects(obj, *found.begin());
 						for (int pos = 0; pos < current.mov.size(); pos++)
 						{
 							if (current.mov[pos])
