@@ -32,11 +32,13 @@ namespace am
 				virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
 
 				// creation of ordered objects list: Descending(bigger first)
-				DescObjects createObjectRects(std::vector<std::vector<ObjectRectangle>> &objPixels, const size_t minPixels);
+				DescObjects createObjectRects(std::vector<std::vector<ObjectRectangle>> &objPixels,
+											  const size_t minPixels);
 
 			protected:
 				// abstract class construction limited, aggregate common functions and interface requirement
-				BfsObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger);
+				BfsObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf,
+								  std::shared_ptr<am::common::Logger> &logger);
 
 				size_t mThreadsCount;
 				std::shared_ptr<am::configuration::Configuration> mConfiguration;
