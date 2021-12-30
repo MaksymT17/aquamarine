@@ -23,9 +23,9 @@ namespace am
 			// Time dependent execution, if max calculation time exceeded calculation should
 			// finalize processing, and show up collected objects(if found).
 			ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
-					   ObjectRectangle &object, Column col,
-					   std::chrono::steady_clock::time_point &startTime,
-					   const configuration::Configuration &conf)
+								ObjectRectangle &object, Column col,
+								std::chrono::steady_clock::time_point &startTime,
+								const configuration::Configuration &conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
@@ -48,12 +48,7 @@ namespace am
 						checkClosest(position.rowId, position.colId, nextCheck, object, col,
 									 visited.getHeight(), conf.PixelStep);
 
-						// mv: optimization store rect coordinates only
-						//if (isNew(object, position.rowId, position.colId))
-						//{
-							object.addPixel(position.rowId, position.colId);
-							//visited(position.rowId, position.colId) = common::CHANGE;
-						//}
+						object.addPixel(position.rowId, position.colId);
 					}
 				}
 				if (nextCheck.size())
@@ -89,7 +84,7 @@ namespace am
 						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
 								 changes(rowId, colId) != common::CHANGE)
 						{
-							//Pixels obj{{rowId, colId}};
+							// Pixels obj{{rowId, colId}};
 							ObjectRectangle obj(rowId, colId);
 							auto conns = checkConnections(rowId, colId, pair.getHeight(), col,
 														  conf.PixelStep);

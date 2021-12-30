@@ -13,7 +13,8 @@ namespace am
 
 				using namespace am::common::types;
 
-				MovementType MovementDetector::getMovementFromObjRects(const ObjectRectangle &base, const ObjectRectangle &toCheck) noexcept
+				MovementType MovementDetector::getMovementFromObjRects(const ObjectRectangle &base,
+																	   const ObjectRectangle &toCheck) noexcept
 				{
 					MovementType type;
 					if (!(base.getMinHeight() > toCheck.getMaxHeight() || base.getLeft() > toCheck.getRight()))
@@ -34,7 +35,10 @@ namespace am
 					return type;
 				}
 
-				MovementDetector::MovementDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger) : ObjectDetector(threads, conf, logger)
+				MovementDetector::MovementDetector(const size_t threads,
+												   std::shared_ptr<am::configuration::Configuration> &conf,
+												   std::shared_ptr<am::common::Logger> &logger)
+					: ObjectDetector(threads, conf, logger)
 				{
 				}
 
@@ -49,7 +53,9 @@ namespace am
 				/// every single object can be devided to many or be merged to the bigger one,
 				/// func: should catch every case and be able to use learning principles as AI
 				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
-				MovementType MovementDetector::getMovementForObject(const ObjectRectangle &obj, ImagePairPtr &pair, std::vector<ObjectRectangle> &found)
+				MovementType MovementDetector::getMovementForObject(const ObjectRectangle &obj,
+																	ImagePairPtr &pair,
+																	std::vector<ObjectRectangle> &found)
 				{
 					MatrixU16 changes(pair->getWidth(), pair->getHeight());
 					auto startTime = std::chrono::steady_clock::now();
