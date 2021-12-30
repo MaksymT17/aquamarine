@@ -31,7 +31,9 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp
     ${AM_SRC}/analyze/AffinityComparer.cpp 
     ${AM_SRC}/analyze/ThresholdDiffChecker.cpp 
+    ${AM_SRC}/analyze/algorithm/ObjectBase.cpp
     ${AM_SRC}/analyze/algorithm/Object.cpp
+    ${AM_SRC}/analyze/algorithm/ObjectRectangle.cpp
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleBmpExtractor.cpp

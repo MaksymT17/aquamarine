@@ -11,21 +11,25 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 find_package (Threads)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-
-add_executable(aquamarine 
-main.cpp 
+set(AM_SOURCE_FILES 
 analyze/AffinityComparer.cpp 
 analyze/ThresholdDiffChecker.cpp 
+analyze/algorithm/ObjectBase.cpp
 analyze/algorithm/Object.cpp
+analyze/algorithm/ObjectRectangle.cpp
 analyze/algorithm/BfsObjectDetector.cpp 
 analyze/algorithm/ObjectDetector.cpp 
 analyze/algorithm/DiffObjectDetector.cpp 
 analyze/algorithm/ImagePair.cpp 
-#analyze/algorithm/movement/MovementDetector.cpp
+analyze/algorithm/movement/MovementDetector.cpp
 extraction/BmpExtractor.cpp
 extraction/MultipleBmpExtractor.cpp
 common/Timers.hpp
 )
 
-target_link_libraries (aquamarine ${CMAKE_THREAD_LIBS_INIT})
+add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES})
+
+add_executable(aquamarine main.cpp)
+
+target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT})
 
