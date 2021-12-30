@@ -37,7 +37,7 @@ namespace am
 		{
 			const size_t width = first.getWidth();
 			const size_t height = first.getHeight();
-			if (width != second.getWidth() || height != second.getHeight())
+			if (!validateComparingRequestedSize(width, height, second.getWidth(),  second.getHeight()))
 			{
 				std::string msg("AffinityComparer size of images are different.");
 				throw am::common::exceptions::AmException(msg);
