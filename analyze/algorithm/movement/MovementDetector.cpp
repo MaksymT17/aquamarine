@@ -13,8 +13,8 @@ namespace am
 
 				using namespace am::common::types;
 
-				static MovementType getMovementFromObjRects(const Object &base, const Object &toCheck,
-															std::shared_ptr<am::common::Logger> &logger) noexcept
+				MovementType MovementDetector::getMovementFromObjRects(const ObjectRectangle &base,
+																	   const ObjectRectangle &toCheck) noexcept
 				{
 					MovementType type;
 					if (!(base.getMinHeight() > toCheck.getMaxHeight() || base.getLeft() > toCheck.getRight()))
@@ -23,20 +23,22 @@ namespace am
 							type.mov[MovementType::LEFT] = true;
 						if (base.getRight() < toCheck.getRight())
 							type.mov[MovementType::RIGHT] = true;
-						if (base.getMinHeight() > toCheck.getMinHeight())
+						if (base.getMinHeight() < toCheck.getMinHeight())
 							type.mov[MovementType::BOTTOM] = true;
-						if (base.getMaxHeight() < toCheck.getMaxHeight())
+						if (base.getMaxHeight() > toCheck.getMaxHeight())
 							type.mov[MovementType::TOP] = true;
-					}
-					else
-					{
-						type.mov[MovementType::STEALTH] = true;
+						if (base.getLeft() == toCheck.getLeft() && base.getRight() == toCheck.getRight() &&
+							base.getMinHeight() == toCheck.getMinHeight() && base.getMaxHeight() == toCheck.getMaxHeight())
+							type.mov[MovementType::STEALTH] = true;
 					}
 
 					return type;
 				}
 
-				MovementDetector::MovementDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger) : ObjectDetector(threads, conf, logger)
+				MovementDetector::MovementDetector(const size_t threads,
+												   std::shared_ptr<am::configuration::Configuration> &conf,
+												   std::shared_ptr<am::common::Logger> &logger)
+					: ObjectDetector(threads, conf, logger)
 				{
 				}
 
@@ -51,20 +53,26 @@ namespace am
 				/// every single object can be devided to many or be merged to the bigger one,
 				/// func: should catch every case and be able to use learning principles as AI
 				/// 'found' out parameter of ojects(in case of multiple objects found) related to single input object
-				MovementType MovementDetector::getMovementForObject(const Object &obj, ImagePairPtr &pair, Objects &found)
+				MovementType MovementDetector::getMovementForObject(const ObjectRectangle &obj,
+																	ImagePairPtr &pair,
+																	std::vector<ObjectRectangle> &found)
 				{
 					MatrixU16 changes(pair->getWidth(), pair->getHeight());
 					auto startTime = std::chrono::steady_clock::now();
 
-					for (const auto &px : obj.getPixels())
+					for (size_t rowId = obj.getMinHeight(); rowId < obj.getMaxHeight();
+						 rowId += mConfiguration->PixelStep)
 					{
-						if (pair->getAbsoluteDiff(px.rowId, px.colId) > mConfiguration->AffinityThreshold &&
-							changes(px.rowId, px.colId) != common::CHANGE)
+						for (size_t colId = obj.getLeft(); colId < obj.getRight(); colId += mConfiguration->PixelStep)
 						{
-							Pixels pxs{px};
-							auto conns = checkConnections(px.rowId, px.colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration->PixelStep);
-							auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, *mConfiguration);
-							found.emplace_back(objFound);
+							if (pair->getAbsoluteDiff(rowId, colId) > mConfiguration->AffinityThreshold &&
+								changes(rowId, colId) != common::CHANGE)
+							{
+								ObjectRectangle pxs(rowId, colId);
+								auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration->PixelStep);
+								auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, *mConfiguration);
+								found.emplace_back(objFound);
+							}
 						}
 					}
 
@@ -77,13 +85,13 @@ namespace am
 					else if (found.size() == 1)
 					{
 						// object found
-						return getMovementFromObjRects(obj, *found.begin(), mLogger);
+						return getMovementFromObjRects(obj, *found.begin());
 					}
 
 					/// fullfill all movements from collected vector of objects
 					for (const auto &newObj : found)
 					{
-						MovementType current = getMovementFromObjRects(obj, *found.begin(), mLogger);
+						MovementType current = getMovementFromObjRects(obj, *found.begin());
 						for (int pos = 0; pos < current.mov.size(); pos++)
 						{
 							if (current.mov[pos])
@@ -101,7 +109,7 @@ namespace am
 						throw am::common::exceptions::AmException(msg);
 					}
 					Movements movs;
-					Objects newlyFoundObjs;
+					std::vector<ObjectRectangle> newlyFoundObjs;
 
 					for (const auto &obj : mObjects)
 					{
@@ -115,7 +123,6 @@ namespace am
 
 					return movs;
 				}
-
 			}
 		}
 	}

@@ -93,6 +93,15 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 	EXPECT_EQ(rects1.size(), 5);
 }
 
+TEST_F(ObjectDetectorWrapper, CheckInvalidSize)
+{
+	std::string base("inputs/20x20_clean.BMP");
+	std::string toCompare("inputs/10x10_clean.BMP");
+	std::vector<std::string> fileNames = {base, toCompare};
+	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	EXPECT_THROW(algorithm::ImagePair pair(data[0], data[1]), am::common::exceptions::AmException);
+}
+
 TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 {
 	constexpr float duration_70ms = 0.07f;
@@ -178,4 +187,30 @@ TEST(ObjectTest, checkIsMergable)
 
 	obj.clearPixelsCount();
 	EXPECT_EQ(obj.getPixelsCount(), 0);
+}
+
+TEST(ObjectTest, checkObjectRectangle_2px)
+{
+	ObjectRectangle obj_rect(11, 12);
+	obj_rect.addPixel(13, 14);
+	EXPECT_EQ(obj_rect.getLeft(), 12);
+	EXPECT_EQ(obj_rect.getRight(), 14);
+	EXPECT_EQ(obj_rect.getMinHeight(), 11);
+	EXPECT_EQ(obj_rect.getMaxHeight(), 13);
+
+	EXPECT_EQ(obj_rect.getPixelsCount(), 2);
+}
+
+TEST(ObjectTest, checkObjectRectangle_3px)
+{
+	ObjectRectangle obj_rect(11, 12);
+	obj_rect.addPixel(13, 14);
+	obj_rect.addPixel(6, 7);
+
+	EXPECT_EQ(obj_rect.getLeft(), 7	);
+	EXPECT_EQ(obj_rect.getRight(), 14);
+	EXPECT_EQ(obj_rect.getMinHeight(), 6);
+	EXPECT_EQ(obj_rect.getMaxHeight(), 13);
+
+	EXPECT_EQ(obj_rect.getPixelsCount(), 3);
 }

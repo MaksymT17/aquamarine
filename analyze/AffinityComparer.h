@@ -13,6 +13,7 @@ namespace am
 			SWITCH_TO_COMPARED = 1 // after every comparison base frame will replace to recently compared
 		};
 
+		using namespace common::types;
 		class AffinityComparer : public IComparer
 		{
 		public:
@@ -20,8 +21,9 @@ namespace am
 
 			virtual ~AffinityComparer() = default;
 
-			static common::types::Matrix<common::types::Color24bDiff> compare(const common::types::Matrix<common::types::Color24b> &first,
-																			  const common::types::Matrix<common::types::Color24b> &second, size_t threadsNum);
+			static Matrix<Color24bDiff> compare(const Matrix<Color24b> &first,
+												const Matrix<Color24b> &second,
+												size_t threadsNum);
 
 		private:
 			common::types::Matrix<common::types::Color24b> &mBase;

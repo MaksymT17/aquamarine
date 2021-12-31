@@ -15,7 +15,6 @@ namespace am
 
 			namespace movement
 			{
-
 				/// note: bitset for movements storage
 				// bytes definition: 0, 1 - left, right
 				// 2, 3 - top, bottom; 4 - disappear
@@ -35,7 +34,7 @@ namespace am
 				};
 
 				using Objects = std::vector<Object>;
-				using DescObjects = std::multiset<Object, comparators::Descending>;
+				using DescObjects = std::multiset<ObjectRectangle, comparators::Descending>;
 				using ImagePairPtr = std::shared_ptr<ImagePair>;
 				using Movements = std::vector<MovementType>;
 
@@ -47,7 +46,7 @@ namespace am
 					~IMovementDetector() = default;
 
 					virtual void setTrackingObjects(DescObjects &objs) = 0;
-					virtual MovementType getMovementForObject(const Object &obj, ImagePairPtr &pair, Objects &found) = 0;
+					virtual MovementType getMovementForObject(const ObjectRectangle &obj, ImagePairPtr &pair, std::vector<ObjectRectangle> &found) = 0;
 					virtual Movements analyze(ImagePairPtr &pair, DescObjects &newObjects) = 0;
 				};
 
