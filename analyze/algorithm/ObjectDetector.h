@@ -10,13 +10,16 @@ namespace am
 		namespace algorithm
 		{
 
-			std::vector<Pixel> bfs(const ImagePair &pair, common::types::MatrixU16 &visited, std::vector<Pixel> &toCheck, std::vector<Pixel> &object,
-								   Column col, std::chrono::steady_clock::time_point &startTime, const configuration::Configuration &conf);
+			ObjectRectangle bfs(const ImagePair &pair, common::types::MatrixU16 &visited,
+								std::vector<Pixel> &toCheck, ObjectRectangle &object,
+								Column col, std::chrono::steady_clock::time_point &startTime,
+								const configuration::Configuration &conf);
 
 			class ObjectDetector : public BfsObjectDetector
 			{
 			public:
-				ObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger);
+				ObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf,
+							   std::shared_ptr<am::common::Logger> &logger);
 				~ObjectDetector() = default;
 
 				// time for every collecting results defined in configuration

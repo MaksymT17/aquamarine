@@ -22,10 +22,10 @@ namespace am
 
 			// Time dependent execution, if max calculation time exceeded calculation should
 			// finalize processing, and show up collected objects(if found).
-			Pixels bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
-					   Pixels &object, Column col,
-					   std::chrono::steady_clock::time_point &startTime,
-					   const configuration::Configuration &conf)
+			ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
+								ObjectRectangle &object, Column col,
+								std::chrono::steady_clock::time_point &startTime,
+								const configuration::Configuration &conf)
 			{
 				auto timeNow = std::chrono::steady_clock::now();
 				std::chrono::duration<double> calcDuration = timeNow - startTime;
@@ -48,11 +48,7 @@ namespace am
 						checkClosest(position.rowId, position.colId, nextCheck, object, col,
 									 visited.getHeight(), conf.PixelStep);
 
-						if (isNew(object, position.rowId, position.colId))
-						{
-							object.emplace_back(position.rowId, position.colId);
-							visited(position.rowId, position.colId) = common::CHANGE;
-						}
+						object.addPixel(position.rowId, position.colId);
 					}
 				}
 				if (nextCheck.size())
@@ -61,14 +57,14 @@ namespace am
 				return object;
 			}
 
-			std::vector<Pixels>
+			std::vector<ObjectRectangle>
 			startObjectsSearchInPair(const ImagePair &pair, const Column &col,
 									 const configuration::Configuration &conf)
 			{
 				auto startTime = std::chrono::steady_clock::now();
 				MatrixU16 changes(pair.getWidth(), pair.getHeight());
 
-				std::vector<Pixels> resultList;
+				std::vector<ObjectRectangle> resultList;
 				// check all diffs on potential objects if change found -> run bfs,
 				// to figure out how many pixels included in this object
 				for (size_t rowId = conf.PixelStep; rowId < pair.getHeight();
@@ -88,7 +84,8 @@ namespace am
 						else if (pair.getAbsoluteDiff(rowId, colId) > conf.AffinityThreshold &&
 								 changes(rowId, colId) != common::CHANGE)
 						{
-							Pixels obj{{rowId, colId}};
+							// Pixels obj{{rowId, colId}};
+							ObjectRectangle obj(rowId, colId);
 							auto conns = checkConnections(rowId, colId, pair.getHeight(), col,
 														  conf.PixelStep);
 							resultList.emplace_back(
@@ -102,8 +99,8 @@ namespace am
 			DescObjects ObjectDetector::getObjectsRects(ImagePair &pair)
 			{
 				const size_t columnWidth = pair.getWidth() / mThreadsCount;
-				std::vector<std::vector<Pixels>> res;
-				std::vector<std::future<std::vector<Pixels>>> futures;
+				std::vector<std::vector<ObjectRectangle>> res;
+				std::vector<std::future<std::vector<ObjectRectangle>>> futures;
 				mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 							  mThreadsCount);
 

@@ -24,6 +24,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+file(GLOB UT_SOURCES "*.cpp")
+
 add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
     ${AM_SRC}/analyze/algorithm/movement/MovementDetector.cpp
@@ -31,17 +33,14 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp
     ${AM_SRC}/analyze/AffinityComparer.cpp 
     ${AM_SRC}/analyze/ThresholdDiffChecker.cpp 
+    ${AM_SRC}/analyze/algorithm/ObjectBase.cpp
     ${AM_SRC}/analyze/algorithm/Object.cpp
+    ${AM_SRC}/analyze/algorithm/ObjectRectangle.cpp
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
     ${AM_SRC}/common/Timers.hpp
-    MovementDetectorTest.cpp
-    BmpReaderTest.cpp
-    ObjectDetectorTest.cpp
-    MatrixTest.cpp
-    AffinityComparerTest.cpp
-    ThresholdDiffCheckerTest.cpp
+    ${UT_SOURCES}
 )
 target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
 

@@ -3,7 +3,7 @@
 #include <memory>
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24bDiff.hpp"
-#include "Object.h"
+#include "ObjectRectangle.h"
 
 namespace am
 {
