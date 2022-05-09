@@ -19,10 +19,10 @@ namespace am
 				size_t colId;
 			};
 
-			struct Column
+			struct ImageRowSegment
 			{
-				size_t left;
-				size_t right;
+				size_t start;
+				size_t end;
 			};
 
 			// full representation of found object area on image, has rectangle bounds

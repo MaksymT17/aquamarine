@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <stdint.h>
 #include <vector>
-
 namespace am
 {
 	namespace common
