@@ -15,8 +15,8 @@ namespace am
 
 			bool isNew(std::vector<Pixel> &object, size_t rowId, size_t colId) noexcept;
 			void pushCheckIfNew(std::vector<Pixel> &object, std::vector<Pixel> &toCheck, size_t rowId, size_t colId);
-			void checkClosest(size_t rowId, size_t colId, std::vector<Pixel> &nextCheck, ObjectRectangle &object, Column col, const size_t height, const size_t step) noexcept;
-			std::vector<Pixel> checkConnections(size_t rowId, size_t colId, const size_t &height, const Column &col, const size_t step) noexcept;
+			void checkClosest(size_t rowId, size_t colId, std::vector<Pixel> &nextCheck, ObjectRectangle &object, ImageRowSegment& row, const size_t width, const size_t step) noexcept;
+			std::vector<Pixel> checkConnections(size_t rowId, size_t colId, const size_t &width, const ImageRowSegment &col, const size_t step) noexcept;
 
 			// abstract class for object detection, extracted data should be reusable for next iterations
 			// return value of detection is vector of Objects - Rectangled area

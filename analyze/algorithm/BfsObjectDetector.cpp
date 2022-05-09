@@ -36,49 +36,49 @@ namespace am
 			}
 
 			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, ObjectRectangle &object,
-							  Column col, const size_t height, const size_t step) noexcept
+							  ImageRowSegment& row, const size_t width, const size_t step) noexcept
 			{
-				if (static_cast<int>(rowId - step) >= 0)
+				if (static_cast<int>(rowId - step) >= row.start)
 				{
 					//mv: commented in sake of optimization
 					//pushCheckIfNew(object, nextCheck, rowId - step, colId);
 					nextCheck.emplace_back(rowId - step, colId);
 				}
-				if (rowId + step < height)
+				if (rowId + step < row.end)
 				{
 					//pushCheckIfNew(object, nextCheck, rowId + step, colId);
 					nextCheck.emplace_back(rowId + step, colId);
 				}
-				if (static_cast<int>(colId - step) >= static_cast<int>(col.left))
+				if (static_cast<int>(colId - step) >= 0)
 				{
 					//pushCheckIfNew(object, nextCheck, rowId, colId - step);
 					nextCheck.emplace_back(rowId, colId - step);
 				}
-				if (colId + step < col.right)
+				if (colId + step < width)
 				{
 					//pushCheckIfNew(object, nextCheck, rowId, colId + step);
 					nextCheck.emplace_back(rowId, colId + step);
 				}
 			}
 
-			Pixels checkConnections(size_t rowId, size_t colId, const size_t &height,
-									const Column &col, const size_t step) noexcept
+			Pixels checkConnections(size_t rowId, size_t colId, const size_t &width,
+									const ImageRowSegment &row, const size_t step) noexcept
 			{
 				Pixels toCheck;
 
-				if (static_cast<int>(rowId - step) >= 0)
+				if (static_cast<int>(rowId - step) >= static_cast<int>(row.start))
 				{
 					toCheck.emplace_back(rowId - step, colId);
 				}
-				if (rowId + step < height)
+				if (rowId + step < static_cast<int>(row.end))
 				{
 					toCheck.emplace_back(rowId + step, colId);
 				}
-				if (static_cast<int>(colId - step) >= (int)col.left)
+				if (static_cast<int>(colId - step) >= 0)
 				{
 					toCheck.emplace_back(rowId, colId - step);
 				}
-				if (colId + step < col.right)
+				if (colId + step < width)
 				{
 					toCheck.emplace_back(rowId, colId + step);
 				}

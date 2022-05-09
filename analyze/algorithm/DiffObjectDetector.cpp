@@ -20,7 +20,7 @@ namespace am
 
 			// optimized bfs depending to left/right borders for threads,
 			// every thread will search in defined area(column) of image
-			ObjectRectangle bfs(MatrixU16 &changes, Pixels &toCheck, ObjectRectangle &object, Column col)
+			ObjectRectangle bfs(MatrixU16 &changes, Pixels &toCheck, ObjectRectangle &object, ImageRowSegment row)
 			{
 				Pixels nextCheck;
 
@@ -28,7 +28,7 @@ namespace am
 				{
 					if (changes(position.rowId, position.colId) == common::CHANGE)
 					{
-						checkClosest(position.rowId, position.colId, nextCheck, object, col, changes.getHeight(), 1u);
+						checkClosest(position.rowId, position.colId, nextCheck, object, row, changes.getWidth(), 1u);
 
 						//if (isNew(object, position.rowId, position.colId))
 						//{
@@ -39,28 +39,29 @@ namespace am
 					}
 				}
 				if (nextCheck.size())
-					bfs(changes, nextCheck, object, col);
+					bfs(changes, nextCheck, object, row);
 
 				return object;
 			}
 
-			std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, am::configuration::Configuration *conf, const Column &col)
+			std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, am::configuration::Configuration *conf, const ImageRowSegment &row)
 			{
 				std::vector<ObjectRectangle> result;
 				const size_t step = conf->PixelStep;
 				// check all diffs on potential objects
 				// if change found -> run bsf to figure out how many pixels included in this object
-				for (size_t rowId = step; rowId < changes.getHeight(); rowId += step)
+				//for (size_t rowId = step; rowId < changes.getHeight(); rowId += step)
+				for (size_t rowId = row.start; rowId < row.end; rowId += step)
 				{
-					for (size_t colId = col.left; colId < col.right; colId += step)
+					for (size_t colId = step; colId < changes.getWidth(); colId += step)
 					{
 						if (changes(rowId, colId) == common::CHANGE)
 						{
 							//std::vector<Pixel> obj;
 							ObjectRectangle obj(rowId, colId);
 
-							auto conns = checkConnections(rowId, colId, changes.getHeight(), col, 1u);
-							result.emplace_back(bfs(changes, conns, obj, col));
+							auto conns = checkConnections(rowId, colId, changes.getWidth(), row, 1u);
+							result.emplace_back(bfs(changes, conns, obj, row));
 						}
 					}
 				}
@@ -71,7 +72,7 @@ namespace am
 			{
 				const size_t width = diffs.getWidth();
 				const size_t height = diffs.getHeight();
-				const size_t columnWidth = width / mThreadsCount;
+				const size_t rowWidth = height / mThreadsCount;
 				std::vector<std::vector<ObjectRectangle>> res;
 				std::vector<std::future<std::vector<ObjectRectangle>>> futures;
 
@@ -80,11 +81,11 @@ namespace am
 				MatrixU16 changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 																		   mThreadsCount, mThreadsCount);
 
-				for (size_t columnId = 0; columnId < mThreadsCount; ++columnId)
+				for (size_t rownId = 0; rownId < mThreadsCount; ++rownId)
 				{
 					Pixels toCheck;
-					Column column{columnId * columnWidth, columnId * columnWidth + columnWidth};
-					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration.get(), column));
+					ImageRowSegment row_seg{rownId * rowWidth, rownId * rowWidth + rowWidth};
+					futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration.get(), row_seg));
 				}
 
 				for (auto &e : futures)
