@@ -6,6 +6,27 @@ Tool for recognitions/detections/analyzing images, for searching differences in 
 ## Target: 
 Find optimal solutions for implementation and figure out how to make recognition of image characteristics in an appropriate form and inside of predefined limitations in a config file. Parameters in the config file should cover all significant properties about calculation, should be taken into consideration target Platform and HW limitations. Every improvement ideas are welcome!
 
+## How to build sources and run the program:
+
+Ubuntu:
+
+apt-get -y install git g++ cmake python3 valgrind
+
+git clone https://github.com/MaksymT17/aquamarine.git
+
+CentOS:
+
+yum -y install apt-get -y install git g++ cmake python3 valgrind
+
+git clone https://github.com/MaksymT17/aquamarine.git
+
+When packages are installed just run one of scripts ./build.sh or ./rebuild_and_run.sh, to build binary or to build binary and run test with comparison.
+[Docker containers](https://github.com/MaksymT17/aquamarine_docker) could be used to simplify development process.
+
+Caution:
+
+I complied and tested with g++ 11.2.0 and several other compilers including Microsoft Visual C++ (MSVC). Valgrind checks show that at least basic scenarion doesn't have mem leaks or other issues. Sometimes I find some compilation warnings, in case of something more specific please report me, or feel free to contribute.
+
 ## Components, sub-folders description:
 
 ### [extraction](https://github.com/MaksymT17/aquamarine/tree/master/extraction):
