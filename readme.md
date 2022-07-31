@@ -16,7 +16,7 @@ git clone https://github.com/MaksymT17/aquamarine.git
 
 CentOS:
 
-yum install -y install git g++ cmake python3 valgrind
+yum install -y git g++ cmake python3 valgrind
 
 git clone https://github.com/MaksymT17/aquamarine.git
 
