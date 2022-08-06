@@ -10,15 +10,12 @@ Find optimal solutions for implementation and figure out how to make recognition
 
 Ubuntu:
 
-apt-get -y install git g++ cmake python3 valgrind
+apt-get -y install git g++ cmake python3 valgrind gcovr
 
 git clone https://github.com/MaksymT17/aquamarine.git
 
-CentOS:
-
-yum install -y git g++ cmake python3 valgrind
-
-git clone https://github.com/MaksymT17/aquamarine.git
+UT:
+gcovr library used to generate the code coverage report. ./prepare_build.sh and ./make_and_run_tests.sh will generate report.
 
 When packages are installed just run one of scripts ./build.sh or ./rebuild_and_run.sh, to build binary or to build binary and run test with comparison.
 [Docker containers](https://github.com/MaksymT17/aquamarine_docker) could be used to simplify development process.
