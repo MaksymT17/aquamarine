@@ -77,6 +77,7 @@ namespace am
 				if (static_cast<int>(colId - step) >= 0)
 				{
 					toCheck.emplace_back(rowId, colId - step);
+
 				}
 				if (colId + step < width)
 				{
@@ -133,7 +134,7 @@ namespace am
 						bool isMerged = false;
 						for (auto &rightItem : rects[leftId + 1])
 						{
-							if (rightItem.mergeIfPossibleLeftToMe(leftItem))
+							if (rightItem.mergeIfPossibleVerticalToMe(leftItem))
 							{
 								isMerged = true;
 								leftItem.clearPixelsCount();

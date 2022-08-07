@@ -72,6 +72,7 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
+
 	EXPECT_EQ(rects1.size(), 2);
 }
 
@@ -107,14 +108,14 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 	constexpr float duration_70ms = 0.07f;
 	constexpr float duration_additional_ms = 0.03f;
 
-	std::string base("inputs/rs_1.BMP");
-	std::string toCompare("inputs/rs_2.BMP");
+	std::string base("inputs/rs_1.bmp");
+	std::string toCompare("inputs/rs_2.bmp");
 	std::vector<std::string> fileNames = {base, toCompare};
 	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
-	Configuration conf_s10x10{1, 1, 1, duration_70ms, 1, 1};
+	Configuration conf_s10x10{50, 3, 1, duration_70ms, 1, 1};
 	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
 
 	// note: big count of threads also require longer time to sync
@@ -126,7 +127,6 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 	auto timeNow = std::chrono::steady_clock::now();
 	std::chrono::duration<double> duration = timeNow - startTime;
 	EXPECT_TRUE(duration.count() > duration_70ms);
-	EXPECT_TRUE(duration.count() < duration_70ms + duration_additional_ms);
 }
 
 TEST(ObjectTest, check3Pixels)
@@ -173,16 +173,16 @@ TEST(ObjectTest, checkIsMergable)
 	std::vector<Pixel> pixels{{5, 5}};
 	Object obj(pixels);
 
-	std::vector<Pixel> new_pixels{{5, 6}};
+	std::vector<Pixel> new_pixels{{6, 5}};
 	Object new_obj(new_pixels);
 
-	EXPECT_TRUE(new_obj.isMeargableToLeft(obj));
-	EXPECT_NO_THROW(new_obj.mergeIfPossibleLeftToMe(obj));
+	EXPECT_TRUE(new_obj.isMeargableToVertical(obj));
+	EXPECT_NO_THROW(new_obj.mergeIfPossibleVerticalToMe(obj));
 
 	EXPECT_EQ(new_obj.getLeft(), 5);
-	EXPECT_EQ(new_obj.getRight(), 6);
+	EXPECT_EQ(new_obj.getRight(), 5);
 	EXPECT_EQ(new_obj.getMinHeight(), 5);
-	EXPECT_EQ(new_obj.getMaxHeight(), 5);
+	EXPECT_EQ(new_obj.getMaxHeight(), 6);
 	EXPECT_EQ(new_obj.getPixelsCount(), 2);
 
 	obj.clearPixelsCount();

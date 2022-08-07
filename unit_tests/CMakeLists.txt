@@ -8,7 +8,7 @@ set(CMAKE_PROJECT_VERSION_PATCH ${CMAKE_PROJECT_VERSION})
 set(AM_SRC ../)
 set(AM_INC ../)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O3 -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O1 -fprofile-arcs -ftest-coverage")
 
 find_package (Threads)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
