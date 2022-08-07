@@ -8,12 +8,15 @@ namespace am
         namespace algorithm
         {
 
-            bool ObjectBase::isMeargableToLeft(ObjectBase &leftObj) const noexcept
+            bool ObjectBase::isMeargableToVertical(ObjectBase &leftObj) const noexcept
 			{
-				if (leftObj.getRight() + 1 == mLeft)
+				if (leftObj.getMaxHeight() + 1 == mMin_height)
 				{
-					if (getMinHeight() <= leftObj.getMinHeight() && leftObj.getMinHeight() <= getMaxHeight() ||
-						getMinHeight() <= leftObj.getMaxHeight() && leftObj.getMaxHeight() <= getMaxHeight())
+					// check if ranges are intersecting, if yes can be mergedi nto one object
+					if (getLeft() <= leftObj.getLeft() && leftObj.getLeft() <= getRight() ||
+						getLeft() <= leftObj.getRight() && leftObj.getRight() <= getRight() ||
+						getLeft() >= leftObj.getLeft() && getLeft() <=leftObj.getRight() || 
+						leftObj.getLeft() >= getLeft() && leftObj.getLeft() <= getRight())
 						return true;
 				}
 				return false;
@@ -37,9 +40,9 @@ namespace am
 					mMax_height = toCompare.mMax_height;
 			}
 
-			bool ObjectBase::mergeIfPossibleLeftToMe(ObjectBase &toCompare) noexcept
+			bool ObjectBase::mergeIfPossibleVerticalToMe(ObjectBase &toCompare) noexcept
 			{
-				if (isMeargableToLeft(toCompare))
+				if (isMeargableToVertical(toCompare))
 				{
 					/// debug prints of object rects
 					// printToConsole();
