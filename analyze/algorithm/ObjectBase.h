@@ -16,8 +16,8 @@ namespace am
 																		  mMin_height(row),
 																		  mRight(col),
 																		  mMax_height(row) {}
-				bool isMeargableToLeft(ObjectBase &toCompare) const noexcept;
-				bool mergeIfPossibleLeftToMe(ObjectBase &toCompare) noexcept;
+				bool isMeargableToVertical(ObjectBase &toCompare) const noexcept;
+				bool mergeIfPossibleVerticalToMe(ObjectBase &toCompare) noexcept;
 
 				size_t getLeft() const noexcept;
 				size_t getRight() const noexcept;

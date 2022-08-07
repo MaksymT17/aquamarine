@@ -86,6 +86,7 @@ namespace am
 							// Pixels obj{{rowId, colId}};
 							ObjectRectangle obj(rowId, colId);
 							auto conns = checkConnections(rowId, colId, pair.getWidth(), row, conf.PixelStep);
+
 							resultList.emplace_back(bfs(pair, changes, conns, obj, row, startTime, conf));
 						}
 					}
@@ -107,19 +108,20 @@ namespace am
 				{
 					ImageRowSegment row{rowId * rowHeight, rowId * rowHeight + rowHeight};
 					// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
-					//	pair, column, *mConfiguration));
+					//	pair, row, *mConfiguration));
 
 					futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, row, *mConfiguration)));
 				}
 
 				ImageRowSegment final_row{(mThreadsCount - 1) * rowHeight, pair.getHeight()};
-				// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
-				//	pair, final_column, *mConfiguration));
+				 //futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
+					//pair, final_row, *mConfiguration));
 				futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, final_row, *mConfiguration)));
 				for (auto &e : futures)
 				{
 					res.emplace_back(e.get());
 				}
+
 				return createObjectRects(res, mConfiguration->MinPixelsForObject);
 			}
 		} // namespace algorithm
