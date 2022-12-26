@@ -10,7 +10,7 @@ Find optimal solutions for implementation and figure out how to make recognition
 
 Ubuntu:
 
-apt-get -y install git g++ cmake python3 valgrind gcovr
+apt-get -y install git g++ cmake python3 valgrind gcovr libsqlite3-dev
 
 git clone https://github.com/MaksymT17/aquamarine.git
 
