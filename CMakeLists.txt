@@ -9,7 +9,11 @@ endif()
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 find_package (Threads)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+find_package (SQLite3)
+
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS})
 
 set(AM_SOURCE_FILES 
 analyze/AffinityComparer.cpp 
@@ -27,9 +31,9 @@ extraction/MultipleBmpExtractor.cpp
 common/Timers.hpp
 )
 
-add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES})
+add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} )
 
-add_executable(aquamarine main.cpp)
+add_executable(aquamarine main.cpp  database/DataBaseCommunicator.cpp)
 
-target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES})
 
