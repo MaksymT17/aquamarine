@@ -39,7 +39,6 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
-    ${AM_SRC}/common/Timers.hpp
     ${UT_SOURCES}
 )
 target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})

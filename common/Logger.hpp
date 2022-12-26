@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <mutex>
+#include "Timers.hpp"
 
 namespace am
 {
@@ -40,12 +41,12 @@ namespace am
 		private:
 			void log(const char *tag, const char *format, ...)
 			{
-				std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-				std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+				//std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+				//std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
 				std::stringstream str;
 				// todo: deprecated localtime, needed swithc to localtime_s - as compiler suggesting :)
-				str << tag << std::put_time(std::localtime(&now_c), "%Y-%m-%d %X:") << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() % 1000;
+				str << tag << get_datetime();
 
 				va_list args;
 				va_start(args, format);
