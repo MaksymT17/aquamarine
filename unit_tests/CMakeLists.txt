@@ -11,8 +11,9 @@ set(AM_INC ../)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O1 -fprofile-arcs -ftest-coverage")
 
 find_package (Threads)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${AM_INC})
+find_package (SQLite3)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${SQLite3_INCLUDE_DIRS})
 
 #fetch gtest library
 include(FetchContent)
@@ -39,9 +40,10 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
+    ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES})
 
 # gcov - coverage
 set(CMAKE_COMPILER_IS_GNUCXX true)
