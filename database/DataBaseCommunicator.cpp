@@ -82,5 +82,10 @@ namespace am
 
             return true;
         }
+
+        sqlite3 *DataBaseCommunicator::get_database_ptr() const
+        {
+            return database;
+        }
     }
 }
