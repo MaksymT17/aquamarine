@@ -21,6 +21,8 @@ namespace am
 
             bool print_all_colected_results();
 
+            sqlite3 *get_database_ptr() const;
+
         private:
             char *zErrMsg;
             sqlite3 *database;
