@@ -1,12 +1,15 @@
 cmake_minimum_required (VERSION 2.6)
 
 project (aquamarine_ut)
+
 set(CMAKE_PROJECT_VERSION 0.7)
 set(CMAKE_PROJECT_VERSION_MAJOR ${CMAKE_PROJECT_VERSION})
 set(CMAKE_PROJECT_VERSION_MINOR ${CMAKE_PROJECT_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${CMAKE_PROJECT_VERSION})
 set(AM_SRC ../)
 set(AM_INC ../)
+
+add_compile_options(-fno-rtti)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O1 -fprofile-arcs -ftest-coverage")
 
