@@ -7,28 +7,27 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+add_compile_options(-fno-rtti)
 
 find_package (Threads)
-
 find_package (SQLite3)
-
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS})
 
 set(AM_SOURCE_FILES 
-analyze/AffinityComparer.cpp 
-analyze/ThresholdDiffChecker.cpp 
-analyze/algorithm/ObjectBase.cpp
-analyze/algorithm/Object.cpp
-analyze/algorithm/ObjectRectangle.cpp
-analyze/algorithm/BfsObjectDetector.cpp 
-analyze/algorithm/ObjectDetector.cpp 
-analyze/algorithm/DiffObjectDetector.cpp 
-analyze/algorithm/ImagePair.cpp 
-analyze/algorithm/movement/MovementDetector.cpp
-extraction/BmpExtractor.cpp
-extraction/MultipleBmpExtractor.cpp
-common/Timers.hpp
+    analyze/AffinityComparer.cpp 
+    analyze/ThresholdDiffChecker.cpp 
+    analyze/algorithm/ObjectBase.cpp
+    analyze/algorithm/Object.cpp
+    analyze/algorithm/ObjectRectangle.cpp
+    analyze/algorithm/BfsObjectDetector.cpp 
+    analyze/algorithm/ObjectDetector.cpp 
+    analyze/algorithm/DiffObjectDetector.cpp 
+    analyze/algorithm/ImagePair.cpp 
+    analyze/algorithm/movement/MovementDetector.cpp
+    extraction/BmpExtractor.cpp
+    extraction/MultipleBmpExtractor.cpp
+    common/Timers.hpp
 )
 
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} )
