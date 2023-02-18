@@ -15,7 +15,7 @@ namespace am
 		{
 		}
 
-		std::vector<Matrix<Color24b>> MultipleBmpExtractor::readFiles(std::vector<std::string> &fileNames)
+		std::vector<Matrix<Color24b>> MultipleBmpExtractor::readFiles(std::vector<std::string> &&fileNames)
 		{
 			std::vector<Matrix<Color24b>> result;
 			result.reserve(fileNames.size());

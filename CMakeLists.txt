@@ -28,6 +28,7 @@ set(AM_SOURCE_FILES
     extraction/BmpExtractor.cpp
     extraction/MultipleBmpExtractor.cpp
     common/Timers.hpp
+    AmApi.cpp
 )
 
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} )
