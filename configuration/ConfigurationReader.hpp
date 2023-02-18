@@ -7,6 +7,7 @@
 #include <memory>
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AmException.hpp"
+#include "analyze/algorithm/ObjectDetector.h"
 
 namespace
 {

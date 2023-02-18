@@ -21,7 +21,7 @@ namespace am
 
 		/// note: multplier of threads per core
 		/// HW dependent constant, bigger value can make calculations faster
-		/// Warning: to big value creates threads initialization overhead
+		/// Warning: too big value creates threads initialization & switching overhead
 		/// According to tests(i7-7700hq) acceptable range is: from 1.0 up to 8.0
 		static size_t getOptimalThreadsCount(double thrd_per_core = 1.0f)
 		{

@@ -12,7 +12,7 @@ namespace am
 		class BmpDrawer
 		{
 		public:
-			BmpDrawer(std::string &file)
+			BmpDrawer(const std::string &file)
 				: mImage(bitmap_image(file.c_str())), drawer(mImage) {}
 			~BmpDrawer() = default;
 
