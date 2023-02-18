@@ -47,8 +47,7 @@ TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
 {
 	std::string base("inputs/fhd_clean.BMP");
 	std::string toCompare("inputs/fhd_3obj.BMP");
-	std::vector<std::string> fileNames = {base, toCompare};
-	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
@@ -62,8 +61,7 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 {
 	std::string base("inputs/10x10_clean.BMP");
 	std::string toCompare("inputs/10x10_2obj.BMP");
-	std::vector<std::string> fileNames = {base, toCompare};
-	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
@@ -80,8 +78,7 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 {
 	std::string base("inputs/20x20_clean.BMP");
 	std::string toCompare("inputs/20x20_5objs.BMP");
-	std::vector<std::string> fileNames = {base, toCompare};
-	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
@@ -98,8 +95,7 @@ TEST_F(ObjectDetectorWrapper, CheckInvalidSize)
 {
 	std::string base("inputs/20x20_clean.BMP");
 	std::string toCompare("inputs/10x10_clean.BMP");
-	std::vector<std::string> fileNames = {base, toCompare};
-	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 	EXPECT_THROW(algorithm::ImagePair pair(data[0], data[1]), am::common::exceptions::AmException);
 }
 
@@ -110,8 +106,7 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 
 	std::string base("inputs/rs_1.bmp");
 	std::string toCompare("inputs/rs_2.bmp");
-	std::vector<std::string> fileNames = {base, toCompare};
-	std::vector<Matrix<Color24b>> data = extractor->readFiles(fileNames);
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
