@@ -1,4 +1,4 @@
-scp -r inputs/ build/ &&
+scp -rp inputs/ build/inputs &&
 echo "Image samples copied." &&
 cd build/ &&
 ./aquamarine &&
