@@ -19,7 +19,7 @@ namespace am
 			class IObjectDetector
 			{
 			public:
-				virtual ~IObjectDetector() = default;
+				~IObjectDetector() = default;
 
 				virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
 			};

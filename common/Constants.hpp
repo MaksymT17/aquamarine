@@ -8,16 +8,15 @@ namespace am
 {
 	namespace common
 	{
+		constexpr int R_POS_VAL = 1;
+		constexpr int G_POS_VAL = 2;
+		constexpr int B_POS_VAL = 4;
 
-		const int R_POS_VAL = 1;
-		const int G_POS_VAL = 2;
-		const int B_POS_VAL = 4;
+		constexpr int R_BIT_POSITION = 0;
+		constexpr int G_BIT_POSITION = 1;
+		constexpr int B_BIT_POSITION = 2;
 
-		const int R_BIT_POSITION = 0;
-		const int G_BIT_POSITION = 1;
-		const int B_BIT_POSITION = 2;
-
-		const uint16_t CHANGE = (std::numeric_limits<uint16_t>::max)();
+		constexpr uint16_t CHANGE = (std::numeric_limits<uint16_t>::max)();
 
 		/// note: multplier of threads per core
 		/// HW dependent constant, bigger value can make calculations faster

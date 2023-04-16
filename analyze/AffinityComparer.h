@@ -19,7 +19,7 @@ namespace am
 		public:
 			AffinityComparer(common::types::Matrix<common::types::Color24b> &base);
 
-			virtual ~AffinityComparer() = default;
+			~AffinityComparer() = default;
 
 			static Matrix<Color24bDiff> compare(const Matrix<Color24b> &first,
 												const Matrix<Color24b> &second,
