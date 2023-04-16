@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IExtractor.h"
 #include "common/types/Matrix.hpp"
+#include "common/types/Color24b.hpp"
 #include <memory>
 
 namespace am
@@ -13,7 +13,7 @@ namespace am
 		{
 		public:
 			BmpExtractor() = default;
-			virtual ~BmpExtractor() = default;
+			~BmpExtractor() = default;
 
 			static common::types::Matrix<common::types::Color24b> readFile(const std::string &filePath);
 		};

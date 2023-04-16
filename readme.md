@@ -15,14 +15,14 @@ apt-get -y install git g++ cmake python3 valgrind gcovr libsqlite3-dev
 git clone https://github.com/MaksymT17/aquamarine.git
 
 UT:
-gcovr library used to generate the code coverage report. ./prepare_build.sh and ./make_and_run_tests.sh will generate report.
+gcovr library used to generate the code coverage report. 'prepare_build.sh' and 'make_and_run_tests.sh' will generate report.
 
-When packages are installed just run one of scripts ./build.sh or ./rebuild_and_run.sh, to build binary or to build binary and run test with comparison.
+When packages are installed just run one of scripts 'build.sh' or 'rebuild_and_run.sh', to build binary or to build binary and run test with comparison.
 [Docker containers](https://github.com/MaksymT17/aquamarine_docker) could be used to simplify development process.
 
 Caution:
 
-I complied and tested with g++ 11.2.0 and several other compilers including Microsoft Visual C++ (MSVC). Valgrind checks show that at least basic scenarion doesn't have mem leaks or other issues. Sometimes I find some compilation warnings, in case of something more specific please report me, or feel free to contribute.
+I complied and tested with g++ 11.2.0 and several other compilers including Microsoft Visual C++ (MSVC). Valgrind checks show that at least basic scenario doesn't have mem leaks or other issues. I find compilation warnings under different compilers and fixed them(at least what I have seen), in similar or in more specific cases please report me, or feel free to contribute.
 
 ## Components, sub-folders description:
 
@@ -57,4 +57,4 @@ _Commercial usage of sources added in this repo is forbidden without agreement w
 
 _Activity with the usage of current SW, which can be recognized as violations of privacy laws also not allowed._
 
-_For quesstions or suggestions: benzin.pump@gmail.com_
+_For quesstions or suggestions please send private message or email_

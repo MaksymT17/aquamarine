@@ -23,7 +23,7 @@ namespace am
 			class BfsObjectDetector : public IObjectDetector
 			{
 			public:
-				virtual ~BfsObjectDetector() = default;
+				~BfsObjectDetector() = default;
 
 				// all calculation with diffs, no time limits
 				// DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
