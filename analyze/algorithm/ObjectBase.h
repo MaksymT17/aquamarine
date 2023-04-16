@@ -16,6 +16,8 @@ namespace am
 																		  mMin_height(row),
 																		  mRight(col),
 																		  mMax_height(row) {}
+				~ObjectBase() = default;
+
 				bool isMeargableToVertical(ObjectBase &toCompare) const noexcept;
 				bool mergeIfPossibleVerticalToMe(ObjectBase &toCompare) noexcept;
 

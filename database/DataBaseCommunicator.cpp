@@ -1,9 +1,9 @@
 #include "DataBaseCommunicator.h"
 #include <iostream>
 
-constexpr const char *INSERT_RESULTS_CMD = "INSERT INTO RESULTS (DATE_TIME,FILE_SRC,FILE_DST,OBECTS_FOUND) ";
+static constexpr const char *INSERT_RESULTS_CMD = "INSERT INTO RESULTS (DATE_TIME,FILE_SRC,FILE_DST,OBECTS_FOUND) ";
 
-constexpr const char *CREATE_TABLE_CMD = "CREATE TABLE RESULTS("
+static constexpr const char *CREATE_TABLE_CMD = "CREATE TABLE RESULTS("
                                          "DATE_TIME          CHAR(50),"
                                          "FILE_SRC           TEXT    NOT NULL,"
                                          "FILE_DST           TEXT    NOT NULL,"

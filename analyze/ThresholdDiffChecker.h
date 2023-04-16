@@ -11,7 +11,7 @@ namespace am
 		{
 		public:
 			ThresholdDiffChecker(const uint16_t channelTreshold);
-			virtual ~ThresholdDiffChecker() = default;
+			~ThresholdDiffChecker() = default;
 
 			// shows persent of similarity based on diffs of two images
 			float getAffinityPersent(const size_t threadsCount, common::types::Matrix<common::types::Color24bDiff> &diffs);

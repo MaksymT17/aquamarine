@@ -32,7 +32,7 @@ namespace am
     {
         const algorithm::DescObjects objects = compare(base_img, cmp_img);
         am::extraction::BmpDrawer drawer(base_img);
-        for (auto obj : objects)
+        for (auto& obj : objects)
         {
             drawer.drawRectangle(obj.getLeft(), obj.getMinHeight(), obj.getRight(),
                                 obj.getMaxHeight());
