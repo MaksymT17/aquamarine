@@ -11,8 +11,8 @@ std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("u
 TEST(MovementDetectionTest, checkTwoObjectsMovements)
 {
 	am::extraction::BmpExtractor extractor;
-	std::string base("inputs/rs_1.BMP");
-	std::string next("inputs/rs_2.BMP");
+	std::string base("inputs/rs_1.bmp");
+	std::string next("inputs/rs_2.bmp");
 
 	auto firstBmp = extractor.readFile(base);
 	auto secondtBmp = extractor.readFile(next);
@@ -108,8 +108,8 @@ TEST(MovementDetectionTest, checkMovementStealth)
 TEST(MovementDetectionTest, checkMovementOnEqualImages)
 {
 	am::extraction::BmpExtractor extractor;
-	std::string base("inputs/fhd_3obj.BMP");
-	std::string next("inputs/fhd_3obj.BMP");
+	std::string base("inputs/fhd_3obj.bmp");
+	std::string next("inputs/fhd_3obj.bmp");
 
 	auto firstBmp = extractor.readFile(base);
 	auto secondtBmp = extractor.readFile(next);
