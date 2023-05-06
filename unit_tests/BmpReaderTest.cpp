@@ -9,7 +9,7 @@ using namespace am::common::types;
 TEST(BmpReaderTest, checkForNotExistingFile)
 {
     am::extraction::BmpExtractor extractor;
-    std::string base("inputs/NotExisting.BMP");
+    std::string base("inputs/NotExisting.bmp");
 
     EXPECT_THROW(extractor.readFile(base), am::common::exceptions::FileAccessException);
 }
@@ -17,7 +17,7 @@ TEST(BmpReaderTest, checkForNotExistingFile)
 TEST(BmpReaderTest, checkForExistingFile)
 {
     am::extraction::BmpExtractor extractor;
-    std::string base("inputs/rs_1.BMP");
+    std::string base("inputs/rs_1.bmp");
 
     EXPECT_NO_THROW(extractor.readFile(base));
 }
@@ -26,7 +26,7 @@ TEST(BmpExtractorTest, check10x10)
 {
     // check one color bmp, each pixel has the same values for RGB channels
     am::extraction::BmpExtractor extractor;
-    Matrix<Color24b> result = extractor.readFile("inputs/10x10_clean.BMP");
+    Matrix<Color24b> result = extractor.readFile("inputs/10x10_clean.bmp");
     EXPECT_EQ(result.getWidth(), 10);
     EXPECT_EQ(result.getHeight(), 10);
     EXPECT_EQ(result(1, 1), result(2, 2));
@@ -39,7 +39,7 @@ TEST(BmpExtractorTest, check10x10)
 TEST(BmpExtractorTest, check20x20)
 {
     am::extraction::BmpExtractor extractor;
-    Matrix<Color24b> result = extractor.readFile("inputs/20x20_clean.BMP");
+    Matrix<Color24b> result = extractor.readFile("inputs/20x20_clean.bmp");
     EXPECT_EQ(result.getWidth(), 20);
     EXPECT_EQ(result.getHeight(), 20);
     EXPECT_EQ(result(2, 2), result(3, 2));

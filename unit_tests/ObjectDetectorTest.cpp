@@ -45,8 +45,8 @@ struct ObjectDetectorWrapper : public ::testing::Test
 
 TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
 {
-	std::string base("inputs/fhd_clean.BMP");
-	std::string toCompare("inputs/fhd_3obj.BMP");
+	std::string base("inputs/fhd_clean.bmp");
+	std::string toCompare("inputs/fhd_3obj.bmp");
 	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
@@ -59,8 +59,8 @@ TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
 
 TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 {
-	std::string base("inputs/10x10_clean.BMP");
-	std::string toCompare("inputs/10x10_2obj.BMP");
+	std::string base("inputs/10x10_clean.bmp");
+	std::string toCompare("inputs/10x10_2obj.bmp");
 	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
@@ -76,8 +76,8 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 
 TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 {
-	std::string base("inputs/20x20_clean.BMP");
-	std::string toCompare("inputs/20x20_5objs.BMP");
+	std::string base("inputs/20x20_clean.bmp");
+	std::string toCompare("inputs/20x20_5objs.bmp");
 	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
@@ -93,8 +93,8 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 
 TEST_F(ObjectDetectorWrapper, CheckInvalidSize)
 {
-	std::string base("inputs/20x20_clean.BMP");
-	std::string toCompare("inputs/10x10_clean.BMP");
+	std::string base("inputs/20x20_clean.bmp");
+	std::string toCompare("inputs/10x10_clean.bmp");
 	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 	EXPECT_THROW(algorithm::ImagePair pair(data[0], data[1]), am::common::exceptions::AmException);
 }
