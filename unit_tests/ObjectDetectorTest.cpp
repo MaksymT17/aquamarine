@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "analyze/AffinityComparer.h"
 #include <stdio.h>
-#include "extraction/MultipleBmpExtractor.h"
+#include "extraction/MultipleExtractor.h"
 #include "extraction/BmpExtractor.h"
 #include "analyze/ThresholdDiffChecker.h"
 #include "analyze/algorithm/BfsObjectDetector.h"
@@ -29,7 +29,7 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	void SetUp() override
 	{
 		loggerPtr = std::make_shared<am::common::Logger>("od_dummy_log.log");
-		extractor = std::make_unique<am::extraction::MultipleBmpExtractor>(loggerPtr);
+		extractor = std::make_unique<am::extraction::MultipleExtractor>(loggerPtr, true);
 	}
 
 	void TearDown() override
@@ -37,7 +37,7 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	}
 
 	std::shared_ptr<am::common::Logger> loggerPtr;
-	std::unique_ptr<am::extraction::MultipleBmpExtractor> extractor;
+	std::unique_ptr<am::extraction::MultipleExtractor> extractor;
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
 	am::configuration::ConfigurationReader reader;
 	std::shared_ptr<Configuration> conf = reader.getConfigurationFromFile("inputs/configuration.csv");
