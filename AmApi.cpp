@@ -4,15 +4,17 @@
 #include "analyze/algorithm/ImagePair.h"
 #include <sstream>
 
+#include <jpeglib.h>
 namespace am
 {
     using namespace common::types;
     using namespace analyze;
 
 
-    AmApi::AmApi(const char *conf_path):
+    AmApi::AmApi(const char *conf_path, bool is_bmp):
         loggerPtr(std::make_shared<am::common::Logger>("log.log")),
-        extractor(loggerPtr)
+        extractor(loggerPtr, is_bmp),
+        is_bmp_files(is_bmp)
     {
         am::configuration::ConfigurationReader reader;
         configuration = reader.getConfigurationFromFile(conf_path);

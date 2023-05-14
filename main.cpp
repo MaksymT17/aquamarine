@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
 	else
 	{
 		std::cout << "Use default parameters" << std::endl;
-		base_img_path = "inputs/rs_1.bmp";
-		cmp_img_path = "inputs/rs_2.bmp";
+		base_img_path = "inputs/_DSC4097.JPG";
+		cmp_img_path = "inputs/_DSC4098.JPG";
 		conf_path = "inputs/configuration.csv";
 		out_img_path = "compare_result.bmp";
 	}
@@ -39,7 +39,13 @@ int main(int argc, char *argv[])
 			   rect.getRight(), rect.getPixelsCount());
 	}*/
 	amApi.enable_database_reports("results.db");
-	amApi.compare_and_save_diff_img(base_img_path, cmp_img_path, out_img_path);
-
+	const auto rects = amApi.compare(base_img_path, cmp_img_path);
+	for (auto &rect : rects)
+	{
+		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n",
+			   rect.getMinHeight(), rect.getLeft(), rect.getMaxHeight(),
+			   rect.getRight(), rect.getPixelsCount());
+	}
+	printf("rects %zu\n", rects.size());
 	return 0;
 }
