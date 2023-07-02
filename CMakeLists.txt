@@ -28,12 +28,13 @@ set(AM_SOURCE_FILES
     extraction/BmpExtractor.cpp
     extraction/MultipleBmpExtractor.cpp
     common/Timers.hpp
+    database/DataBaseCommunicator.cpp
     AmApi.cpp
 )
 
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} )
 
-add_executable(aquamarine main.cpp  database/DataBaseCommunicator.cpp)
+add_executable(aquamarine main.cpp)
 
 target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES})
 
