@@ -15,9 +15,9 @@ namespace am
         extractor(loggerPtr)
     {
         am::configuration::ConfigurationReader reader;
-        auto conf = reader.getConfigurationFromFile(conf_path);
-        const size_t opt_threads = am::common::getOptimalThreadsCount(conf->ThreadsMultiplier);
-        detector = std::make_unique<algorithm::ObjectDetector>(opt_threads, conf, loggerPtr) ;
+        configuration = reader.getConfigurationFromFile(conf_path);
+        const size_t opt_threads = am::common::getOptimalThreadsCount(configuration->ThreadsMultiplier);
+        detector = std::make_unique<algorithm::ObjectDetector>(opt_threads, configuration, loggerPtr) ;
     }
 
     algorithm::DescObjects AmApi::compare(const std::string &base_img, const std::string &cmp_img)
@@ -53,4 +53,15 @@ namespace am
         dbcPtr.reset(new database::DataBaseCommunicator(db_name));
     }
 
+    std::shared_ptr<configuration::Configuration> AmApi::getConfiguration()
+    {
+        return configuration;
+    }
+
+    void AmApi::setConfiguration(std::shared_ptr<configuration::Configuration> newConf)
+    {
+        configuration = newConf;
+        const size_t opt_threads = am::common::getOptimalThreadsCount(configuration->ThreadsMultiplier);
+        detector = std::make_unique<algorithm::ObjectDetector>(opt_threads, configuration, loggerPtr) ;
+    }
 }
