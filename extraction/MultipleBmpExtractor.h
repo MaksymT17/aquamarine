@@ -16,7 +16,7 @@ namespace am
 		class MultipleBmpExtractor: public IMultipleBmpExtractor
 		{
 		public:
-			MultipleBmpExtractor(std::shared_ptr<am::common::Logger> &logger);
+			explicit MultipleBmpExtractor(std::shared_ptr<am::common::Logger> &logger);
 			~MultipleBmpExtractor() = default;
 
 			// fill up the Matrices for each file provided in the input parameter

@@ -4,10 +4,10 @@
 static constexpr const char *INSERT_RESULTS_CMD = "INSERT INTO RESULTS (DATE_TIME,FILE_SRC,FILE_DST,OBECTS_FOUND) ";
 
 static constexpr const char *CREATE_TABLE_CMD = "CREATE TABLE RESULTS("
-                                         "DATE_TIME          CHAR(50),"
-                                         "FILE_SRC           TEXT    NOT NULL,"
-                                         "FILE_DST           TEXT    NOT NULL,"
-                                         "OBECTS_FOUND       INT     NOT NULL);";
+                                                "DATE_TIME          CHAR(50),"
+                                                "FILE_SRC           TEXT    NOT NULL,"
+                                                "FILE_DST           TEXT    NOT NULL,"
+                                                "OBECTS_FOUND       INT     NOT NULL);";
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
@@ -23,7 +23,7 @@ namespace am
 {
     namespace database
     {
-        DataBaseCommunicator::DataBaseCommunicator(const char *database_name)
+        DataBaseCommunicator::DataBaseCommunicator(const char *database_name) : zErrMsg(nullptr)
         {
             if (sqlite3_open(database_name, &database))
             {
@@ -70,10 +70,10 @@ namespace am
 
         bool DataBaseCommunicator::print_all_colected_results()
         {
-            const char *data = "DataBaseCommunicator: Callback function called";
+            char *data = "DataBaseCommunicator: Callback function called";
             const char *sql = "SELECT * from RESULTS";
 
-            if (sqlite3_exec(database, sql, callback, (void *)data, &zErrMsg) != SQLITE_OK)
+            if (sqlite3_exec(database, sql, callback, static_cast<void *>(data), &zErrMsg) != SQLITE_OK)
             {
                 fprintf(stderr, "SQL error: %s\n", zErrMsg);
                 sqlite3_free(zErrMsg);

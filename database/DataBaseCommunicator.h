@@ -11,7 +11,7 @@ namespace am
         class DataBaseCommunicator
         {
         public:
-            DataBaseCommunicator(const char *database_name = "results.db");
+            explicit DataBaseCommunicator(const char *database_name = "results.db");
 
             ~DataBaseCommunicator();
 
