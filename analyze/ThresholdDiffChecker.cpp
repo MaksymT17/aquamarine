@@ -10,7 +10,7 @@ namespace am
 
 		ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) : mThreshold(channelTreshold) {}
 
-		void setThresholdChanges(size_t rowId, size_t width, Matrix<Color24bDiff> &diff,
+		void setThresholdChanges(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
 								 const uint16_t threshold, MatrixU16 &result)
 		{
 			for (std::size_t x = 0; x < width; ++x)
@@ -21,7 +21,7 @@ namespace am
 			}
 		}
 
-		void checlImageRow(size_t rowId, size_t width, Matrix<Color24bDiff> &diff,
+		void checlImageRow(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
 						   const uint16_t threshold, std::atomic_size_t &diffCounter)
 		{
 			for (std::size_t x = 0; x < width; ++x)

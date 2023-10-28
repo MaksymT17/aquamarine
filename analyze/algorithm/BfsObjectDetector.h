@@ -13,8 +13,8 @@ namespace am
 
 			class ImagePair;
 
-			bool isNew(std::vector<Pixel> &object, size_t rowId, size_t colId) noexcept;
-			void pushCheckIfNew(std::vector<Pixel> &object, std::vector<Pixel> &toCheck, size_t rowId, size_t colId);
+			bool isNew(const std::vector<Pixel> &object, size_t rowId, size_t colId) noexcept;
+			void pushCheckIfNew(const std::vector<Pixel> &object, std::vector<Pixel> &toCheck, size_t rowId, size_t colId);
 			void checkClosest(size_t rowId, size_t colId, std::vector<Pixel> &nextCheck, ObjectRectangle &object, ImageRowSegment& row, const size_t width, const size_t step) noexcept;
 			std::vector<Pixel> checkConnections(size_t rowId, size_t colId, const size_t &width, const ImageRowSegment &col, const size_t step) noexcept;
 
@@ -29,7 +29,7 @@ namespace am
 				// DescObjects getObjectsRects(std::shared_ptr<common::types::Matrix<common::types::Color24bDiff>> diffs);
 
 				// search of ebjects within ImagePair data provided
-				virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
+				virtual DescObjects getObjectsRects(ImagePair &pair) override = 0;
 
 				// creation of ordered objects list: Descending(bigger first)
 				DescObjects createObjectRects(std::vector<std::vector<ObjectRectangle>> &objPixels,
