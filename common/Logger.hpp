@@ -16,7 +16,7 @@ namespace am
 		class Logger
 		{
 		public:
-			Logger(const char *fileName) : mFileName(fileName){};
+			explicit Logger(const char *fileName) : mFileName(fileName){};
 
 			~Logger() = default;
 

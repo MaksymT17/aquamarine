@@ -47,7 +47,7 @@ namespace am
 			}
 
 		private:
-			void setParameter(std::istream &line, std::shared_ptr<Configuration> &conf)
+			void setParameter(std::istream &line, const std::shared_ptr<Configuration> &conf)
 			{
 				std::string paramName, paramVal;
 				std::getline(line, paramName, PARAM_LIMITER);

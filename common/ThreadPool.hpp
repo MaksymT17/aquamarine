@@ -9,7 +9,7 @@ class ThreadPool
 public:
     // according to test on CPU with Hyper-threading feature better to use mutiplier of 2
     //  without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
-    ThreadPool(unsigned num_threads = std::thread::hardware_concurrency() * 2)
+    explicit ThreadPool(unsigned num_threads = std::thread::hardware_concurrency() * 2)
     {
         while (num_threads--)
         {
