@@ -17,7 +17,7 @@ namespace am
 		class AffinityComparer : public IComparer
 		{
 		public:
-			AffinityComparer(common::types::Matrix<common::types::Color24b> &base);
+			explicit AffinityComparer(common::types::Matrix<common::types::Color24b> &base);
 
 			~AffinityComparer() = default;
 

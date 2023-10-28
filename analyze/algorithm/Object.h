@@ -30,7 +30,7 @@ namespace am
 			class Object : public ObjectBase
 			{
 			public:
-				Object(std::vector<Pixel> &pixels);
+				explicit Object(std::vector<Pixel> &pixels);
 				~Object() = default;
 				std::vector<Pixel> &getPixels() const noexcept;
 

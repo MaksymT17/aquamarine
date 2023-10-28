@@ -8,7 +8,7 @@ namespace am
         namespace algorithm
         {
 
-            bool ObjectBase::isMeargableToVertical(ObjectBase &leftObj) const noexcept
+            bool ObjectBase::isMeargableToVertical(const ObjectBase &leftObj) const noexcept
 			{
 				if (leftObj.getMaxHeight() + 1 == mMin_height)
 				{
@@ -22,7 +22,7 @@ namespace am
 				return false;
 			}
 
-			void ObjectBase::mergeToMe(ObjectBase &toCompare) noexcept
+			void ObjectBase::mergeToMe(const ObjectBase &toCompare) noexcept
 			{
 				mPixelsCount += toCompare.mPixelsCount;
 
@@ -40,7 +40,7 @@ namespace am
 					mMax_height = toCompare.mMax_height;
 			}
 
-			bool ObjectBase::mergeIfPossibleVerticalToMe(ObjectBase &toCompare) noexcept
+			bool ObjectBase::mergeIfPossibleVerticalToMe(const ObjectBase &toCompare) noexcept
 			{
 				if (isMeargableToVertical(toCompare))
 				{

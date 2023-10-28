@@ -10,7 +10,7 @@ namespace am
 		class ThresholdDiffChecker
 		{
 		public:
-			ThresholdDiffChecker(const uint16_t channelTreshold);
+			explicit ThresholdDiffChecker(const uint16_t channelTreshold);
 			~ThresholdDiffChecker() = default;
 
 			// shows persent of similarity based on diffs of two images
