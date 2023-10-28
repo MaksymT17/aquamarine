@@ -16,17 +16,13 @@ namespace am
 			using namespace am::common::types;
 			using Pixels = std::vector<Pixel>;
 
-			bool isNew(Pixels &object, size_t rowId, size_t colId) noexcept
+			bool isNew(const Pixels &object, size_t rowId, size_t colId) noexcept
 			{
-				for (auto &pos : object)
-				{
-					if (pos.colId == colId && pos.rowId == rowId)
-						return false;
-				}
-				return true;
+				return !std::all_of(object.cbegin(), object.cend(), [&](auto pos)
+									{ return (pos.colId != colId && pos.rowId != rowId); });
 			}
 
-			void pushCheckIfNew(Pixels &object, Pixels &toCheck, size_t rowId,
+			void pushCheckIfNew(const Pixels &object, Pixels &toCheck, size_t rowId,
 								size_t colId)
 			{
 				if (isNew(object, rowId, colId))
@@ -36,27 +32,27 @@ namespace am
 			}
 
 			void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, ObjectRectangle &object,
-							  ImageRowSegment& row, const size_t width, const size_t step) noexcept
+							  ImageRowSegment &row, const size_t width, const size_t step) noexcept
 			{
 				if (static_cast<int>(rowId - step) >= row.start)
 				{
-					//mv: commented in sake of optimization
-					//pushCheckIfNew(object, nextCheck, rowId - step, colId);
+					// mv: commented in sake of optimization
+					// pushCheckIfNew(object, nextCheck, rowId - step, colId);
 					nextCheck.emplace_back(rowId - step, colId);
 				}
 				if (rowId + step < row.end)
 				{
-					//pushCheckIfNew(object, nextCheck, rowId + step, colId);
+					// pushCheckIfNew(object, nextCheck, rowId + step, colId);
 					nextCheck.emplace_back(rowId + step, colId);
 				}
 				if (static_cast<int>(colId - step) >= 0)
 				{
-					//pushCheckIfNew(object, nextCheck, rowId, colId - step);
+					// pushCheckIfNew(object, nextCheck, rowId, colId - step);
 					nextCheck.emplace_back(rowId, colId - step);
 				}
 				if (colId + step < width)
 				{
-					//pushCheckIfNew(object, nextCheck, rowId, colId + step);
+					// pushCheckIfNew(object, nextCheck, rowId, colId + step);
 					nextCheck.emplace_back(rowId, colId + step);
 				}
 			}
@@ -77,7 +73,6 @@ namespace am
 				if (static_cast<int>(colId - step) >= 0)
 				{
 					toCheck.emplace_back(rowId, colId - step);
-
 				}
 				if (colId + step < width)
 				{
@@ -106,12 +101,7 @@ namespace am
 					{
 						std::vector<ObjectRectangle> threadObjs;
 
-						for (auto &objs : thrList)
-						{
-							// skip objects if smaller that minObjSize, avoid noise
-							// if (objs.size() >= mConfiguration->MinPixelsForObject)
-							threadObjs.emplace_back(objs);
-						}
+						std::copy(thrList.begin(), thrList.end(), std::back_inserter(threadObjs));
 
 						rects.push_back(threadObjs);
 					}

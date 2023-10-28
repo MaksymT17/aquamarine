@@ -18,8 +18,8 @@ namespace am
 																		  mMax_height(row) {}
 				~ObjectBase() = default;
 
-				bool isMeargableToVertical(ObjectBase &toCompare) const noexcept;
-				bool mergeIfPossibleVerticalToMe(ObjectBase &toCompare) noexcept;
+				bool isMeargableToVertical(const ObjectBase &toCompare) const noexcept;
+				bool mergeIfPossibleVerticalToMe(const ObjectBase &toCompare) noexcept;
 
 				size_t getLeft() const noexcept;
 				size_t getRight() const noexcept;
@@ -31,7 +31,7 @@ namespace am
 				void clearPixelsCount() noexcept;
 
 			protected:
-				void mergeToMe(ObjectBase &toCompare) noexcept;
+				void mergeToMe(const ObjectBase &toCompare) noexcept;
 				size_t mPixelsCount;
 				size_t mLeft;
 				size_t mMin_height;
