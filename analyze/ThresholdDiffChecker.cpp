@@ -4,9 +4,8 @@
 namespace am::analyze
 {
 	using namespace common::types;
-	ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) : mThreshold(channelTreshold) {}
 
-	void setThresholdChanges(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
+	static void setThresholdChanges(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
 							 const uint16_t threshold, MatrixU16 &result)
 	{
 		for (std::size_t x = 0; x < width; ++x)
@@ -17,7 +16,7 @@ namespace am::analyze
 		}
 	}
 
-	void checlImageRow(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
+	static void checlImageRow(size_t rowId, size_t width, const Matrix<Color24bDiff> &diff,
 					   const uint16_t threshold, std::atomic_size_t &diffCounter)
 	{
 		for (std::size_t x = 0; x < width; ++x)
@@ -27,6 +26,8 @@ namespace am::analyze
 				++diffCounter;
 		}
 	}
+
+	ThresholdDiffChecker::ThresholdDiffChecker(const uint16_t channelTreshold) : mThreshold(channelTreshold) {}
 
 	float ThresholdDiffChecker::getAffinityPersent(const size_t threadsCount, Matrix<Color24bDiff> &diffs)
 	{

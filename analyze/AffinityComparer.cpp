@@ -7,8 +7,8 @@
 namespace am::analyze
 {
 	using namespace am::common::types;
-	void fillPixelLineWithDiffs(const Matrix<Color24b> &base, const Matrix<Color24b> &toCompare,
-								Matrix<Color24bDiff> &result, size_t rowId, size_t width)
+	static void fillPixelLineWithDiffs(const Matrix<Color24b> &base, const Matrix<Color24b> &toCompare,
+									   Matrix<Color24bDiff> &result, size_t rowId, size_t width)
 	{
 
 		for (size_t i = 0; i < width; ++i)
@@ -17,15 +17,15 @@ namespace am::analyze
 		}
 	}
 
+	static bool validateComparingRequestedSize(size_t sourceW, size_t sourceH, size_t targetW, size_t targetH)
+	{
+		return (sourceW == targetW) && (sourceH == targetH);
+	}
+
 	AffinityComparer::AffinityComparer(Matrix<Color24b> &base)
 		: mBase(base),
 		  mMode(DataMode::KEEP_BASE_FRAME)
 	{
-	}
-
-	bool validateComparingRequestedSize(size_t sourceW, size_t sourceH, size_t targetW, size_t targetH)
-	{
-		return (sourceW == targetW) && (sourceH == targetH);
 	}
 
 	Matrix<Color24bDiff> AffinityComparer::compare(const Matrix<Color24b> &first,
