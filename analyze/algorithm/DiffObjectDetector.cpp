@@ -38,7 +38,7 @@ namespace am::analyze::algorithm
 			return object;
 		}
 
-		std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const am::configuration::Configuration *conf, const ImageRowSegment &row)
+		static std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const am::configuration::Configuration *conf, const ImageRowSegment &row)
 		{
 			std::vector<ObjectRectangle> result;
 			const size_t step = conf->PixelStep;
