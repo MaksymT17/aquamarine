@@ -2,17 +2,11 @@
 
 #include "common/exceptions/AmException.hpp"
 
-namespace am
+namespace am::common::exceptions
 {
-	namespace common
+	class AllocationException : public AmException
 	{
-		namespace exceptions
-		{
-			class AllocationException : public AmException
-			{
-			public:
-				AllocationException(std::string &msg) : AmException(msg) {}
-			};
-		}
-	}
-}
+	public:
+		AllocationException(std::string &msg) : AmException(msg) {}
+	};
+} // namespace am::common::exceptions

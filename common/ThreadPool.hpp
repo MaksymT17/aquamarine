@@ -4,17 +4,19 @@
 #include <condition_variable>
 #include <functional>
 
-class ThreadPool
+namespace am::common
 {
-public:
-    // according to test on CPU with Hyper-threading feature better to use mutiplier of 2
-    //  without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
-    explicit ThreadPool(unsigned num_threads = std::thread::hardware_concurrency() * 2)
+    class ThreadPool
     {
-        while (num_threads--)
+    public:
+        // according to test on CPU with Hyper-threading feature better to use mutiplier of 2
+        //  without hyper-threading - probably this mutiplier shall be 1, didn`t test yet
+        explicit ThreadPool(unsigned num_threads = std::thread::hardware_concurrency() * 2)
         {
-            threads.emplace_back([this]
-                                 {
+            while (num_threads--)
+            {
+                threads.emplace_back([this]
+                                     {
                 while(true) {
                     std::unique_lock<std::mutex> lock(mutex);
                     condvar.wait(lock, [this] {return !queue.empty();});
@@ -31,43 +33,44 @@ public:
                         break;
                     }
                 } });
+            }
         }
-    }
 
-    template <typename F, typename R = std::result_of_t<F && ()>>
-    std::future<R> run(F &&f) const
-    {
-        auto task = std::packaged_task<R()>(std::forward<F>(f));
-        auto future = task.get_future();
+        template <typename F, typename R = std::result_of_t<F && ()>>
+        std::future<R> run(F &&f) const
         {
-            std::lock_guard<std::mutex> lock(mutex);
-            // conversion to packaged_task<void()> erases the return type
-            // so it can be stored in the queue. the future will still
-            // contain the correct type
-            queue.push(std::packaged_task<void()>(std::move(task)));
+            auto task = std::packaged_task<R()>(std::forward<F>(f));
+            auto future = task.get_future();
+            {
+                std::lock_guard<std::mutex> lock(mutex);
+                // conversion to packaged_task<void()> erases the return type
+                // so it can be stored in the queue. the future will still
+                // contain the correct type
+                queue.push(std::packaged_task<void()>(std::move(task)));
+            }
+            condvar.notify_one();
+            return future;
         }
-        condvar.notify_one();
-        return future;
-    }
 
-    ~ThreadPool()
-    {
-        // push a single empty task onto the queue and notify all threads,
-        // then wait for them to terminate
+        ~ThreadPool()
         {
-            std::lock_guard<std::mutex> lock(mutex);
-            queue.push({});
+            // push a single empty task onto the queue and notify all threads,
+            // then wait for them to terminate
+            {
+                std::lock_guard<std::mutex> lock(mutex);
+                queue.push({});
+            }
+            condvar.notify_all();
+            for (auto &thread : threads)
+            {
+                thread.join();
+            }
         }
-        condvar.notify_all();
-        for (auto &thread : threads)
-        {
-            thread.join();
-        }
-    }
 
-private:
-    std::vector<std::thread> threads;
-    mutable std::queue<std::packaged_task<void()>> queue;
-    mutable std::mutex mutex;
-    mutable std::condition_variable condvar;
-};
+    private:
+        std::vector<std::thread> threads;
+        mutable std::queue<std::packaged_task<void()>> queue;
+        mutable std::mutex mutex;
+        mutable std::condition_variable condvar;
+    };
+} // namespace am::common

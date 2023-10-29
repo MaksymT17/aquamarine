@@ -5,24 +5,18 @@
 #include "common/types/Color24bDiff.hpp"
 #include "ObjectRectangle.h"
 
-namespace am
+namespace am::analyze::algorithm
 {
-	namespace analyze
+
+	class ImagePair;
+
+	// interface for Object properties extraction
+	// pair of images is a minimal requirement for collecting objects
+	class IObjectDetector
 	{
-		namespace algorithm
-		{
+	public:
+		~IObjectDetector() = default;
 
-			class ImagePair;
-
-			// interface for Object properties extraction
-			// pair of images is a minimal requirement for collecting objects
-			class IObjectDetector
-			{
-			public:
-				~IObjectDetector() = default;
-
-				virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
-			};
-		}
-	}
-}
+		virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
+	};
+} // namespace am::analyze::algorithm
