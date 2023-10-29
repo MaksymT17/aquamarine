@@ -1,17 +1,11 @@
 #pragma once
 #include "common/exceptions/AmException.hpp"
 
-namespace am
+namespace am::common::exceptions
 {
-	namespace common
+	class FileAccessException : public AmException
 	{
-		namespace exceptions
-		{
-			class FileAccessException : public AmException
-			{
-			public:
-				FileAccessException(std::string &msg) : AmException(msg) {}
-			};
-		}
-	}
-}
+	public:
+		FileAccessException(std::string &msg) : AmException(msg) {}
+	};
+} // namespace am::common::exceptions

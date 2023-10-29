@@ -2,17 +2,11 @@
 
 #include <stdexcept>
 
-namespace am
+namespace am::common::exceptions
 {
-	namespace common
+	class AmException : public std::runtime_error
 	{
-		namespace exceptions
-		{
-			class AmException : public std::runtime_error
-			{
-			public:
-				AmException(std::string &msg) : std::runtime_error(msg) {}
-			};
-		}
-	}
-}
+	public:
+		AmException(std::string &msg) : std::runtime_error(msg) {}
+	};
+} // namespace am::common::exceptions

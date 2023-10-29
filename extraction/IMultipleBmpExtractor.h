@@ -6,16 +6,13 @@
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24b.hpp"
 
-namespace am
+namespace am::extraction
 {
-	namespace extraction
+	class IMultipleBmpExtractor
 	{
-		class IMultipleBmpExtractor
-		{
-		public:
-			~IMultipleBmpExtractor() = default;
+	public:
+		~IMultipleBmpExtractor() = default;
 
-			virtual std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string> &&fileNames) = 0;
-		};
-	}
-}
+		virtual std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string> &&fileNames) = 0;
+	};
+} // namespace am::extraction

@@ -8,9 +8,7 @@
 #include <mutex>
 #include "Timers.hpp"
 
-namespace am
-{
-	namespace common
+	namespace am::common
 	{
 
 		class Logger
@@ -98,5 +96,4 @@ namespace am
 			std::ofstream mFileStream;
 		};
 
-	}
-}
+	} // namespace am::common

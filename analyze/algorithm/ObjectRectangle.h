@@ -3,33 +3,27 @@
 #include <set>
 #include "ObjectBase.h"
 
-namespace am
+namespace am::analyze::algorithm
 {
-    namespace analyze
+    class ObjectRectangle : public ObjectBase
     {
-        namespace algorithm
+    public:
+        ObjectRectangle(const size_t row, const size_t col);
+        void addPixel(const size_t row, const size_t col);
+    };
+
+    namespace comparators
+    {
+
+        struct Descending
         {
-            class ObjectRectangle : public ObjectBase
+            bool operator()(const ObjectRectangle &l, const ObjectRectangle &r) const
             {
-            public:
-                ObjectRectangle(const size_t row, const size_t col);
-                void addPixel(const size_t row, const size_t col);
-            };
+                return l.getPixelsCount() > r.getPixelsCount();
+            }
+        };
 
-            namespace comparators
-			{
-
-				struct Descending
-				{
-					bool operator()(const ObjectRectangle &l, const ObjectRectangle &r) const
-					{
-						return l.getPixelsCount() > r.getPixelsCount();
-					}
-				};
-
-			}
-
-			using DescObjects = std::multiset<ObjectRectangle, comparators::Descending>;
-        }
     }
-}
+
+    using DescObjects = std::multiset<ObjectRectangle, comparators::Descending>;
+} // namespace am::analyze::algorithm
