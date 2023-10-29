@@ -53,7 +53,7 @@ namespace am::analyze::algorithm
 		return object;
 	}
 
-	std::vector<ObjectRectangle>
+	static std::vector<ObjectRectangle>
 	startObjectsSearchInPair(const ImagePair &pair, const ImageRowSegment &row,
 							 const configuration::Configuration &conf)
 	{
