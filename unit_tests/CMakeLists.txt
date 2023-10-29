@@ -11,10 +11,16 @@ set(AM_INC ../)
 
 add_compile_options(-fno-rtti)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O1 -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O1 -fprofile-arcs -ftest-coverage")
 
 find_package (Threads)
 find_package (SQLite3)
+
+# Set the CMAKE_CXX_STANDARD variable to 17
+set(CMAKE_CXX_STANDARD 17)
+
+# Set the CMAKE_CXX_STANDARD_REQUIRED variable to ON
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${SQLite3_INCLUDE_DIRS})
 

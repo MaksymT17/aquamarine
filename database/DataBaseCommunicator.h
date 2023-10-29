@@ -4,29 +4,26 @@
 #include <string>
 #include <vector>
 
-namespace am
+namespace am::database
 {
-    namespace database
+    class DataBaseCommunicator
     {
-        class DataBaseCommunicator
-        {
-        public:
-            explicit DataBaseCommunicator(const char *database_name = "results.db");
+    public:
+        explicit DataBaseCommunicator(const char *database_name = "results.db");
 
-            ~DataBaseCommunicator();
+        ~DataBaseCommunicator();
 
-            bool add_results_table();
+        bool add_results_table();
 
-            bool insert_records2results(const std::vector<std::string> &records);
+        bool insert_records2results(const std::vector<std::string> &records);
 
-            bool print_all_colected_results();
+        bool print_all_colected_results();
 
-            sqlite3 *get_database_ptr() const;
+        sqlite3 *get_database_ptr() const;
 
-        private:
-            char *zErrMsg;
-            sqlite3 *database;
-        };
+    private:
+        char *zErrMsg;
+        sqlite3 *database;
+    };
 
-    }
-}
+} // namespace am::database

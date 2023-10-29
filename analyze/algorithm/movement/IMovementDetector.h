@@ -4,12 +4,8 @@
 #include <set>
 #include "analyze/algorithm/Object.h"
 
-namespace am
+namespace am::analyze::algorithm
 {
-	namespace analyze
-	{
-		namespace algorithm
-		{
 
 			class ImagePair;
 
@@ -51,6 +47,5 @@ namespace am
 				};
 
 			}
-		}
-	}
-}
+		} // namespace am::analyze::algorithm
+

@@ -4,14 +4,11 @@
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24bDiff.hpp"
 
-namespace am
+namespace am::analyze
 {
-	namespace analyze
+	class IComparer
 	{
-		class IComparer
-		{
-		public:
-			virtual ~IComparer() = default;
-		};
-	}
-}
+	public:
+		virtual ~IComparer() = default;
+	};
+} // namespace am::analyze
