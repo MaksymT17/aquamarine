@@ -18,5 +18,4 @@ jobs:
     - name: Clone aquamarine repo
       run: git clone https://github.com/MaksymT17/aquamarine.git
     - name: Build artifacts with Cmake
-      run: cd aquamarine
-        ./build.sh
+      run: ./build.sh
