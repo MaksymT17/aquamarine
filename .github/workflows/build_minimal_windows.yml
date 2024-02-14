@@ -12,8 +12,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install packages
-        run: choco install install git g++ cmake libsqlite3-dev
       - name: Clone aquamarine repo
         run: git clone https://github.com/MaksymT17/aquamarine.git
       - name: Build artifacts with Cmake
