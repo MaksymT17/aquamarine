@@ -15,6 +15,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O1 -fprofile-arcs -ftest-cov
 
 find_package (Threads)
 find_package (SQLite3)
+find_package (JPEG REQUIRED)
 
 # Set the CMAKE_CXX_STANDARD variable to 17
 set(CMAKE_CXX_STANDARD 17)
@@ -22,7 +23,7 @@ set(CMAKE_CXX_STANDARD 17)
 # Set the CMAKE_CXX_STANDARD_REQUIRED variable to ON
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${SQLite3_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
 #fetch gtest library
 include(FetchContent)
@@ -38,6 +39,7 @@ file(GLOB UT_SOURCES "*.cpp")
 
 add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
+    ${AM_SRC}/extraction/JpgExtractor.cpp
     ${AM_SRC}/analyze/algorithm/movement/MovementDetector.cpp
     ${AM_SRC}/analyze/algorithm/ImagePair.cpp
     ${AM_SRC}/analyze/algorithm/BfsObjectDetector.cpp
@@ -48,11 +50,11 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/ObjectRectangle.cpp
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
-    ${AM_SRC}/extraction/MultipleBmpExtractor.cpp
+    ${AM_SRC}/extraction/MultipleExtractor.cpp
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES})
+target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES})
 
 # gcov - coverage
 set(CMAKE_COMPILER_IS_GNUCXX true)

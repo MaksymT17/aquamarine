@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.0)
 
 project (aquamarine)
 
@@ -11,8 +11,9 @@ add_compile_options(-fno-rtti)
 
 find_package (Threads)
 find_package (SQLite3)
+find_package (JPEG REQUIRED)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
 set(AM_SOURCE_FILES 
     analyze/AffinityComparer.cpp 
@@ -26,15 +27,16 @@ set(AM_SOURCE_FILES
     analyze/algorithm/ImagePair.cpp 
     analyze/algorithm/movement/MovementDetector.cpp
     extraction/BmpExtractor.cpp
-    extraction/MultipleBmpExtractor.cpp
+    extraction/JpgExtractor.cpp
+    extraction/MultipleExtractor.cpp
     common/Timers.hpp
     database/DataBaseCommunicator.cpp
     AmApi.cpp
 )
 
-add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} )
+add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} ${JPEG_LIBRARIES})
 
 add_executable(aquamarine main.cpp)
 
-target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES})
+target_link_libraries (aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 
