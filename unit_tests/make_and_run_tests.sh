@@ -4,7 +4,7 @@
 cd build &&
 make -j8 &&
 echo "UNIT TESTS SCRIPT: Binaries ready, starting execution..." &&
-./aquamarine_ut &&
+./aquamarine_ut > am_test_result.txt && 
 echo "UNIT TESTS SCRIPT: Execution of tests finished." &&
 if [ $(dpkg-query -W -f='${Status}' valgrind 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then

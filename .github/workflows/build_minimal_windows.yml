@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Windows build check
 
 on:
   push:
@@ -18,3 +18,9 @@ jobs:
         run: |
           cd aquamarine
           ./build.sh
+
+      - name: Run unit tests
+        run: |
+          cd aquamarine/unit_tests
+          ./prepare_build.sh
+          ./make_and_run_tests.sh
