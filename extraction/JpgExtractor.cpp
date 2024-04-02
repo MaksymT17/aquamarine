@@ -28,30 +28,24 @@ namespace am::extraction
         jpeg_read_header(&cinfo, TRUE);
         jpeg_start_decompress(&cinfo);
 
-        JSAMPARRAY buffer;
-        buffer = (JSAMPARRAY)malloc(sizeof(JSAMPROW) * cinfo.output_height);
-        for (int i = 0; i < cinfo.output_height; i++)
-        {
-            buffer[i] = (JSAMPROW)malloc(sizeof(JSAMPLE) * cinfo.output_width * cinfo.output_components);
-        }
+        JSAMPLE* tempdata = new JSAMPLE[cinfo.output_width * cinfo.output_components];
+        Matrix<Color24b> data(cinfo.output_width, cinfo.output_height);
+        size_t rowid =0;
         while (cinfo.output_scanline < cinfo.output_height)
         {
-            jpeg_read_scanlines(&cinfo, buffer + cinfo.output_scanline, cinfo.output_height - cinfo.output_scanline);
-        }
-        Matrix<Color24b> data(cinfo.output_width, cinfo.output_height);
-        for (int i = 0; i < cinfo.output_height; i++)
-        {
+            jpeg_read_scanlines(&cinfo, &tempdata, 1);
             for (int j = 0; j < cinfo.output_width; j++)
             {
-                Color24b c24 = reinterpret_cast<Color24b &>(buffer[i][j]);
-                // printf("%d %d %d\n", c24.r, c24.g, c24.b);
-                data(i, j) = c24;
+                //printf("[%d]c:%d_%d_%d ", j, tempdata[j*3],tempdata[j*3+1], tempdata[j*3+2] );
+                data(rowid, j) = {tempdata[j*cinfo.output_components],tempdata[j*cinfo.output_components+1], tempdata[j*cinfo.output_components+2]};
             }
+            //printf("\n");
+            rowid++;
         }
+        delete tempdata;
         jpeg_finish_decompress(&cinfo);
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
-
         return data;
     }
 } // namespace am::extraction
