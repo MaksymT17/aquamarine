@@ -3,8 +3,6 @@ name: Windows build check
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   build-windows:
@@ -13,14 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Clone aquamarine repo
-        run: git clone https://github.com/MaksymT17/aquamarine.git
+        run: git clone --branch ${{ github.head_ref }} https://github.com/MaksymT17/aquamarine.git
+
+      - name: Install packages
+        run: |
+          choco install sqlite --version=3.8.1
+          choco install libjpeg-turbo
+        shell: bash
+
       - name: Build artifacts with Cmake
         run: |
           cd aquamarine
           ./build.sh
+        shell: bash
 
       - name: Run unit tests
         run: |
           cd aquamarine/unit_tests
           ./prepare_build.sh
           ./make_and_run_tests.sh
+        shell: bash
