@@ -2,6 +2,7 @@
 
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24b.hpp"
+#include <string>
 
 namespace am::extraction
 {
