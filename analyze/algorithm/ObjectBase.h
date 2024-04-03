@@ -7,7 +7,7 @@ namespace am::analyze::algorithm
 	class ObjectBase
 	{
 	public:
-		explicit ObjectBase(const size_t row, const size_t col) : mPixelsCount(1),
+		explicit ObjectBase(const size_t row, const size_t col) : mPixelsCount(0),
 																  mLeft(col),
 																  mMin_height(row),
 																  mRight(col),
