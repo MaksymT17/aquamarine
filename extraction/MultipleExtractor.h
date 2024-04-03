@@ -15,7 +15,7 @@ namespace am::extraction
 	{
 
 	public:
-		MultipleExtractor(std::shared_ptr<am::common::Logger> &logger, bool is_bmp = false);
+		MultipleExtractor(std::shared_ptr<am::common::Logger> &logger);
 		~MultipleExtractor() = default;
 
 		// fill up the Matrices for each file provided in the input parameter
@@ -23,6 +23,5 @@ namespace am::extraction
 
 	private:
 		std::shared_ptr<am::common::Logger> mLogger;
-		bool mIsForBmp;
 	};
 }

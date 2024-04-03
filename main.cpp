@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
 	else
 	{
 		std::cout << "Use default parameters" << std::endl;
-		base_img_path = "inputs/_DSC4097.JPG";
-		cmp_img_path = "inputs/_DSC4098.JPG";
+		base_img_path = "inputs/10x10_clean.jpg";
+		cmp_img_path = "inputs/10x10_2obj.jpg";
 		conf_path = "inputs/configuration.csv";
 		out_img_path = "compare_result.bmp";
 	}
