@@ -29,7 +29,7 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	void SetUp() override
 	{
 		loggerPtr = std::make_shared<am::common::Logger>("od_dummy_log.log");
-		extractor = std::make_unique<am::extraction::MultipleExtractor>(loggerPtr, true);
+		extractor = std::make_unique<am::extraction::MultipleExtractor>(loggerPtr);
 	}
 
 	void TearDown() override
