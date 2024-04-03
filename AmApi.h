@@ -12,7 +12,7 @@ namespace am
     class AmApi
     {
     public:
-        AmApi(const char *conf_path, bool is_bmp = false);
+        AmApi(const char *conf_path);
         analyze::algorithm::DescObjects compare(const std::string &base_img, const std::string &cmp_img);
         void compare_and_save_diff_img(const std::string &base_img, const std::string &cmp_img, std::string &&out_diff_img);
         void enable_database_reports(const char *db_name);
@@ -28,6 +28,5 @@ namespace am
         std::string cmp_img_path;
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
         std::shared_ptr<configuration::Configuration> configuration;
-        bool is_bmp_files;
     };
 }
