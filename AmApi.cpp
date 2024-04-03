@@ -11,10 +11,9 @@ namespace am
     using namespace analyze;
 
 
-    AmApi::AmApi(const char *conf_path, bool is_bmp):
+    AmApi::AmApi(const char *conf_path):
         loggerPtr(std::make_shared<am::common::Logger>("log.log")),
-        extractor(loggerPtr, is_bmp),
-        is_bmp_files(is_bmp)
+        extractor(loggerPtr)
     {
         am::configuration::ConfigurationReader reader;
         configuration = reader.getConfigurationFromFile(conf_path);
