@@ -1,4 +1,4 @@
-name: Linux build check on master branch
+name: Linux & Windows build check on master branch push event
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   checks: write
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
@@ -38,3 +38,26 @@ jobs:
       with:
         check_name: Unit test results
         files: "**/test_detail.xml"
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Clone aquamarine repo
+        run: git clone https://github.com/MaksymT17/aquamarine.git
+        shell: bash
+
+      - name: Build artifacts with Cmake
+        run: |
+          cd aquamarine &&
+          echo "removing existing build folder..."
+          rm -rf build/ &&
+          mkdir build &&
+          echo "preparing new build with cmake..." &&
+          cd build/ &&
+          cmake .. &&
+          cmake --build . &&
+          echo "Build complete!"
+        shell: bash

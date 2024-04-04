@@ -103,8 +103,8 @@ namespace am::analyze::algorithm
 		for (size_t rowId = 0; rowId < mThreadsCount - 1; ++rowId)
 		{
 			ImageRowSegment row{rowId * rowHeight, rowId * rowHeight + rowHeight};
-			// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
-			//	pair, row, *mConfiguration));
+		//	 futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
+		//		pair, row, *mConfiguration));
 
 			futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, row, *mConfiguration)));
 		}
