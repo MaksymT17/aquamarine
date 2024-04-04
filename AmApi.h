@@ -5,7 +5,9 @@
 #include "configuration/ConfigurationReader.hpp"
 #include "common/Logger.hpp"
 #include "extraction/MultipleExtractor.h"
+#ifdef __unix__
 #include "database/DataBaseCommunicator.h"
+#endif
 
 namespace am
 {
@@ -26,7 +28,9 @@ namespace am
 
         std::string base_img_path;
         std::string cmp_img_path;
+#ifdef __unix__
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
+#endif
         std::shared_ptr<configuration::Configuration> configuration;
     };
 }

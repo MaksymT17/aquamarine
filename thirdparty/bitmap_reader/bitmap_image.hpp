@@ -1243,7 +1243,7 @@ public:
 			case red_plane: return 0;
 			case green_plane: return 1;
 			case blue_plane: return 2;
-			default: return std::numeric_limits<unsigned int>::max();
+			default: return (std::numeric_limits<unsigned int>::max)();
 			}
 		}
 
@@ -1253,11 +1253,11 @@ public:
 			case red_plane: return 2;
 			case green_plane: return 1;
 			case blue_plane: return 0;
-			default: return std::numeric_limits<unsigned int>::max();
+			default: return (std::numeric_limits<unsigned int>::max)();
 			}
 		}
 
-		default: return std::numeric_limits<unsigned int>::max();
+		default: return (std::numeric_limits<unsigned int>::max)();
 		}
 	}
 
@@ -2939,7 +2939,7 @@ inline rgb_t find_nearest_color(const rgb_t& c, const Iterator begin, const Iter
 	if (0 == std::distance(begin, end))
 		return c;
 
-	double min_d = std::numeric_limits<double>::max();
+	double min_d = (std::numeric_limits<double>::max)();
 	rgb_t result = *begin;
 
 	for (Iterator itr = begin; itr != end; ++itr)
@@ -2979,7 +2979,7 @@ inline double find_nearest_wave_length(const rgb_t& c, const double increment = 
 	const double max_wave_length = 800.0; //800nm
 
 	double min_wave_length = 0.0;
-	double min_d = std::numeric_limits<double>::max();
+	double min_d = (std::numeric_limits<double>::max)();
 
 	for (double i = 0.0; i < max_wave_length; i += increment)
 	{
