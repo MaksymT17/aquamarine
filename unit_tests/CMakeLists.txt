@@ -13,9 +13,11 @@ add_compile_options(-fno-rtti)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O1 -fprofile-arcs -ftest-coverage")
 
-find_package (Threads)
-find_package (SQLite3)
+find_package (Threads REQUIRED)
+IF (UNIX)
+find_package (SQLite3 REQUIRED)
 find_package (JPEG REQUIRED)
+ENDIF()
 
 # Set the CMAKE_CXX_STANDARD variable to 17
 set(CMAKE_CXX_STANDARD 17)
@@ -23,7 +25,12 @@ set(CMAKE_CXX_STANDARD 17)
 # Set the CMAKE_CXX_STANDARD_REQUIRED variable to ON
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC})
+IF (UNIX)
+include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
+ENDIF()
 
 #fetch gtest library
 include(FetchContent)
@@ -54,8 +61,10 @@ add_executable(aquamarine_ut
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT} ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES})
-
+target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
+IF (UNIX)
+target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
+ENDIF()
 # gcov - coverage
 set(CMAKE_COMPILER_IS_GNUCXX true)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")

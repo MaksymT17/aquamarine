@@ -4,7 +4,9 @@
 #include "analyze/algorithm/ImagePair.h"
 #include <sstream>
 
+#ifdef __unix__
 #include <jpeglib.h>
+#endif
 namespace am
 {
     using namespace common::types;
@@ -39,6 +41,7 @@ namespace am
                                 obj.getMaxHeight());
         }
 
+#ifdef __unix__
         if(dbcPtr)
         {
             std::stringstream ss;
@@ -46,12 +49,15 @@ namespace am
             dbcPtr->add_results_table(); // if already exists - it produces a warning
 	        dbcPtr->insert_records2results({ss.str()});
         }
+#endif
         drawer.save(out_diff_img);
     }
 
     void AmApi::enable_database_reports(const char *db_name)
     {
+#ifdef __unix__
         dbcPtr.reset(new database::DataBaseCommunicator(db_name));
+#endif
     }
 
     std::shared_ptr<configuration::Configuration> AmApi::getConfiguration()
