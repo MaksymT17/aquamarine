@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install packages
-      run: sudo apt -y install git g++ cmake libsqlite3-dev gcovr libjpeg-dev valgrind
+      run: sudo apt -y install git g++ cmake libsqlite3-dev gcovr libjpeg-dev valgrind lynx
     - name: Clone aquamarine repo
       run: git clone https://github.com/MaksymT17/aquamarine.git
     - name: Build artifacts with Cmake
@@ -31,7 +31,9 @@ jobs:
         ./prepare_build.sh &&
         cd build &&
         make -j8 &&
-        ./aquamarine_ut --gtest_output="xml"
+        ./aquamarine_ut --gtest_output="xml" &&
+        cmake --build . --config Debug --target coverage_aquamarine_ut -- -j 4 &&
+        lynx -dump ./coverage_aquamarine_ut/index.html
 
     - name: Publish Results
       uses: EnricoMi/publish-unit-test-result-action@v1
