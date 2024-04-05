@@ -1,6 +1,0 @@
-Affinity_Threshold: 75
-Minimum_Pixels_In_Object: 200
-Pixel_Step: 4
-Calculation_Time_Limit: 50
-Idle_Timeout: 5
-Threads_Multiplier: 10.0
