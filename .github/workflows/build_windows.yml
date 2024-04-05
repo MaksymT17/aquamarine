@@ -1,4 +1,4 @@
-name: Windows build check
+name: Windows build
 
 on:
   pull_request:

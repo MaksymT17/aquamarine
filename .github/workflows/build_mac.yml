@@ -1,4 +1,4 @@
-name: Linux build
+name: MacOS build (Homebrew)
 
 on:
   pull_request:
@@ -12,14 +12,19 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install packages
-      run: sudo apt -y install git g++ cmake libsqlite3-dev gcovr libjpeg-dev
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        brew install git gcc cmake sqlite3 gcovr jpeg
+
     - name: Clone aquamarine repo
       run: git clone --branch ${{ github.head_ref }} https://github.com/MaksymT17/aquamarine.git
+
     - name: Build artifacts with Cmake
       run: |
         cd aquamarine &&
@@ -31,10 +36,4 @@ jobs:
         ./prepare_build.sh &&
         cd build &&
         make -j8 &&
-        ./aquamarine_ut --gtest_output="xml"
-
-    - name: Publish Results
-      uses: EnricoMi/publish-unit-test-result-action@v1
-      with:
-        check_name: Unit test results
-        files: "**/test_detail.xml"
+        ./aquamarine_ut
