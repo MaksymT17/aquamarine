@@ -13,13 +13,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 add_compile_options(-fno-rtti)
 
 find_package (Threads REQUIRED)
-IF (UNIX)
+IF (UNIX OR APPLE)
 find_package (SQLite3 REQUIRED)
 find_package (JPEG REQUIRED)
 ENDIF()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-IF (UNIX)
+IF (UNIX OR APPLE)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
 
@@ -40,7 +40,7 @@ set(AM_SOURCE_FILES
     AmApi.cpp
 )
 
-IF (UNIX)
+IF (UNIX OR APPLE)
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} ${JPEG_LIBRARIES} database/DataBaseCommunicator.cpp extraction/JpgExtractor.cpp)
 ELSE()
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} ${JPEG_LIBRARIES})
@@ -49,6 +49,6 @@ ENDIF()
 add_executable(aquamarine main.cpp)
 
 target_link_libraries(aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT})
-IF (UNIX)
+IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

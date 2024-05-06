@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "BmpExtractor.h"
-#ifdef __unix__
+#if defined __unix__ || defined __APPLE__
 #include "JpgExtractor.h"
 #endif
 #include "common/types/Color24b.hpp"
@@ -33,15 +33,18 @@ namespace am
 				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(),
 							   [](unsigned char c)
 							   { return std::tolower(c); });
-				if(file_ext =="bmp"){
+				if (file_ext == "bmp")
+				{
 					futures.emplace_back(std::async(std::launch::deferred, BmpExtractor::readFile, fileNames[i]));
 				}
-#ifdef __unix__ // note: currently jpeg supported with Unix OS (with libjpeg)
-				else if(file_ext =="jpg" || file_ext =="jpeg" || file_ext =="jpe") {
+#if defined __unix__ || defined __APPLE__ // note: currently jpeg supported with Unix OS (with libjpeg)
+				else if (file_ext == "jpg" || file_ext == "jpeg" || file_ext == "jpe")
+				{
 					futures.emplace_back(std::async(std::launch::deferred, JpgExtractor::readFile, fileNames[i]));
 				}
 #endif
-				else{
+				else
+				{
 					std::string errorMsg("WrongFormatException on data extraction from file(allowed jpeg/bmp)! File: ");
 					errorMsg.append(fileNames[i]);
 					throw am::common::exceptions::WrongFormatException(errorMsg);

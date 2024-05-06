@@ -4,7 +4,7 @@
 #include "analyze/algorithm/ImagePair.h"
 #include <sstream>
 
-#ifdef __unix__
+#if defined __unix__ || defined __APPLE__
 #include <jpeglib.h>
 #endif
 namespace am
@@ -41,7 +41,7 @@ namespace am
                                 obj.getMaxHeight());
         }
 
-#ifdef __unix__
+#if defined __unix__ || defined __APPLE__
         if(dbcPtr)
         {
             std::stringstream ss;
@@ -55,7 +55,7 @@ namespace am
 
     void AmApi::enable_database_reports(const char *db_name)
     {
-#ifdef __unix__
+#if defined __unix__ || defined __APPLE__
         dbcPtr.reset(new database::DataBaseCommunicator(db_name));
 #endif
     }
