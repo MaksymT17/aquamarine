@@ -42,7 +42,7 @@ namespace am::extraction
             //printf("\n");
             rowid++;
         }
-        delete tempdata;
+        delete[] tempdata;
         jpeg_finish_decompress(&cinfo);
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
