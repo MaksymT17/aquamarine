@@ -30,7 +30,7 @@ namespace am::analyze::algorithm
 	void checkClosest(size_t rowId, size_t colId, Pixels &nextCheck, ObjectRectangle &object,
 					  ImageRowSegment &row, const size_t width, const size_t step) noexcept
 	{
-		if (static_cast<int>(rowId - step) >= row.start)
+		if (static_cast<int>(rowId - step) >= static_cast<int>(row.start))
 		{
 			// mv: commented in sake of optimization
 			// pushCheckIfNew(object, nextCheck, rowId - step, colId);
