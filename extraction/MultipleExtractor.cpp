@@ -40,7 +40,7 @@ namespace am
 #if defined __unix__ || defined __APPLE__ // note: currently jpeg supported with Unix OS (with libjpeg)
 				else if (file_ext == "jpg" || file_ext == "jpeg" || file_ext == "jpe")
 				{
-					futures.emplace_back(std::async(std::launch::deferred, JpgExtractor::readFile, fileNames[i]));
+					futures.emplace_back(std::async(std::launch::async, JpgExtractor::readFile, fileNames[i]));
 				}
 #endif
 				else
