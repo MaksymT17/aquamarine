@@ -33,11 +33,11 @@ namespace am::analyze::algorithm
 
 	protected:
 		// abstract class construction limited, aggregate common functions and interface requirement
-		BfsObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf,
+		BfsObjectDetector(const size_t threads, const am::configuration::Configuration &conf,
 						  std::shared_ptr<am::common::Logger> &logger);
 
 		size_t mThreadsCount;
-		std::shared_ptr<am::configuration::Configuration> mConfiguration;
+		am::configuration::Configuration mConfiguration;
 		std::shared_ptr<am::common::Logger> mLogger;
 	};
 } // namespace am::analyze::algorithm

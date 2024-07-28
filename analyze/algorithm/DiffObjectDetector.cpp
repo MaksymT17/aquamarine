@@ -38,10 +38,10 @@ namespace am::analyze::algorithm
 			return object;
 		}
 
-		static std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const am::configuration::Configuration *conf, const ImageRowSegment &row)
+		static std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const am::configuration::Configuration& conf, const ImageRowSegment &row)
 		{
 			std::vector<ObjectRectangle> result;
-			const size_t step = conf->PixelStep;
+			const size_t step = conf.PixelStep;
 			// check all diffs on potential objects
 			// if change found -> run bsf to figure out how many pixels included in this object
 			// for (size_t rowId = step; rowId < changes.getHeight(); rowId += step)
@@ -63,7 +63,7 @@ namespace am::analyze::algorithm
 		}
 	}
 
-	DiffObjectDetector::DiffObjectDetector(const size_t threads, std::shared_ptr<am::configuration::Configuration> &conf, std::shared_ptr<am::common::Logger> &logger) : BfsObjectDetector(threads, conf, logger)
+	DiffObjectDetector::DiffObjectDetector(const size_t threads, const am::configuration::Configuration &conf, std::shared_ptr<am::common::Logger> &logger) : BfsObjectDetector(threads, conf, logger)
 	{
 	}
 
@@ -84,14 +84,14 @@ namespace am::analyze::algorithm
 		{
 			Pixels toCheck;
 			ImageRowSegment row_seg{rownId * rowWidth, rownId * rowWidth + rowWidth};
-			futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration.get(), row_seg));
+			futures.emplace_back(std::async(std::launch::async, startObjectsSearch, std::ref(changes), mConfiguration, row_seg));
 		}
 
 		for (auto &e : futures)
 			res.push_back(e.get());
 
 		mLogger->info("DiffObjectDetector::getObjectsRects fin");
-		return createObjectRects(res, mConfiguration->MinPixelsForObject);
+		return createObjectRects(res, mConfiguration.MinPixelsForObject);
 	}
 
 	DescObjects DiffObjectDetector::getObjectsRects(ImagePair &pair)

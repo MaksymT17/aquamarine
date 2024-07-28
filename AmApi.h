@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <memory>
 
@@ -14,12 +15,12 @@ namespace am
     class AmApi
     {
     public:
-        AmApi(const char *conf_path);
+        AmApi(const configuration::Configuration& conf);
         analyze::algorithm::DescObjects compare(const std::string &base_img, const std::string &cmp_img);
         void compare_and_save_diff_img(const std::string &base_img, const std::string &cmp_img, std::string &&out_diff_img);
         void enable_database_reports(const char *db_name);
-        std::shared_ptr<configuration::Configuration> getConfiguration();
-        void setConfiguration(std::shared_ptr<configuration::Configuration> newConf);
+        const configuration::Configuration& getConfiguration();
+        void setConfiguration(const configuration::Configuration& newConf);
 
     private:
         std::shared_ptr<am::common::Logger> loggerPtr;
@@ -31,6 +32,6 @@ namespace am
 #if defined __unix__ || defined __APPLE__
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
 #endif
-        std::shared_ptr<configuration::Configuration> configuration;
+        configuration::Configuration configuration;
     };
 }

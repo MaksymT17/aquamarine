@@ -29,6 +29,7 @@ namespace am
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{
+				printf("file %s\n", fileNames[i].c_str());
 				std::string file_ext = fileNames[i].substr(fileNames[i].find_last_of(".") + 1);
 				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(),
 							   [](unsigned char c)

@@ -37,6 +37,9 @@ set(AM_SOURCE_FILES
     extraction/BmpExtractor.cpp
     extraction/MultipleExtractor.cpp
     common/Timers.hpp
+    sh_mem/ProcCommunicator.cpp
+    sh_mem/SharedMemoryReceiver.cpp
+    sh_mem/SharedMemorySender.cpp
     AmApi.cpp
 )
 

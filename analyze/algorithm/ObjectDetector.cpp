@@ -12,7 +12,7 @@ namespace am::analyze::algorithm
 
 	ObjectDetector::ObjectDetector(
 		const size_t threads,
-		std::shared_ptr<am::configuration::Configuration> &conf,
+		const am::configuration::Configuration &conf,
 		std::shared_ptr<am::common::Logger> &logger)
 		: BfsObjectDetector(threads, conf, logger) {}
 
@@ -92,12 +92,13 @@ namespace am::analyze::algorithm
 
 	DescObjects ObjectDetector::getObjectsRects(ImagePair &pair)
 	{
+		std::cout << "getObjectsRects 1\n";
 		const size_t rowHeight = pair.getHeight() / mThreadsCount;
 		std::vector<std::vector<ObjectRectangle>> res;
 		std::vector<std::future<std::vector<ObjectRectangle>>> futures;
 		mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 					  mThreadsCount);
-
+std::cout << "getObjectsRects 2\n";
 		// threadpool could be replaced with std::async calls
 		am::common::ThreadPool pool;
 		for (size_t rowId = 0; rowId < mThreadsCount - 1; ++rowId)
@@ -106,18 +107,18 @@ namespace am::analyze::algorithm
 		//	 futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 		//		pair, row, *mConfiguration));
 
-			futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, row, *mConfiguration)));
+			futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, row, mConfiguration)));
 		}
-
+std::cout << "getObjectsRects 3\n";
 		ImageRowSegment final_row{(mThreadsCount - 1) * rowHeight, pair.getHeight()};
 		// futures.emplace_back(std::async(std::launch::async, startObjectsSearchInPair,
 		// pair, final_row, *mConfiguration));
-		futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, final_row, *mConfiguration)));
+		futures.emplace_back(pool.run(std::bind(&startObjectsSearchInPair, pair, final_row, mConfiguration)));
 		for (auto &e : futures)
 		{
 			res.emplace_back(e.get());
 		}
-
-		return createObjectRects(res, mConfiguration->MinPixelsForObject);
+std::cout << "getObjectsRects 1\n";
+		return createObjectRects(res, mConfiguration.MinPixelsForObject);
 	}
 } // namespace am::analyze::algorithm
