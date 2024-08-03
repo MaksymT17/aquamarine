@@ -16,7 +16,8 @@ enum MessageType : size_t
     COMPARE_FAIL,
     DISCONNECT,
     DISCONNECT_OK,
-    DISCONNECT_FAIL
+    DISCONNECT_FAIL,
+    UNEXPECTED_REQUEST
 };
 
 struct Message

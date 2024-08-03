@@ -4,11 +4,11 @@
 
 static constexpr int SEMAPHORE_DISABLED = 0;
 static constexpr int SEMAPHORE_ENABLED = 1;
-static constexpr const char *M_SEM_RECEIVED = "/master_rsem";
-static constexpr const char *S_SEM_RECEIVED = "/slave_rsem";
-static constexpr const char *M_SEM_SENT = "/master_sent";
-static constexpr const char *S_SEM_SENT = "/slave_sent";
-static constexpr const char *S_READY = "/slave_ready";
+static constexpr const char *M_SEM_RECEIVED = "/master_rsem8";
+static constexpr const char *S_SEM_RECEIVED = "/slave_rsem8";
+static constexpr const char *M_SEM_SENT = "/master_sent8";
+static constexpr const char *S_SEM_SENT = "/slave_sent8";
+static constexpr const char *S_READY = "/slave_ready8";
 
 ProcCommunicator::ProcCommunicator(const bool isMasterMode,
                                    const bool isMultipleMasters,
@@ -76,7 +76,7 @@ ProcCommunicator::~ProcCommunicator()
     {
         perror("Failed to destroy m_slave_sent semaphore");
     }
-    if (sem_close(m_slave_ready) == -1)
+    if (m_multiple_master && sem_close(m_slave_ready) == -1)
     {
         perror("Failed to destroy m_slave_ready semaphore");
     }

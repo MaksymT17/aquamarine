@@ -1,119 +1,158 @@
 #include <memory>
 #include <stdio.h>
+#include <vector>
 
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
 
 #include "sh_mem/ProcCommunicator.h"
-
-int main(int argc, char *argv[])
+#include <algorithm>
+enum State : size_t
 {
-	const std::string shared_memory_name{"/shared_mem"};
-	bool isStopRequested{false}, connectionConfirmed{false};
-	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, false,shared_memory_name);
-	std::unique_ptr<am::AmApi> amApi;
-	// confirm master connection by Handshake message, and then set configuration
-	// such order defines expected message flow
-
-	// confirm handshake, entry point
-	std::cout << "main establish connection ...\n";
-	// confirm set configuration
-	Message *message = slave->receive();
-	if (message->type == MessageType::HANDSHAKE)
+	UNKNOWN = 0,
+	READY,
+	CONFIGURED
+};
+struct ClientInfo
+{
+	size_t id;
+	State state;
+	am::configuration::Configuration configuration;
+};
+struct ConnectionsInfo
+{
+	bool isRequestValid(const Message *message)
 	{
-		std::cout << "received handshake req\n";
-		Message msg{message->id + 1, MessageType::HANDSHAKE_OK};
-		slave->send(&msg);
-	}
-	else
-	{
-		std::cout << "Connection failure, didn't receive Handshake msg. type:" << message->type << std::endl;
-		exit(1);
-	}
-
-	while (!connectionConfirmed || !isStopRequested)
-	{
-		Message *message = slave->receive();
-		if (message->type == MessageType::SET_CONFIG)
+		std::cerr << "isRequestValid" << message->id << message->type << std::endl;
+		auto client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
+											{ return c.id == message->id; });
+		if (client_iterator == clients.end())
 		{
-			std::cout << "received set_config req\n";
-			MessageSetConfig *messageSetConfig = static_cast<MessageSetConfig *>(message);
-			if (messageSetConfig)
-			{
-				am::configuration::Configuration c;
-				c.AffinityThreshold = messageSetConfig->configuration.AffinityThreshold;
-				c.CalculationTimeLimit = messageSetConfig->configuration.CalculationTimeLimit;
-				c.IdleTimeout = messageSetConfig->configuration.IdleTimeout;
-				c.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
-				c.PixelStep = messageSetConfig->configuration.PixelStep;
-				c.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
-
-				amApi = std::make_unique<am::AmApi>(c);
-
-				Message msg{message->id + 1, MessageType::SET_CONFIG_OK};
-				slave->send(&msg);
-				connectionConfirmed = true;
-				std::cout << "connectionConfirmed conf_ok\n"
-						  << std::endl;
-				break;
-			}
+			std::cerr << "isRequestValid 1" << std::endl;
+			// add clinet with default configuration
+			clients.push_back({message->id, State::UNKNOWN, {75, 10, 1, 50, 5, 10.0}});
+			client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
+										   { return c.id == message->id; });
 		}
-		else if (message->type == MessageType::DISCONNECT)
+		if (message->type == MessageType::HANDSHAKE || message->type == MessageType::DISCONNECT)
 		{
-			std::cout << "received disconnect req\n";
-			Message msg_disconnect{message->id + 1, MessageType::DISCONNECT_OK};
-			slave->send(&msg_disconnect);
-			isStopRequested = true;
+			std::cerr << "isRequestValid h d  OK" << std::endl;
+			return true;
 		}
-		else
+		else if (message->type == MessageType::SET_CONFIG)
 		{
-			std::cout << "Connection failure, didn't receive Handshake msg. type:" << message->type << std::endl;
-			exit(1);
-		}
-	}
-	// main function messaging. expected: set_conf, compare_req, disconnect
-	while (!isStopRequested)
-	{
-		Message *message = slave->receive();
-		if (message->type == MessageType::SET_CONFIG)
-		{
-			std::cout << "received set_config req\n";
-			MessageSetConfig *messageSetConfig = static_cast<MessageSetConfig *>(message);
-			if (messageSetConfig)
-			{
-				am::configuration::Configuration c;
-				c.AffinityThreshold = messageSetConfig->configuration.AffinityThreshold;
-				c.CalculationTimeLimit = messageSetConfig->configuration.CalculationTimeLimit;
-				c.IdleTimeout = messageSetConfig->configuration.IdleTimeout;
-				c.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
-				c.PixelStep = messageSetConfig->configuration.PixelStep;
-				c.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
-
-				amApi = std::make_unique<am::AmApi>(c);
-
-				Message msg{message->id + 1, MessageType::SET_CONFIG_OK};
-				slave->send(&msg);
-				connectionConfirmed = true;
-				std::cout << "connectionConfirmed config updated successfully\n"
-						  << std::endl;
-			}
+			std::cerr << "isRequestValid set c  " << std::endl;
+			return client_iterator->state == State::READY ? true : false;
 		}
 		else if (message->type == MessageType::COMPARE_REQUEST)
 		{
-			std::cout << "received compare req req\n";
+			std::cerr << "isRequestValid COMPARE_REQUEST  " << std::endl;
+			if (client_iterator->state == State::UNKNOWN)
+				return false;
+			else if (client_iterator->state == State::READY)
+				std::cerr << "Client was not properly configured. Use default configuration." << std::endl;
+			return client_iterator->state == State::CONFIGURED ? true : false;
+		}
+	}
+
+	std::vector<ClientInfo>::const_iterator processActionUpdate(const Message *msg)
+	{
+		auto client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
+											{ return c.id == msg->id; });
+		if (client_iterator == clients.end())
+		{
+			std::cerr << "Unknown client" << std::endl;
+			return client_iterator;
+		}
+
+		if (msg->type == MessageType::HANDSHAKE)
+			client_iterator->state = State::READY;
+		else if (msg->type == MessageType::SET_CONFIG)
+		{
+			const MessageSetConfig *messageSetConfig = static_cast<const MessageSetConfig *>(msg);
+			client_iterator->state = State::CONFIGURED;
+
+			client_iterator->configuration.AffinityThreshold = messageSetConfig->configuration.AffinityThreshold;
+			client_iterator->configuration.CalculationTimeLimit = messageSetConfig->configuration.CalculationTimeLimit;
+			client_iterator->configuration.IdleTimeout = messageSetConfig->configuration.IdleTimeout;
+			client_iterator->configuration.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
+			client_iterator->configuration.PixelStep = messageSetConfig->configuration.PixelStep;
+			client_iterator->configuration.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
+		}
+		else if (msg->type == MessageType::DISCONNECT)
+		{
+			client_iterator->state = State::UNKNOWN;
+		}
+		else
+		{
+			std::cout << "No updates" << std::endl;
+		}
+		return client_iterator;
+	}
+
+	std::unique_ptr<ProcCommunicator> commuicator;
+	std::unique_ptr<am::AmApi> amApi;
+	std::vector<ClientInfo> clients;
+};
+
+int main(int argc, char *argv[])
+{
+	const std::string shared_memory_name{"/shared_mem118"};
+	bool isStopRequested{false}, connectionConfirmed{false};
+	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, false, shared_memory_name);
+	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
+	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);
+
+	// confirm master connection by Handshake message, and then set configuration
+	// such order defines expected message flow
+	ConnectionsInfo connections;
+	// confirm handshake, entry point
+
+	bool isRunning = true;
+	while (isRunning)
+	{
+		Message *message = slave->receive();
+		std::cout << "main establish connection message received\n";
+		if (!connections.isRequestValid(message))
+		{
+			std::cout << "received UNEXPECTED_REQUEST req\n"
+					  << message->type << std::endl;
+			Message response{message->id, MessageType::UNEXPECTED_REQUEST};
+			slave->send(&response);
+			continue;
+		}
+		if (message->type == MessageType::HANDSHAKE)
+		{
+			std::cout << "received handshake req\n";
+			Message msg{message->id, MessageType::HANDSHAKE_OK};
+			auto iter = connections.processActionUpdate(message);
+			slave->send(&msg);
+		}
+		else if (message->type == MessageType::SET_CONFIG)
+		{
+			std::cout << "received SET_CONFIG req\n";
+			Message msg{message->id, MessageType::SET_CONFIG_OK};
+			auto iter = connections.processActionUpdate(message);
+			amApi->setConfiguration(iter->configuration);
+			slave->send(&msg);
+		}
+		else if (message->type == MessageType::COMPARE_REQUEST)
+		{
+			std::cout << "received COMPARE_REQUEST req\n";
+			auto iter = connections.processActionUpdate(message);
+			amApi->setConfiguration(iter->configuration);
+
 			MessageCompareRequest *messageCompare = static_cast<MessageCompareRequest *>(message);
 			if (messageCompare)
 			{
-				std::cout << "received before compare\n"
-						  << messageCompare->base << std::endl;
-				const char *b = messageCompare->base;
-				const char *c = messageCompare->to_compare;
-				printf("_ %s %s _\n", b, c);
-				auto result = amApi->compare(b, c);
+				printf("compare_ %s %s _\n", messageCompare->base, messageCompare->to_compare);
+				auto iter = connections.processActionUpdate(message);
+				amApi->setConfiguration(iter->configuration); // set configuration for this client
+				auto result = amApi->compare(messageCompare->base, messageCompare->to_compare);
 				std::cout << "received after compare\n";
 				MessageCompareResult compare_result;
-				// if (result.size() < 100)
-				//{
+				compare_result.id = 1;
+
 				compare_result.payload_bytes = result.size() * sizeof(Rect);
 				Rect *rects = static_cast<Rect *>(compare_result.payload);
 				size_t id = 0;
@@ -129,26 +168,17 @@ int main(int argc, char *argv[])
 					printf("_send %zd %zd %zd %zd _\n", rects[id - 1].l, rects[id - 1].r, rects[id - 1].t, rects[id - 1].b);
 				}
 				compare_result.type = MessageType::COMPARE_RESULT;
-				//}
-				// else
-				//{
-				//	compare_result.type = MessageType::COMPARE_FAIL;
-				//}
-
 				slave->send(&compare_result);
 			}
 		}
 		else if (message->type == MessageType::DISCONNECT)
 		{
-			std::cout << "received disconnect req\n";
-			Message msg_disconnect{message->id + 1, MessageType::DISCONNECT_OK};
-			slave->send(&msg_disconnect);
-			isStopRequested = true;
-		}
-		else
-		{
-			std::cout << "Connection failure, didn't receive Handshake msg. type:" << message->type << std::endl;
-			exit(1);
+			std::cout << "received DISCONNECT req\n";
+			isRunning = false;
+			Message msg{message->id, MessageType::DISCONNECT};
+			auto iter = connections.processActionUpdate(message);
+
+			slave->send(&msg);
 		}
 	}
 
