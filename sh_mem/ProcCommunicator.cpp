@@ -4,11 +4,6 @@
 
 static constexpr int SEMAPHORE_DISABLED = 0;
 static constexpr int SEMAPHORE_ENABLED = 1;
-static constexpr const char *M_SEM_RECEIVED = "/master_rsem8";
-static constexpr const char *S_SEM_RECEIVED = "/slave_rsem8";
-static constexpr const char *M_SEM_SENT = "/master_sent8";
-static constexpr const char *S_SEM_SENT = "/slave_sent8";
-static constexpr const char *S_READY = "/slave_ready8";
 
 ProcCommunicator::ProcCommunicator(const bool isMasterMode,
                                    const bool isMultipleMasters,
@@ -26,18 +21,18 @@ ProcCommunicator::ProcCommunicator(const bool isMasterMode,
         m_sender = std::make_unique<SharedMemorySender>(master_mem_name.c_str());
         m_receiver = std::make_unique<SharedMemoryReceiver>(slave_mem_name.c_str());
 
-        m_master_received = sem_open(M_SEM_RECEIVED, O_CREAT, 0666, SEMAPHORE_DISABLED);
-        m_slave_received = sem_open(S_SEM_RECEIVED, O_CREAT, 0666, SEMAPHORE_DISABLED);
-        m_master_sent = sem_open(M_SEM_SENT, O_CREAT, 0666, SEMAPHORE_DISABLED);
-        m_slave_sent = sem_open(S_SEM_SENT, O_CREAT, 0666, SEMAPHORE_DISABLED);
+        m_master_received = sem_open((shMemName+"_m_rsem").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
+        m_slave_received = sem_open((shMemName+"_s_rsem").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
+        m_master_sent = sem_open((shMemName+"_m_sent").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
+        m_slave_sent = sem_open((shMemName+"_s_sent").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
 
         if (isMultipleMasters)
-            m_slave_ready = sem_open(S_READY, O_CREAT, 0666, SEMAPHORE_ENABLED);
+            m_slave_ready = sem_open((shMemName+"_s_ready").c_str(), O_CREAT, 0666, SEMAPHORE_ENABLED);
 
         if (m_master_received == SEM_FAILED || m_slave_received == SEM_FAILED ||
             m_master_sent == SEM_FAILED || m_slave_sent == SEM_FAILED || m_slave_ready == SEM_FAILED)
         {
-            perror("ProcCommunicator sem_open failure");
+            perror("ProcCommunicator sem_open failure.");
         }
     }
     else
@@ -48,13 +43,13 @@ ProcCommunicator::ProcCommunicator(const bool isMasterMode,
         while (m_master_received == SEM_FAILED || m_slave_received == SEM_FAILED ||
                m_master_sent == SEM_FAILED || m_slave_sent == SEM_FAILED || m_slave_ready == SEM_FAILED)
         {
-            m_master_received = sem_open(M_SEM_RECEIVED, O_RDWR, 0666, SEMAPHORE_DISABLED);
-            m_slave_received = sem_open(S_SEM_RECEIVED, O_RDWR, 0666, SEMAPHORE_DISABLED);
-            m_master_sent = sem_open(M_SEM_SENT, O_RDWR, 0666, SEMAPHORE_DISABLED);
-            m_slave_sent = sem_open(S_SEM_SENT, O_RDWR, 0666, SEMAPHORE_DISABLED);
+            m_master_received = sem_open((shMemName+"_m_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+            m_slave_received = sem_open((shMemName+"_s_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+            m_master_sent = sem_open((shMemName+"_m_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+            m_slave_sent = sem_open((shMemName+"_s_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
 
             if (isMultipleMasters)
-                m_slave_ready = sem_open(S_READY, O_RDWR, 0666, SEMAPHORE_ENABLED);
+                m_slave_ready = sem_open((shMemName+"_s_ready").c_str(), O_RDWR, 0666, SEMAPHORE_ENABLED);
         }
     }
 }

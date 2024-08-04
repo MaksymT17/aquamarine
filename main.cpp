@@ -112,11 +112,9 @@ int main(int argc, char *argv[])
 	while (isRunning)
 	{
 		Message *message = slave->receive();
-		std::cout << "main establish connection message received\n";
 		if (!connections.isRequestValid(message))
 		{
-			std::cout << "received UNEXPECTED_REQUEST req\n"
-					  << message->type << std::endl;
+			std::cout << "received UNEXPECTED_REQUEST req\n" << message->type << std::endl;
 			Message response{message->id, MessageType::UNEXPECTED_REQUEST};
 			slave->send(&response);
 			continue;

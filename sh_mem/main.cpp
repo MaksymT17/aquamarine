@@ -4,7 +4,7 @@
 #include <chrono>
 #include<mutex>
 
-static const std::string shared_mem_name{"/sh_mem1"};
+static const std::string shared_mem_name{"/sh_mem5"};
 
 // Function to be executed in a separate thread
 void backgroundTask()
