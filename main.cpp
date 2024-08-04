@@ -42,7 +42,7 @@ struct ConnectionsInfo
 		else if (message->type == MessageType::SET_CONFIG)
 		{
 			std::cerr << "isRequestValid set c  " << std::endl;
-			return client_iterator->state == State::READY ? true : false;
+			return client_iterator->state >= State::READY ? true : false;
 		}
 		else if (message->type == MessageType::COMPARE_REQUEST)
 		{
@@ -78,6 +78,7 @@ struct ConnectionsInfo
 			client_iterator->configuration.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
 			client_iterator->configuration.PixelStep = messageSetConfig->configuration.PixelStep;
 			client_iterator->configuration.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
+			printf("set_conf id:%zu  {%d %f %d %d %zd %f}\n", msg->id, client_iterator->configuration.AffinityThreshold ,client_iterator->configuration.CalculationTimeLimit, client_iterator->configuration.IdleTimeout, client_iterator->configuration.MinPixelsForObject, client_iterator->configuration.PixelStep, client_iterator->configuration.ThreadsMultiplier);
 		}
 		else if (msg->type == MessageType::DISCONNECT)
 		{
@@ -97,9 +98,9 @@ struct ConnectionsInfo
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/shared_mem118"};
+	const std::string shared_memory_name{"/shared_mem_1"};
 	bool isStopRequested{false}, connectionConfirmed{false};
-	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, false, shared_memory_name);
+	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, true, shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);
 
@@ -112,6 +113,7 @@ int main(int argc, char *argv[])
 	while (isRunning)
 	{
 		Message *message = slave->receive();
+		printf("received %d message\n", message->type);
 		if (!connections.isRequestValid(message))
 		{
 			std::cout << "received UNEXPECTED_REQUEST req\n" << message->type << std::endl;
@@ -128,10 +130,13 @@ int main(int argc, char *argv[])
 		}
 		else if (message->type == MessageType::SET_CONFIG)
 		{
-			std::cout << "received SET_CONFIG req\n";
+			MessageSetConfig *messageConf = static_cast<MessageSetConfig *>(message);
+			std::cout << "received SET_CONFIG req px:" << messageConf->configuration.MinPixelsForObject << std::endl;
 			Message msg{message->id, MessageType::SET_CONFIG_OK};
 			auto iter = connections.processActionUpdate(message);
-			amApi->setConfiguration(iter->configuration);
+			am::configuration::Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
+			
+			amApi->setConfiguration(newConf);
 			slave->send(&msg);
 		}
 		else if (message->type == MessageType::COMPARE_REQUEST)
@@ -146,6 +151,7 @@ int main(int argc, char *argv[])
 				printf("compare_ %s %s _\n", messageCompare->base, messageCompare->to_compare);
 				auto iter = connections.processActionUpdate(message);
 				amApi->setConfiguration(iter->configuration); // set configuration for this client
+				printf("conf pixs %d\n", iter->configuration.MinPixelsForObject);
 				auto result = amApi->compare(messageCompare->base, messageCompare->to_compare);
 				std::cout << "received after compare\n";
 				MessageCompareResult compare_result;
