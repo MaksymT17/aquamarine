@@ -2,7 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include<mutex>
+#include <mutex>
 
 static const std::string shared_mem_name{"/sh_mem5"};
 
@@ -19,12 +19,9 @@ void backgroundTask()
     {
         {
             Message msg{777, MessageType::HANDSHAKE_OK};
-            Message* res = slave->receive();
-            //std::cout << res.id << std::endl;
+            Message *res = slave->receive();
             msg.id = res->id;
-            //std::cout << msg.id << std::endl;
             slave->send(&msg);
-            //std::cout << res.id << " -> " << msg.id << "." << std::endl;
             counter++;
         }
     }
@@ -71,7 +68,7 @@ int main()
     {
         master.send(&msg_hand);
         auto msg_resp = master.receive();
-        //std::cout << "m 2 " << msg_resp->id << std::endl;
+        // std::cout << "m 2 " << msg_resp->id << std::endl;
         counter++;
     }
 

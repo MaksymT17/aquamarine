@@ -98,7 +98,7 @@ struct ConnectionsInfo
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/shared_mem_1"};
+	const std::string shared_memory_name{"/shared_mem_"};
 	bool isStopRequested{false}, connectionConfirmed{false};
 	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, true, shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 				auto result = amApi->compare(messageCompare->base, messageCompare->to_compare);
 				std::cout << "received after compare\n";
 				MessageCompareResult compare_result;
-				compare_result.id = 1;
+				compare_result.id = messageCompare->id;
 
 				compare_result.payload_bytes = result.size() * sizeof(Rect);
 				Rect *rects = static_cast<Rect *>(compare_result.payload);

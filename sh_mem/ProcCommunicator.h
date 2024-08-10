@@ -8,12 +8,12 @@
 class ProcCommunicator
 {
 public:
-    ProcCommunicator(const bool isMasterMode, const bool isMultipleMasters, const std::string& shMemName);
+    ProcCommunicator(const bool isMasterMode, const bool isMultipleMasters, const std::string &shMemName);
     ~ProcCommunicator();
 
-    void send(const Message* msg);
-    Message* receive();
-    Message* sendAndGetResponse(const Message *msg);
+    void send(const Message *msg);
+    Message *receive();
+    Message *sendAndGetResponse(const Message *msg);
 
 private:
     std::unique_ptr<SharedMemorySender> m_sender;

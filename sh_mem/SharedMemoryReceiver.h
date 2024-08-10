@@ -8,7 +8,7 @@ public:
     SharedMemoryReceiver(const char *shMemName);
     void init();
     void finish();
-    Message * receiveMessage();
+    Message *receiveMessage();
 
 private:
     int m_shm_fd;
@@ -16,5 +16,4 @@ private:
     sem_t *m_sem;
     sem_t *m_rec_sem;
     std::string m_name;
-    
 };
