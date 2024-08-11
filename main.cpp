@@ -78,7 +78,7 @@ struct ConnectionsInfo
 			client_iterator->configuration.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
 			client_iterator->configuration.PixelStep = messageSetConfig->configuration.PixelStep;
 			client_iterator->configuration.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
-			printf("set_conf id:%zu  {%d %f %d %d %zd %f}\n", msg->id, client_iterator->configuration.AffinityThreshold ,client_iterator->configuration.CalculationTimeLimit, client_iterator->configuration.IdleTimeout, client_iterator->configuration.MinPixelsForObject, client_iterator->configuration.PixelStep, client_iterator->configuration.ThreadsMultiplier);
+			printf("set_conf id:%zu  {%d %f %d %d %zd %f}\n", msg->id, client_iterator->configuration.AffinityThreshold, client_iterator->configuration.CalculationTimeLimit, client_iterator->configuration.IdleTimeout, client_iterator->configuration.MinPixelsForObject, client_iterator->configuration.PixelStep, client_iterator->configuration.ThreadsMultiplier);
 		}
 		else if (msg->type == MessageType::DISCONNECT)
 		{
@@ -116,7 +116,8 @@ int main(int argc, char *argv[])
 		printf("received %d message\n", message->type);
 		if (!connections.isRequestValid(message))
 		{
-			std::cout << "received UNEXPECTED_REQUEST req\n" << message->type << std::endl;
+			std::cout << "received UNEXPECTED_REQUEST req\n"
+					  << message->type << std::endl;
 			Message response{message->id, MessageType::UNEXPECTED_REQUEST};
 			slave->send(&response);
 			continue;
@@ -135,7 +136,7 @@ int main(int argc, char *argv[])
 			Message msg{message->id, MessageType::SET_CONFIG_OK};
 			auto iter = connections.processActionUpdate(message);
 			am::configuration::Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
-			
+
 			amApi->setConfiguration(newConf);
 			slave->send(&msg);
 		}
@@ -152,7 +153,18 @@ int main(int argc, char *argv[])
 				auto iter = connections.processActionUpdate(message);
 				amApi->setConfiguration(iter->configuration); // set configuration for this client
 				printf("conf pixs %d\n", iter->configuration.MinPixelsForObject);
-				auto result = amApi->compare(messageCompare->base, messageCompare->to_compare);
+				am::analyze::algorithm::DescObjects result;
+				try
+				{
+					result = amApi->compare(messageCompare->base, messageCompare->to_compare);
+				}
+				catch (const am::common::exceptions::AmException exc)
+				{
+					std::cout << "Exception has been caught: " << exc.what() << ::std::endl;
+					Message failed{messageCompare->id, MessageType::COMPARE_FAIL};
+					slave->send(&failed);
+					continue;
+				}
 				std::cout << "received after compare\n";
 				MessageCompareResult compare_result;
 				compare_result.id = messageCompare->id;
