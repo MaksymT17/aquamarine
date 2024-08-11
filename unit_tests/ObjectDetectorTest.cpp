@@ -40,7 +40,7 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	std::unique_ptr<am::extraction::MultipleExtractor> extractor;
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
 	am::configuration::ConfigurationReader reader;
-	std::shared_ptr<Configuration> conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	Configuration conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 };
 
 TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
@@ -66,7 +66,7 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
-	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
+	Configuration conf1 = Configuration(conf_s10x10);
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
@@ -83,7 +83,7 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
-	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
+	Configuration conf1 = Configuration(conf_s10x10);
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
@@ -111,7 +111,7 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{50, 3, 1, duration_70ms, 1, 1};
-	std::shared_ptr<Configuration> conf1 = std::make_shared<Configuration>(conf_s10x10);
+	Configuration conf1 = Configuration(conf_s10x10);
 
 	// note: big count of threads also require longer time to sync
 	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);

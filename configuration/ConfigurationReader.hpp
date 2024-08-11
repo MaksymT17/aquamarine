@@ -22,7 +22,7 @@ namespace am::configuration
 	public:
 		ConfigurationReader() {}
 	
-		std::shared_ptr<Configuration> getConfigurationFromFile(const char *filePath)
+		Configuration getConfigurationFromFile(const char *filePath)
 		{
 
 			std::ifstream file(filePath, std::ifstream::in);
@@ -35,7 +35,7 @@ namespace am::configuration
 
 			while (file.good())
 			{
-				std::shared_ptr<Configuration> rec(new Configuration());
+				Configuration rec;
 				getConfiguration(rec, file);
 				return rec;
 			}
@@ -45,27 +45,27 @@ namespace am::configuration
 		}
 
 	private:
-		void setParameter(std::istream &line, const std::shared_ptr<Configuration> &conf)
+		void setParameter(std::istream &line, Configuration &conf)
 		{
 			std::string paramName, paramVal;
 			std::getline(line, paramName, PARAM_LIMITER);
 
 			std::getline(line, paramVal, PARAM_LIMITER);
 			if (paramName.compare("Affinity_Threshold") == 0)
-				conf->AffinityThreshold = std::atoi(paramVal.c_str());
+				conf.AffinityThreshold = std::atoi(paramVal.c_str());
 			else if (paramName.compare("Minimum_Pixels_In_Object") == 0)
-				conf->MinPixelsForObject = std::atoi(paramVal.c_str());
+				conf.MinPixelsForObject = std::atoi(paramVal.c_str());
 			else if (paramName.compare("Pixel_Step") == 0)
-				conf->PixelStep = std::atoi(paramVal.c_str());
+				conf.PixelStep = std::atoi(paramVal.c_str());
 			else if (paramName.compare("Calculation_Time_Limit") == 0)
-				conf->CalculationTimeLimit = std::atof(paramVal.c_str());
+				conf.CalculationTimeLimit = std::atof(paramVal.c_str());
 			else if (paramName.compare("Idle_Timeout") == 0)
-				conf->IdleTimeout = std::atoi(paramVal.c_str());
+				conf.IdleTimeout = std::atoi(paramVal.c_str());
 			else if (paramName.compare("Threads_Multiplier") == 0)
-				conf->ThreadsMultiplier = std::atoi(paramVal.c_str());
+				conf.ThreadsMultiplier = std::atoi(paramVal.c_str());
 		}
 
-		void getConfiguration(std::shared_ptr<Configuration> &rec, std::istream &str)
+		void getConfiguration(Configuration &rec, std::istream &str)
 		{
 			for (size_t i = 0; i < PARAM_COUNT; ++i)
 			{
