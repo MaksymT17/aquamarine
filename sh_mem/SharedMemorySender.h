@@ -1,5 +1,6 @@
 #pragma once
 #include <semaphore.h>
+#include <string>
 #include "Message.hpp"
 
 class SharedMemorySender

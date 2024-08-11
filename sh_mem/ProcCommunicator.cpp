@@ -1,6 +1,7 @@
 #include "ProcCommunicator.h"
 #include <iostream>
 #include <unistd.h>
+#include <fcntl.h>
 
 static constexpr int SEMAPHORE_DISABLED = 0;
 static constexpr int SEMAPHORE_ENABLED = 1;
