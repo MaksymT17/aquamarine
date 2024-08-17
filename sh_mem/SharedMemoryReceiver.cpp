@@ -1,16 +1,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#ifndef _WIN32
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <semaphore.h>
-#else
-#include <windows.h>
-#include <string>
-#include <iostream>
-#endif
 #include "SharedMemoryReceiver.h"
 #include <vector>
 
@@ -18,22 +12,9 @@ const int SHARED_MEMORY_SIZE = 4096; // 4KB
 
 SharedMemoryReceiver::SharedMemoryReceiver(const char *shMemName) : m_name(shMemName)
 {
-#ifdef _WIN32
-    initWindowsSharedMemory();
-#else
-    initUnixSharedMemory();
-#endif
+    init();
 }
-SharedMemoryReceiver::~SharedMemoryReceiver()
-{
-#ifdef _WIN32
-    finishWindows();
-#else
-    finish();
-#endif
-}
-#ifndef _WIN32
-void SharedMemoryReceiver::initUnixSharedMemory()
+void SharedMemoryReceiver::init()
 {
     // Try to create the shared memory segment
     m_shm_fd = shm_open(m_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666);
@@ -85,45 +66,6 @@ void SharedMemoryReceiver::finish()
         std::cerr << "close failed" << std::endl;
     }
 }
-#else
-void SharedMemoryReceiver::initWindowsSharedMemory()
-{
-    std::wstring wshMemName(m_name.begin(), m_name.end());
-    m_shm_fd = OpenFileMappingW(
-        FILE_MAP_ALL_ACCESS, // read/write access
-        FALSE,               // do not inherit the name
-        wshMemName.c_str());             // name of mapping object
-
-    if (m_shm_fd == NULL)
-    {
-        printf(("Could not open file mapping object (%d).\n"),
-                 GetLastError());
-        return;
-    }
-
-    m_ptr = (void *)MapViewOfFile(m_shm_fd,            // handle to map object
-                                  FILE_MAP_ALL_ACCESS, // read/write permission
-                                  0,
-                                  0,
-                                  SHARED_MEMORY_SIZE);
-
-    if (m_ptr == NULL)
-    {
-        printf("Could not map view of file (%d).\n", GetLastError());
-
-        CloseHandle(m_shm_fd);
-
-        return;
-    }
-}
-
-void SharedMemoryReceiver::finishWindows()
-{
-    UnmapViewOfFile(m_ptr);
-
-    CloseHandle(m_shm_fd);
-}
-#endif
 
 Message *SharedMemoryReceiver::receiveMessage()
 {
