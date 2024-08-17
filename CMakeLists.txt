@@ -23,6 +23,8 @@ IF (UNIX OR APPLE)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
 
+add_subdirectory(sh_mem)
+
 set(AM_SOURCE_FILES 
     analyze/AffinityComparer.cpp 
     analyze/ThresholdDiffChecker.cpp 
@@ -37,9 +39,6 @@ set(AM_SOURCE_FILES
     extraction/BmpExtractor.cpp
     extraction/MultipleExtractor.cpp
     common/Timers.hpp
-    sh_mem/ProcCommunicator.cpp
-    sh_mem/SharedMemoryReceiver.cpp
-    sh_mem/SharedMemorySender.cpp
     AmApi.cpp
 )
 
@@ -51,7 +50,7 @@ ENDIF()
 
 add_executable(aquamarine main.cpp)
 
-target_link_libraries(aquamarine aquamarine_lib ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine aquamarine_lib shared_mem ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()
