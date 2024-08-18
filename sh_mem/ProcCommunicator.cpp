@@ -25,6 +25,19 @@ ProcCommunicator::ProcCommunicator(const bool isMasterMode,
         m_sender = std::make_unique<SharedMemorySender>(master_mem_name.c_str());
         m_receiver = std::make_unique<SharedMemoryReceiver>(slave_mem_name.c_str());
 
+        m_master_received = sem_open((shMemName + "_m_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+        m_slave_received = sem_open((shMemName + "_s_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+        m_master_sent = sem_open((shMemName + "_m_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+        m_slave_sent = sem_open((shMemName + "_s_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
+
+        if (isMultipleMasters)
+            m_slave_ready = sem_open((shMemName + "_s_ready").c_str(), O_RDWR, 0666, SEMAPHORE_ENABLED);
+    }
+    else
+    {
+        m_sender = std::make_unique<SharedMemorySender>(slave_mem_name.c_str());
+        m_receiver = std::make_unique<SharedMemoryReceiver>(master_mem_name.c_str());
+
         m_master_received = sem_open((shMemName + "_m_rsem").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
         m_slave_received = sem_open((shMemName + "_s_rsem").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
         m_master_sent = sem_open((shMemName + "_m_sent").c_str(), O_CREAT, 0666, SEMAPHORE_DISABLED);
@@ -33,24 +46,15 @@ ProcCommunicator::ProcCommunicator(const bool isMasterMode,
         if (isMultipleMasters)
             m_slave_ready = sem_open((shMemName + "_s_ready").c_str(), O_CREAT, 0666, SEMAPHORE_ENABLED);
     }
-    else
-    {
-        m_sender = std::make_unique<SharedMemorySender>(slave_mem_name.c_str());
-        m_receiver = std::make_unique<SharedMemoryReceiver>(master_mem_name.c_str());
-
-        m_master_received = sem_open((shMemName + "_m_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
-        m_slave_received = sem_open((shMemName + "_s_rsem").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
-        m_master_sent = sem_open((shMemName + "_m_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
-        m_slave_sent = sem_open((shMemName + "_s_sent").c_str(), O_RDWR, 0666, SEMAPHORE_DISABLED);
-
-        if (isMultipleMasters)
-            m_slave_ready = sem_open((shMemName + "_s_ready").c_str(), O_RDWR, 0666, SEMAPHORE_ENABLED);
-
-    }
     if (m_master_received == SEM_FAILED || m_slave_received == SEM_FAILED ||
         m_master_sent == SEM_FAILED || m_slave_sent == SEM_FAILED || m_slave_ready == SEM_FAILED)
     {
         perror("ProcCommunicator sem_open failure.");
+        exit(1);
+    }
+    if(isMultipleMasters && m_slave_ready==SEM_FAILED){
+        perror("ProcCommunicator MultiMaster mode sem_open failure.");
+        exit(1);
     }
 #else
     m_sender = std::make_unique<SharedMemorySender>(slave_mem_name.c_str());
@@ -80,6 +84,7 @@ ProcCommunicator::ProcCommunicator(const bool isMasterMode,
         m_master_sent == NULL || m_slave_sent == NULL || m_slave_ready == NULL )
     {
         perror("ProcCommunicator sem_open failure.");
+        exit(1);
     }
 
 #endif

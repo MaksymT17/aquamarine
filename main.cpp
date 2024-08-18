@@ -98,7 +98,7 @@ struct ConnectionsInfo
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/shared_mem_"};
+	const std::string shared_memory_name{"/_shmem4"};
 	bool isStopRequested{false}, connectionConfirmed{false};
 	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, true, shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
