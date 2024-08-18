@@ -1,10 +1,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <semaphore.h>
+#else
+#include <windows.h>
+#include <string>
+#include <iostream>
+#endif
 #include "SharedMemoryReceiver.h"
 #include <vector>
 
@@ -14,6 +19,7 @@ SharedMemoryReceiver::SharedMemoryReceiver(const char *shMemName) : m_name(shMem
 {
     init();
 }
+#ifndef _WIN32
 void SharedMemoryReceiver::init()
 {
     // Try to create the shared memory segment
@@ -66,6 +72,44 @@ void SharedMemoryReceiver::finish()
         std::cerr << "close failed" << std::endl;
     }
 }
+#else
+void SharedMemoryReceiver::init()
+{
+    std::wstring wshMemName(m_name.begin(), m_name.end());
+    m_shm_fd = OpenFileMappingW(
+        FILE_MAP_ALL_ACCESS, // read/write access
+        FALSE,               // do not inherit the name
+        wshMemName.c_str());             // name of mapping object
+
+    if (m_shm_fd == NULL)
+    {
+        printf(("Could not open file mapping object (%d).\n"),
+                 GetLastError());
+        return;
+    }
+
+    m_ptr = (void *)MapViewOfFile(m_shm_fd,            // handle to map object
+                                  FILE_MAP_ALL_ACCESS, // read/write permission
+                                  0,
+                                  0,
+                                  SHARED_MEMORY_SIZE);
+
+    if (m_ptr == NULL)
+    {
+        printf("Could not map view of file (%d).\n", GetLastError());
+
+        CloseHandle(m_shm_fd);
+
+        return;
+    }
+}
+
+void SharedMemoryReceiver::finish()
+{
+    UnmapViewOfFile(m_ptr);
+    CloseHandle(m_shm_fd);
+}
+#endif
 
 Message *SharedMemoryReceiver::receiveMessage()
 {

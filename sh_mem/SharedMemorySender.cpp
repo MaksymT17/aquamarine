@@ -1,10 +1,13 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <semaphore.h>
+#endif
+#include <string>
+#include <iostream>
 #include <exception>
 #include "SharedMemorySender.h"
 
@@ -14,6 +17,7 @@ SharedMemorySender::SharedMemorySender(const char *shMemName) : m_name(shMemName
 {
     init();
 }
+#ifndef _WIN32
 void SharedMemorySender::init()
 {
     // Try to create the shared memory segment
@@ -71,7 +75,6 @@ void SharedMemorySender::finish()
         std::cerr << "shm_unlink failed" << std::endl;
     }
 }
-
 void SharedMemorySender::sendMessage(const Message *msg)
 {
     //    std::cout<<"sendMessage\n";
@@ -84,3 +87,51 @@ void SharedMemorySender::sendMessage(const Message *msg)
     else
         std::memcpy(m_ptr, msg, sizeof(Message));
 }
+#else
+void SharedMemorySender::init()
+{
+    std::wstring wshMemName(m_name.begin(), m_name.end());
+    m_shm_fd = CreateFileMappingW(
+        INVALID_HANDLE_VALUE, // use paging file
+        NULL,                 // default security
+        PAGE_READWRITE,       // read/write access
+        0,                    // maximum object size (high-order DWORD)
+        SHARED_MEMORY_SIZE,   // maximum object size (low-order DWORD)
+        wshMemName.c_str());              // name of mapping object
+
+    if (m_shm_fd == NULL)
+    {
+        printf("Could not create file mapping object (%d).\n",
+                 GetLastError());
+    }
+    m_ptr = (void *)MapViewOfFile(m_shm_fd,            // handle to map object
+                                  FILE_MAP_ALL_ACCESS, // read/write permission
+                                  0,
+                                  0,
+                                  SHARED_MEMORY_SIZE);
+
+    if (m_ptr == NULL)
+    {
+        printf("Could not map view of file (%d).\n", GetLastError());
+        CloseHandle(m_shm_fd);
+    }
+}
+
+void SharedMemorySender::finish()
+{
+    UnmapViewOfFile(m_ptr);
+    CloseHandle(m_shm_fd);
+}
+
+void SharedMemorySender::sendMessage(const Message *msg)
+{
+if (msg->type == MessageType::SET_CONFIG)
+        CopyMemory(m_ptr, msg, sizeof(MessageSetConfig));
+    else if (msg->type == MessageType::COMPARE_REQUEST)
+        CopyMemory(m_ptr, msg, sizeof(MessageCompareRequest));
+    else if (msg->type == MessageType::COMPARE_RESULT)
+        CopyMemory(m_ptr, msg, sizeof(MessageCompareResult));
+    else
+        CopyMemory(m_ptr, msg, sizeof(Message));
+}
+#endif

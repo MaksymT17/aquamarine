@@ -1,8 +1,13 @@
 #pragma once
-#include <semaphore.h>
 #include <string>
 #include "Message.hpp"
-
+#ifdef _WIN32
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
+#include <tchar.h>
+#pragma comment(lib, "user32.lib")
+#endif
 class SharedMemorySender
 {
 public:
@@ -12,9 +17,11 @@ public:
     void sendMessage(const Message *msg);
 
 private:
+#ifndef _WIN32
     int m_shm_fd;
+#else
+    HANDLE m_shm_fd;
+#endif
     void *m_ptr;
-    sem_t *m_sem;
-    sem_t *m_rec_sem;
     std::string m_name;
 };
