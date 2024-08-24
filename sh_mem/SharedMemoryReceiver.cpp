@@ -83,9 +83,20 @@ void SharedMemoryReceiver::init()
 
     if (m_shm_fd == NULL)
     {
-        printf(("Could not open file mapping object (%d).\n"),
-                 GetLastError());
-        return;
+        m_shm_fd = CreateFileMappingW(
+            INVALID_HANDLE_VALUE, // use paging file
+            NULL,                 // default security
+            PAGE_READWRITE,       // read/write access
+            0,                    // maximum object size (high-order DWORD)
+            SHARED_MEMORY_SIZE,   // maximum object size (low-order DWORD)
+            wshMemName.c_str());              // name of mapping object
+
+        if (m_shm_fd == NULL)
+        {
+            printf(("Could not open file mapping object (%d).\n"),
+                GetLastError());
+            return;
+        }
     }
 
     m_ptr = (void *)MapViewOfFile(m_shm_fd,            // handle to map object

@@ -14,7 +14,7 @@ void backgroundTask()
     ProcCommunicator master(true, true, shared_mem_name);
     int counter = 0;
 
-    while (counter < 1)
+    while (counter < 10)
     {
         master.send(&msg_hand);
         auto msg_resp = master.receive();
@@ -33,12 +33,12 @@ void backgroundTaskMasterMaster()
 
     int counter = 0;
 
-    while (counter < 1)
+    while (counter < 10)
     {
 
         master.send(&msg_hand);
         auto msg_resp = master.receive();
-        std::cout << "m 1 =" << msg_resp->id << std::endl;
+       // std::cout << "m 1 =" << msg_resp->id << std::endl;
         counter++;
     }
 
@@ -56,7 +56,7 @@ int main()
     int counter = 0;
     std::thread worker(backgroundTask);
     std::thread worker_master(backgroundTaskMasterMaster);
-    while (counter < 2)
+    while (counter < 20)
     {
         Message msg{777, MessageType::HANDSHAKE_OK};
         Message *res = slave->receive();
@@ -72,6 +72,6 @@ int main()
 
     if (worker_master.joinable())
         worker_master.join();
-
+    std::cout << "Server ends...\n";
     return 0;
 }
