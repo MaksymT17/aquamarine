@@ -98,7 +98,7 @@ struct ConnectionsInfo
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/_shmem4"};
+	const std::string shared_memory_name{"/_shmem10"};
 	bool isStopRequested{false}, connectionConfirmed{false};
 	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, true, shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
@@ -107,7 +107,6 @@ int main(int argc, char *argv[])
 	// confirm master connection by Handshake message, and then set configuration
 	// such order defines expected message flow
 	ConnectionsInfo connections;
-	// confirm handshake, entry point
 
 	bool isRunning = true;
 	while (isRunning)

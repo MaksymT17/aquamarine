@@ -20,13 +20,11 @@ SharedMemorySender::SharedMemorySender(const char *shMemName) : m_name(shMemName
 #ifndef _WIN32
 void SharedMemorySender::init()
 {
-    // Try to create the shared memory segment
     m_shm_fd = shm_open(m_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666);
     if (m_shm_fd == -1)
     {
         if (errno == EEXIST)
         {
-            // Segment already exists, open it without O_CREAT | O_EXCL
             m_shm_fd = shm_open(m_name.c_str(), O_RDWR, 0666);
             if (m_shm_fd == -1)
             {
@@ -42,7 +40,6 @@ void SharedMemorySender::init()
     }
     else
     {
-        // Segment created successfully, truncate it to the desired size
         if (ftruncate(m_shm_fd, SHARED_MEMORY_SIZE) == -1)
         {
             perror("ftruncate failed");
@@ -97,12 +94,12 @@ void SharedMemorySender::init()
         PAGE_READWRITE,       // read/write access
         0,                    // maximum object size (high-order DWORD)
         SHARED_MEMORY_SIZE,   // maximum object size (low-order DWORD)
-        wshMemName.c_str());              // name of mapping object
+        wshMemName.c_str());  // name of mapping object
 
     if (m_shm_fd == NULL)
     {
         printf("Could not create file mapping object (%d).\n",
-                 GetLastError());
+               GetLastError());
     }
     m_ptr = (void *)MapViewOfFile(m_shm_fd,            // handle to map object
                                   FILE_MAP_ALL_ACCESS, // read/write permission
@@ -125,7 +122,7 @@ void SharedMemorySender::finish()
 
 void SharedMemorySender::sendMessage(const Message *msg)
 {
-if (msg->type == MessageType::SET_CONFIG)
+    if (msg->type == MessageType::SET_CONFIG)
         CopyMemory(m_ptr, msg, sizeof(MessageSetConfig));
     else if (msg->type == MessageType::COMPARE_REQUEST)
         CopyMemory(m_ptr, msg, sizeof(MessageCompareRequest));

@@ -20,6 +20,7 @@ void backgroundTask()
         master.send(&msg_hand);
         auto msg_resp = master.receive();
         EXPECT_EQ(msg_resp->id, 2);
+        master.ackNotify();
         counter++;
     }
 
@@ -39,6 +40,7 @@ void backgroundTaskMasterMaster()
         master.send(&msg_hand);
         auto msg_resp = master.receive();
         EXPECT_EQ(msg_resp->id, 1);
+        master.ackNotify();
         counter++;
     }
 

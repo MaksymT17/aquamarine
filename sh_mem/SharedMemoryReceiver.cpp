@@ -22,13 +22,11 @@ SharedMemoryReceiver::SharedMemoryReceiver(const char *shMemName) : m_name(shMem
 #ifndef _WIN32
 void SharedMemoryReceiver::init()
 {
-    // Try to create the shared memory segment
     m_shm_fd = shm_open(m_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666);
     if (m_shm_fd == -1)
     {
         if (errno == EEXIST)
         {
-            // Segment already exists, open it without O_CREAT | O_EXCL
             m_shm_fd = shm_open(m_name.c_str(), O_RDWR, 0666);
             if (m_shm_fd == -1)
             {
@@ -52,7 +50,6 @@ void SharedMemoryReceiver::init()
         }
     }
 
-    // Map the shared memory object into the address space of the process
     m_ptr = mmap(0, SHARED_MEMORY_SIZE, PROT_READ, MAP_SHARED, m_shm_fd, 0);
     if (m_ptr == MAP_FAILED)
     {
@@ -77,9 +74,9 @@ void SharedMemoryReceiver::init()
 {
     std::wstring wshMemName(m_name.begin(), m_name.end());
     m_shm_fd = OpenFileMappingW(
-        FILE_MAP_ALL_ACCESS, // read/write access
-        FALSE,               // do not inherit the name
-        wshMemName.c_str());             // name of mapping object
+        FILE_MAP_ALL_ACCESS,
+        FALSE,
+        wshMemName.c_str());
 
     if (m_shm_fd == NULL)
     {
@@ -89,12 +86,12 @@ void SharedMemoryReceiver::init()
             PAGE_READWRITE,       // read/write access
             0,                    // maximum object size (high-order DWORD)
             SHARED_MEMORY_SIZE,   // maximum object size (low-order DWORD)
-            wshMemName.c_str());              // name of mapping object
+            wshMemName.c_str());  // name of mapping object
 
         if (m_shm_fd == NULL)
         {
             printf(("Could not open file mapping object (%d).\n"),
-                GetLastError());
+                   GetLastError());
             return;
         }
     }
