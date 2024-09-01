@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <iostream>
 #include "SharedMemorySender.h"
 #include "SharedMemoryReceiver.h"
 #include "Message.hpp"
@@ -9,22 +10,29 @@
 #else
 #include <windows.h>
 #endif
+
+constexpr int SEMAPHORE_DISABLED = 0;
+constexpr int SEMAPHORE_ENABLED = 1;
+
 class ProcCommunicator
 {
-public:
-    ProcCommunicator(const bool isMasterMode, const bool isMultipleMasters, const std::string &shMemName);
+protected:
+    ProcCommunicator(const std::string &shMemName);
     ~ProcCommunicator();
 
-    void send(const Message *msg);
-    Message *receive();
-    Message *sendAndGetResponse(const Message *msg);
-    void ackNotify();
-
-private:
+protected:
     std::unique_ptr<SharedMemorySender> m_sender;
     std::unique_ptr<SharedMemoryReceiver> m_receiver;
-    bool m_master_mode;
-    
+
+    std::string m_master_received_s;
+    std::string m_slave_received_s;
+    std::string m_master_sent_s;
+    std::string m_slave_sent_s;
+    std::string m_slave_ready_s;
+
+    const std::string m_master_mem_name;
+    const std::string m_slave_mem_name;
+
 #ifndef _WIN32
     sem_t *m_master_received;
     sem_t *m_slave_received;

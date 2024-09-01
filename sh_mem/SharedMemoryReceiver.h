@@ -18,6 +18,5 @@ private:
 #endif
 
     void *m_ptr;
-
     std::string m_name;
 };

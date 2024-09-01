@@ -5,7 +5,7 @@
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
 
-#include "sh_mem/ProcCommunicator.h"
+#include "sh_mem/ServerProcCommunicator.h"
 #include <algorithm>
 enum State : size_t
 {
@@ -91,16 +91,16 @@ struct ConnectionsInfo
 		return client_iterator;
 	}
 
-	std::unique_ptr<ProcCommunicator> commuicator;
+	std::unique_ptr<ServerProcCommunicator> commuicator;
 	std::unique_ptr<am::AmApi> amApi;
 	std::vector<ClientInfo> clients;
 };
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/_shmem10"};
+	const std::string shared_memory_name{"/_shmem1103"};
 	bool isStopRequested{false}, connectionConfirmed{false};
-	std::unique_ptr<ProcCommunicator> slave = std::make_unique<ProcCommunicator>(false, true, shared_memory_name);
+	std::unique_ptr<ServerProcCommunicator> slave = std::make_unique<ServerProcCommunicator>(shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);
 
@@ -137,7 +137,9 @@ int main(int argc, char *argv[])
 			am::configuration::Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
 
 			amApi->setConfiguration(newConf);
+			std::cout << "received SET_CONFIG OK \n";
 			slave->send(&msg);
+			std::cout << "received SET_CONFIG OK sent\n";
 		}
 		else if (message->type == MessageType::COMPARE_REQUEST)
 		{

@@ -1,27 +1,29 @@
 #include "ProcCommunicator.h"
+#include "ServerProcCommunicator.h"
+#include "ClientProcCommunicator.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <mutex>
+#include <unistd.h>
+#include <future>
 
-static const std::string shared_mem_name{"/shmsh1"};
-static constexpr size_t MSG_COUNT = 1000;
+static const std::string shared_mem_name{"/shmsh__47"};
+static constexpr size_t MSG_COUNT = 10000;
 
 void backgroundTask1()
 {
     std::cout << "Background Master_1 starting...\n";
-    ProcCommunicator master(true, true, shared_mem_name);
-    Message msg_hand{1, MessageType::HANDSHAKE};
+    ClientProcCommunicator master(shared_mem_name);
+    Message request{1, MessageType::HANDSHAKE};
+    Message response{666, MessageType::HANDSHAKE};
 
     int counter = 0;
 
     while (counter < MSG_COUNT)
     {
-        master.send(&msg_hand);
-        auto msg_resp = master.receive();
-        
-        //std::cout << "m 1 =" << msg_resp->id << std::endl;
-        master.ackNotify();
+        master.sendRequestGetResponse(&request, response);
+        std::cout << "m 1 =" << response.id << " "<< response.type << std::endl;
         counter++;
     }
 
@@ -30,17 +32,17 @@ void backgroundTask1()
 
 void backgroundTask2()
 {
-    std::cout << "Background Master_2 starting...\n";
-    Message msg_hand{2, MessageType::HANDSHAKE};
-    ProcCommunicator master(true, true, shared_mem_name);
+    //std::cout << "Background Master_2 starting...\n";
+    ClientProcCommunicator master(shared_mem_name);
+    Message request{2, MessageType::HANDSHAKE};
+    Message response{666, MessageType::HANDSHAKE};
+
     int counter = 0;
 
     while (counter < MSG_COUNT)
     {
-        master.send(&msg_hand);
-        auto msg_resp = master.receive();
-        std::cout << "m 2 " << msg_resp->id << std::endl;
-        master.ackNotify();
+        master.sendRequestGetResponse(&request, response);
+        //std::cout << "m 2 =" << response.id << std::endl;
         counter++;
     }
 
@@ -50,16 +52,15 @@ void backgroundTask2()
 void backgroundTask3()
 {
     std::cout << "Background Master_3 starting...\n";
-    Message msg_hand{3, MessageType::HANDSHAKE};
-    ProcCommunicator master(true, true, shared_mem_name);
+    ClientProcCommunicator master(shared_mem_name);
+    Message request{3, MessageType::HANDSHAKE};
+    Message response{666, MessageType::HANDSHAKE};
+
     int counter = 0;
 
     while (counter < MSG_COUNT)
     {
-        master.send(&msg_hand);
-        auto msg_resp = master.receive();
-        //std::cout << "m 3 " << msg_resp->id << std::endl;
-        master.ackNotify();
+        master.sendRequestGetResponse(&request, response);
         counter++;
     }
 
@@ -69,16 +70,16 @@ void backgroundTask3()
 void backgroundTask4()
 {
     std::cout << "Background Master_4 starting...\n";
-    Message msg_hand{4, MessageType::HANDSHAKE};
-    ProcCommunicator master(true, true, shared_mem_name);
+    ClientProcCommunicator master(shared_mem_name);
+    Message request{4, MessageType::HANDSHAKE};
+    Message response{666, MessageType::HANDSHAKE};
+
     int counter = 0;
 
     while (counter < MSG_COUNT)
     {
-        master.send(&msg_hand);
-        auto msg_resp = master.receive();
-        //std::cout << "m 4 " << msg_resp->id << std::endl;
-        master.ackNotify();
+        master.sendRequestGetResponse(&request, response);
+        // std::cout << "m 2 =" << response.id << std::endl;
         counter++;
     }
 
@@ -88,16 +89,16 @@ void backgroundTask4()
 void backgroundTask5()
 {
     std::cout << "Background Master_5 starting...\n";
-    Message msg_hand{5, MessageType::HANDSHAKE};
-    ProcCommunicator master(true, true, shared_mem_name);
+    ClientProcCommunicator master(shared_mem_name);
+    Message request{5, MessageType::HANDSHAKE};
+    Message response{666, MessageType::HANDSHAKE};
+
     int counter = 0;
 
     while (counter < MSG_COUNT)
     {
-        master.send(&msg_hand);
-        auto msg_resp = master.receive();
-        //std::cout << "m 5 " << msg_resp->id << std::endl;
-        master.ackNotify();
+        master.sendRequestGetResponse(&request, response);
+        // std::cout << "m 5 =" << response.id << std::endl;
         counter++;
     }
 
@@ -107,7 +108,7 @@ void backgroundTask5()
 int main()
 {
     std::cout << "Server starts...\n";
-    ProcCommunicator *slave = new ProcCommunicator(false, true, shared_mem_name);
+    ServerProcCommunicator *slave = new ServerProcCommunicator(shared_mem_name);
     Message *res = nullptr;
 
     int counter = 0;
@@ -117,16 +118,19 @@ int main()
     std::thread worker_master4(backgroundTask4);
     std::thread worker_master5(backgroundTask5);
 
-    while (counter < 5 * MSG_COUNT)
+    while (counter < MSG_COUNT * 5)
     {
+        // std::cout << "Server st1 "<<counter<<std::endl;
         Message msg{777, MessageType::HANDSHAKE_OK};
         Message *res = slave->receive();
+        // usleep(6000);
         msg.id = res->id;
         slave->send(&msg);
-        counter++;
-    }
 
-    delete slave;
+        counter++;
+        // std::cout << "Server st1 "<<counter<<std::endl;
+    }
+    std::cout << "Server syncing...\n";
 
     if (worker_master1.joinable())
         worker_master1.join();
@@ -143,6 +147,7 @@ int main()
     if (worker_master5.joinable())
         worker_master5.join();
 
+    delete slave;
     std::cout << "Server has finished work...\n";
     return 0;
 }
