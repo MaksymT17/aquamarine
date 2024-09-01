@@ -6,7 +6,11 @@
 #include "AmApi.h"
 
 #include "sh_mem/ServerProcCommunicator.h"
+#include "sh_mem/ClientProcCommunicator.h"
 #include <algorithm>
+
+#include <csignal>
+
 enum State : size_t
 {
 	UNKNOWN = 0,
@@ -95,12 +99,38 @@ struct ConnectionsInfo
 	std::unique_ptr<am::AmApi> amApi;
 	std::vector<ClientInfo> clients;
 };
+const std::string shared_memory_name{"/_shmem1107"};
+std::unique_ptr<ServerProcCommunicator> slave;
+void handleSignal(int signal)
+{
+	std::cout << "Received SIGTERM signal (" << signal << "). Cleaning up and exiting...\n";
+	slave.reset();
+	
+	exit(0); // Exit the program with status code 0
+}
 
 int main(int argc, char *argv[])
 {
-	const std::string shared_memory_name{"/_shmem1103"};
+#ifndef _WIN32
+	struct sigaction sa;
+	sa.sa_handler = handleSignal; // Set the handler function
+	sa.sa_flags = 0;			  // No special flags
+	sigemptyset(&sa.sa_mask);	  // No additional signals blocked during handler execution
+
+	// Set up handlers for SIGTERM and SIGINT
+	if (sigaction(SIGTERM, &sa, nullptr) == -1)
+	{
+		std::cerr << "Error setting up SIGTERM handler\n";
+		return 1;
+	}
+	if (sigaction(SIGINT, &sa, nullptr) == -1)
+	{
+		std::cerr << "Error setting up SIGINT handler\n";
+		return 1;
+	}
+#endif
 	bool isStopRequested{false}, connectionConfirmed{false};
-	std::unique_ptr<ServerProcCommunicator> slave = std::make_unique<ServerProcCommunicator>(shared_memory_name);
+	slave = std::make_unique<ServerProcCommunicator>(shared_memory_name);
 	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);
 

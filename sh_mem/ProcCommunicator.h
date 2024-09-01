@@ -7,6 +7,9 @@
 #include "Message.hpp"
 #ifndef _WIN32
 #include <semaphore.h>
+#include <iostream>
+#include <fcntl.h>
+#include <unistd.h> 
 #else
 #include <windows.h>
 #endif
