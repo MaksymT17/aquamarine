@@ -10,7 +10,7 @@ namespace am::analyze::algorithm
 	{
 	public:
 		DiffObjectDetector(const size_t threads,
-						   const am::configuration::Configuration &conf,
+						   const Configuration &conf,
 						   std::shared_ptr<am::common::Logger> &logger);
 		~DiffObjectDetector() = default;
 

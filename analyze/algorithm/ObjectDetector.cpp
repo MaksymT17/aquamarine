@@ -12,7 +12,7 @@ namespace am::analyze::algorithm
 
 	ObjectDetector::ObjectDetector(
 		const size_t threads,
-		const am::configuration::Configuration &conf,
+		const Configuration &conf,
 		std::shared_ptr<am::common::Logger> &logger)
 		: BfsObjectDetector(threads, conf, logger) {}
 
@@ -21,7 +21,7 @@ namespace am::analyze::algorithm
 	ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
 						ObjectRectangle &object, ImageRowSegment row,
 						std::chrono::steady_clock::time_point &startTime,
-						const configuration::Configuration &conf)
+						const Configuration &conf)
 	{
 		auto timeNow = std::chrono::steady_clock::now();
 		std::chrono::duration<double> calcDuration = timeNow - startTime;
@@ -55,7 +55,7 @@ namespace am::analyze::algorithm
 
 	static std::vector<ObjectRectangle>
 	startObjectsSearchInPair(const ImagePair &pair, const ImageRowSegment &row,
-							 const configuration::Configuration &conf)
+							 const Configuration &conf)
 	{
 		auto startTime = std::chrono::steady_clock::now();
 		MatrixU16 changes(pair.getWidth(), pair.getHeight());

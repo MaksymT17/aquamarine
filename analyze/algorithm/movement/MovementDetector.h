@@ -19,7 +19,7 @@ namespace am::analyze::algorithm::movement
 	class MovementDetector : public ObjectDetector, IMovementDetector
 	{
 	public:
-		MovementDetector(const size_t threads, const am::configuration::Configuration &conf, std::shared_ptr<am::common::Logger> &logger);
+		MovementDetector(const size_t threads, const Configuration &conf, std::shared_ptr<am::common::Logger> &logger);
 		~MovementDetector() = default;
 
 		// set objects which will be used for BFS search, like stencil on whole Image

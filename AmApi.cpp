@@ -12,11 +12,11 @@ namespace am
     using namespace common::types;
     using namespace analyze;
 
-    AmApi::AmApi(const configuration::Configuration &conf) : loggerPtr(std::make_shared<am::common::Logger>("log.log")),
+    AmApi::AmApi(const Configuration &conf) : loggerPtr(std::make_shared<am::common::Logger>("log.log")),
                                                              extractor(loggerPtr)
     {
-        am::configuration::ConfigurationReader reader;
-       setConfiguration(conf);
+        configuration::ConfigurationReader reader;
+        setConfiguration(conf);
     }
 
     algorithm::DescObjects AmApi::compare(const std::string &base_img, const std::string &cmp_img)
@@ -59,12 +59,12 @@ namespace am
 #endif
     }
 
-    const configuration::Configuration &AmApi::getConfiguration()
+    const Configuration &AmApi::getConfiguration()
     {
         return configuration;
     }
 
-    void AmApi::setConfiguration(const configuration::Configuration &newConf)
+    void AmApi::setConfiguration(const Configuration &newConf)
     {
         configuration = newConf;
         const size_t opt_threads = am::common::getOptimalThreadsCount(configuration.ThreadsMultiplier);

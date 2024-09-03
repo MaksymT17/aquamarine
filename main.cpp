@@ -1,104 +1,16 @@
 #include <memory>
 #include <stdio.h>
 #include <vector>
+#include <csignal>
 
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
-
 #include "sh_mem/ServerProcCommunicator.h"
 #include "sh_mem/ClientProcCommunicator.h"
+#include "ConnectionsInfo.hpp"
 #include <algorithm>
 
-#include <csignal>
 
-enum State : size_t
-{
-	UNKNOWN = 0,
-	READY,
-	CONFIGURED
-};
-struct ClientInfo
-{
-	size_t id;
-	State state;
-	am::configuration::Configuration configuration;
-};
-struct ConnectionsInfo
-{
-	bool isRequestValid(const Message *message)
-	{
-		std::cerr << "isRequestValid" << message->id << message->type << std::endl;
-		auto client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
-											{ return c.id == message->id; });
-		if (client_iterator == clients.end())
-		{
-			std::cerr << "isRequestValid 1" << std::endl;
-			// add clinet with default configuration
-			clients.push_back({message->id, State::UNKNOWN, {75, 10, 1, 50, 5, 10.0}});
-			client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
-										   { return c.id == message->id; });
-		}
-		if (message->type == MessageType::HANDSHAKE || message->type == MessageType::DISCONNECT)
-		{
-			std::cerr << "isRequestValid h d  OK" << std::endl;
-			return true;
-		}
-		else if (message->type == MessageType::SET_CONFIG)
-		{
-			std::cerr << "isRequestValid set c  " << std::endl;
-			return client_iterator->state >= State::READY ? true : false;
-		}
-		else if (message->type == MessageType::COMPARE_REQUEST)
-		{
-			std::cerr << "isRequestValid COMPARE_REQUEST  " << std::endl;
-			if (client_iterator->state == State::UNKNOWN)
-				return false;
-			else if (client_iterator->state == State::READY)
-				std::cerr << "Client was not properly configured. Use default configuration." << std::endl;
-			return client_iterator->state == State::CONFIGURED ? true : false;
-		}
-	}
-
-	std::vector<ClientInfo>::const_iterator processActionUpdate(const Message *msg)
-	{
-		auto client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
-											{ return c.id == msg->id; });
-		if (client_iterator == clients.end())
-		{
-			std::cerr << "Unknown client" << std::endl;
-			return client_iterator;
-		}
-
-		if (msg->type == MessageType::HANDSHAKE)
-			client_iterator->state = State::READY;
-		else if (msg->type == MessageType::SET_CONFIG)
-		{
-			const MessageSetConfig *messageSetConfig = static_cast<const MessageSetConfig *>(msg);
-			client_iterator->state = State::CONFIGURED;
-
-			client_iterator->configuration.AffinityThreshold = messageSetConfig->configuration.AffinityThreshold;
-			client_iterator->configuration.CalculationTimeLimit = messageSetConfig->configuration.CalculationTimeLimit;
-			client_iterator->configuration.IdleTimeout = messageSetConfig->configuration.IdleTimeout;
-			client_iterator->configuration.MinPixelsForObject = messageSetConfig->configuration.MinPixelsForObject;
-			client_iterator->configuration.PixelStep = messageSetConfig->configuration.PixelStep;
-			client_iterator->configuration.ThreadsMultiplier = messageSetConfig->configuration.ThreadsMultiplier;
-			printf("set_conf id:%zu  {%d %f %d %d %zd %f}\n", msg->id, client_iterator->configuration.AffinityThreshold, client_iterator->configuration.CalculationTimeLimit, client_iterator->configuration.IdleTimeout, client_iterator->configuration.MinPixelsForObject, client_iterator->configuration.PixelStep, client_iterator->configuration.ThreadsMultiplier);
-		}
-		else if (msg->type == MessageType::DISCONNECT)
-		{
-			client_iterator->state = State::UNKNOWN;
-		}
-		else
-		{
-			std::cout << "No updates" << std::endl;
-		}
-		return client_iterator;
-	}
-
-	std::unique_ptr<ServerProcCommunicator> commuicator;
-	std::unique_ptr<am::AmApi> amApi;
-	std::vector<ClientInfo> clients;
-};
 const std::string shared_memory_name{"/_shmem1107"};
 std::unique_ptr<ServerProcCommunicator> slave;
 void handleSignal(int signal)
@@ -129,9 +41,9 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 #endif
-	bool isStopRequested{false}, connectionConfirmed{false};
+	bool  connectionConfirmed{false};
 	slave = std::make_unique<ServerProcCommunicator>(shared_memory_name);
-	am::configuration::Configuration default_conf{75, 10, 1, 50, 5, 10.0};
+	Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);
 
 	// confirm master connection by Handshake message, and then set configuration
@@ -153,7 +65,7 @@ int main(int argc, char *argv[])
 		}
 		if (message->type == MessageType::HANDSHAKE)
 		{
-			std::cout << "received handshake req\n";
+			std::cout << "received HANDSHAKE req\n";
 			Message msg{message->id, MessageType::HANDSHAKE_OK};
 			auto iter = connections.processActionUpdate(message);
 			slave->send(&msg);
@@ -164,7 +76,7 @@ int main(int argc, char *argv[])
 			std::cout << "received SET_CONFIG req px:" << messageConf->configuration.MinPixelsForObject << std::endl;
 			Message msg{message->id, MessageType::SET_CONFIG_OK};
 			auto iter = connections.processActionUpdate(message);
-			am::configuration::Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
+			Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
 
 			amApi->setConfiguration(newConf);
 			std::cout << "received SET_CONFIG OK \n";

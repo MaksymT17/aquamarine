@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BfsObjectDetector.h"
+#include "sh_mem/Message.hpp"
 
 namespace am::analyze::algorithm
 {
@@ -8,12 +9,12 @@ namespace am::analyze::algorithm
 	ObjectRectangle bfs(const ImagePair &pair, common::types::MatrixU16 &visited,
 						std::vector<Pixel> &toCheck, ObjectRectangle &object,
 						ImageRowSegment row, std::chrono::steady_clock::time_point &startTime,
-						const configuration::Configuration &conf);
+						const Configuration &conf);
 
 	class ObjectDetector : public BfsObjectDetector
 	{
 	public:
-		ObjectDetector(const size_t threads, const am::configuration::Configuration &conf,
+		ObjectDetector(const size_t threads, const Configuration &conf,
 					   std::shared_ptr<am::common::Logger> &logger);
 		~ObjectDetector() = default;
 

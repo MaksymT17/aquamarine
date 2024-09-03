@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Configuration.hpp"
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -8,6 +7,7 @@
 #include "common/exceptions/FileAccessException.hpp"
 #include "common/exceptions/AmException.hpp"
 #include "analyze/algorithm/ObjectDetector.h"
+#include <sh_mem/Message.hpp>
 
 namespace
 {
@@ -15,7 +15,7 @@ namespace
 	size_t PARAM_COUNT = 6;
 }
 
-namespace am::configuration
+namespace configuration
 {
 	class ConfigurationReader
 	{
@@ -30,7 +30,7 @@ namespace am::configuration
 			if (!file.is_open())
 			{
 				std::string errorMsg("Configuration file access failed!");
-				throw common::exceptions::FileAccessException(errorMsg);
+				throw am::common::exceptions::FileAccessException(errorMsg);
 			}
 
 			while (file.good())
@@ -41,7 +41,7 @@ namespace am::configuration
 			}
 
 			std::string errorMsg("Configuration parse failed, check file parameters!");
-			throw common::exceptions::AmException(errorMsg);
+			throw am::common::exceptions::AmException(errorMsg);
 		}
 
 	private:
@@ -77,4 +77,4 @@ namespace am::configuration
 			}
 		}
 	};
-} // namespace am::configuration
+} // namespace Configuration

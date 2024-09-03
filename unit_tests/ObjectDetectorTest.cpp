@@ -16,7 +16,7 @@
 
 using namespace am::common::types;
 using namespace am::analyze;
-using namespace am::configuration;
+using namespace configuration;
 using namespace am::analyze::algorithm;
 struct ObjectDetectorWrapper : public ::testing::Test
 {
@@ -39,7 +39,7 @@ struct ObjectDetectorWrapper : public ::testing::Test
 	std::shared_ptr<am::common::Logger> loggerPtr;
 	std::unique_ptr<am::extraction::MultipleExtractor> extractor;
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
-	am::configuration::ConfigurationReader reader;
+	configuration::ConfigurationReader reader;
 	Configuration conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 };
 

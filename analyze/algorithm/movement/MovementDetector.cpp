@@ -30,7 +30,7 @@ namespace am::analyze::algorithm::movement
 	}
 
 	MovementDetector::MovementDetector(const size_t threads,
-									   const am::configuration::Configuration &conf,
+									   const Configuration &conf,
 									   std::shared_ptr<am::common::Logger> &logger)
 		: ObjectDetector(threads, conf, logger)
 	{

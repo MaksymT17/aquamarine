@@ -38,7 +38,7 @@ namespace am::analyze::algorithm
 			return object;
 		}
 
-		static std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const am::configuration::Configuration& conf, const ImageRowSegment &row)
+		static std::vector<ObjectRectangle> startObjectsSearch(MatrixU16 &changes, const Configuration& conf, const ImageRowSegment &row)
 		{
 			std::vector<ObjectRectangle> result;
 			const size_t step = conf.PixelStep;
@@ -63,7 +63,7 @@ namespace am::analyze::algorithm
 		}
 	}
 
-	DiffObjectDetector::DiffObjectDetector(const size_t threads, const am::configuration::Configuration &conf, std::shared_ptr<am::common::Logger> &logger) : BfsObjectDetector(threads, conf, logger)
+	DiffObjectDetector::DiffObjectDetector(const size_t threads, const Configuration &conf, std::shared_ptr<am::common::Logger> &logger) : BfsObjectDetector(threads, conf, logger)
 	{
 	}
 

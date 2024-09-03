@@ -15,12 +15,12 @@ namespace am
     class AmApi
     {
     public:
-        AmApi(const configuration::Configuration& conf);
+        AmApi(const Configuration& conf);
         analyze::algorithm::DescObjects compare(const std::string &base_img, const std::string &cmp_img);
         void compare_and_save_diff_img(const std::string &base_img, const std::string &cmp_img, std::string &&out_diff_img);
         void enable_database_reports(const char *db_name);
-        const configuration::Configuration& getConfiguration();
-        void setConfiguration(const configuration::Configuration& newConf);
+        const Configuration& getConfiguration();
+        void setConfiguration(const Configuration& newConf);
 
     private:
         std::shared_ptr<am::common::Logger> loggerPtr;
@@ -32,6 +32,6 @@ namespace am
 #if defined __unix__ || defined __APPLE__
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
 #endif
-        configuration::Configuration configuration;
+        Configuration configuration;
     };
 }

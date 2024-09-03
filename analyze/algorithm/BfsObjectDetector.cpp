@@ -80,7 +80,7 @@ namespace am::analyze::algorithm
 
 	BfsObjectDetector::BfsObjectDetector(
 		const size_t threads,
-		const am::configuration::Configuration &conf,
+		const Configuration &conf,
 		std::shared_ptr<am::common::Logger> &logger)
 		: mThreadsCount(threads), mConfiguration(conf), mLogger(logger) {}
 
