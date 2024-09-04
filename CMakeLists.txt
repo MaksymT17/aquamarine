@@ -41,6 +41,7 @@ set(AM_SOURCE_FILES
     common/Timers.hpp
     AmApi.cpp
     service/ConnectionsInfo.cpp
+    service/SilberService.cpp
 )
 
 IF (UNIX OR APPLE)

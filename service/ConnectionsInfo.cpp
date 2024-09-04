@@ -30,13 +30,13 @@ bool ConnectionsInfo::isRequestValid(const Message *message)
         {
             return false;
         }
-        else if (client_iterator->state == State::READY)
+        else if (client_iterator->state >= State::READY)
         {
             std::cerr << "Client was not properly configured. Use default configuration." << std::endl;
             return client_iterator->state == State::CONFIGURED ? true : false;
         }
     }
-    std::cerr << "isRequestValid unknown state. If new Message type has been added - extend validation for it." << std::endl;
+    std::cerr << "isRequestValid unknown state. If new Message type has been added - extend validation for it." <<client_iterator->state<< std::endl;
     return false;
 }
 
