@@ -2,17 +2,17 @@
 #include <stdio.h>
 #include <vector>
 #include <csignal>
+#include <algorithm>
 
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
 #include "sh_mem/ServerProcCommunicator.h"
 #include "sh_mem/ClientProcCommunicator.h"
-#include "ConnectionsInfo.hpp"
-#include <algorithm>
-
+#include "service/ConnectionsInfo.h"
 
 const std::string shared_memory_name{"/_shmem1107"};
 std::unique_ptr<ServerProcCommunicator> slave;
+
 void handleSignal(int signal)
 {
 	std::cout << "Received SIGTERM signal (" << signal << "). Cleaning up and exiting...\n";
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 #endif
-	bool  connectionConfirmed{false};
+
 	slave = std::make_unique<ServerProcCommunicator>(shared_memory_name);
 	Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 	std::unique_ptr<am::AmApi> amApi = std::make_unique<am::AmApi>(default_conf);

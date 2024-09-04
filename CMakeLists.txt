@@ -40,6 +40,7 @@ set(AM_SOURCE_FILES
     extraction/MultipleExtractor.cpp
     common/Timers.hpp
     AmApi.cpp
+    service/ConnectionsInfo.cpp
 )
 
 IF (UNIX OR APPLE)
