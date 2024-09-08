@@ -13,7 +13,7 @@ namespace am
     using namespace analyze;
 
     AmApi::AmApi(const Configuration &conf) : loggerPtr(std::make_shared<am::common::Logger>("log.log")),
-                                                             extractor(loggerPtr)
+                                              extractor(loggerPtr)
     {
         configuration::ConfigurationReader reader;
         setConfiguration(conf);
@@ -21,11 +21,8 @@ namespace am
 
     algorithm::DescObjects AmApi::compare(const std::string &base_img, const std::string &cmp_img)
     {
-        std::cout << "received before read f\n";
         std::vector<Matrix<Color24b>> data = extractor.readFiles({base_img, cmp_img});
-        std::cout << "received after read f\n";
         algorithm::ImagePair pair(data[0], data[1]);
-        std::cout << "received before getObjectsRects\n";
         auto res = detector->getObjectsRects(pair);
         return res;
     }

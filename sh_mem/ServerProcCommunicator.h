@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ProcCommunicator.h"
 
 class ServerProcCommunicator : public ProcCommunicator

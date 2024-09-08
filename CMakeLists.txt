@@ -52,7 +52,7 @@ ENDIF()
 
 add_executable(aquamarine main.cpp)
 
-target_link_libraries(aquamarine aquamarine_lib shared_mem ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine aquamarine_lib silber-1.0 ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

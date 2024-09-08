@@ -63,7 +63,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main shared_mem ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine_ut gtest_main silber-1.0 ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX)
 target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

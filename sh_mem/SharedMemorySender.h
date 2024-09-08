@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include "Message.hpp"
 #ifdef _WIN32
@@ -8,6 +9,7 @@
 #include <tchar.h>
 #pragma comment(lib, "user32.lib")
 #endif
+
 class SharedMemorySender
 {
 public:

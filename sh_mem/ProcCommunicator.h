@@ -21,7 +21,7 @@ class ProcCommunicator
 {
 protected:
     ProcCommunicator(const std::string &shMemName);
-    ~ProcCommunicator();
+    virtual ~ProcCommunicator();
 
 protected:
     std::unique_ptr<SharedMemorySender> m_sender;

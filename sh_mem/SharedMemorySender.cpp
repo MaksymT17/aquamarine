@@ -75,14 +75,8 @@ void SharedMemorySender::finish()
 void SharedMemorySender::sendMessage(const Message *msg)
 {
     //    std::cout<<"sendMessage\n";
-    if (msg->type == MessageType::SET_CONFIG)
-        std::memcpy(m_ptr, msg, sizeof(MessageSetConfig));
-    else if (msg->type == MessageType::COMPARE_REQUEST)
-        std::memcpy(m_ptr, msg, sizeof(MessageCompareRequest));
-    else if (msg->type == MessageType::COMPARE_RESULT)
-        std::memcpy(m_ptr, msg, sizeof(MessageCompareResult));
-    else
-        std::memcpy(m_ptr, msg, sizeof(Message));
+
+        std::memcpy(m_ptr, msg, msg->size);
 }
 #else
 void SharedMemorySender::init()
@@ -122,13 +116,6 @@ void SharedMemorySender::finish()
 
 void SharedMemorySender::sendMessage(const Message *msg)
 {
-    if (msg->type == MessageType::SET_CONFIG)
-        CopyMemory(m_ptr, msg, sizeof(MessageSetConfig));
-    else if (msg->type == MessageType::COMPARE_REQUEST)
-        CopyMemory(m_ptr, msg, sizeof(MessageCompareRequest));
-    else if (msg->type == MessageType::COMPARE_RESULT)
-        CopyMemory(m_ptr, msg, sizeof(MessageCompareResult));
-    else
-        CopyMemory(m_ptr, msg, sizeof(Message));
+    CopyMemory(m_ptr, msg, msg->size);
 }
 #endif
