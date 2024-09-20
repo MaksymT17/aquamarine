@@ -11,9 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Clone aquamarine repo
-        run: git clone --branch ${{ github.head_ref }} https://github.com/MaksymT17/aquamarine.git
-        shell: bash
+      - name: Checkout aquamarine repo
+        uses: actions/checkout@v3
+        with:
+          repository: MaksymT17/aqumarine
+          ref: ${{ github.head_ref }}
+          path: aqumarine
 
       - name: Build artifacts with Cmake
         run: |
@@ -27,3 +30,9 @@ jobs:
           cmake --build . &&
           echo "Build complete!"
         shell: bash
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: aquamarine_build_Windows
+          path: aquamarine/build/

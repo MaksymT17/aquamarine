@@ -18,8 +18,14 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install packages
       run: sudo apt -y install git g++ cmake libsqlite3-dev gcovr libjpeg-dev
-    - name: Clone aquamarine repo
-      run: git clone --branch ${{ github.head_ref }} https://github.com/MaksymT17/aquamarine.git
+
+    - name: Checkout silber repo
+      uses: actions/checkout@v3
+      with:
+        repository: MaksymT17/aquamarine
+        ref: ${{ github.head_ref }}  # Use the head reference of the pull request
+        path: aquamarine
+
     - name: Build artifacts with Cmake
       run: |
         cd aquamarine &&
@@ -38,3 +44,9 @@ jobs:
       with:
         check_name: Unit test results
         files: "**/test_detail.xml"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: aquamarine_build_Linux
+        path: aquamarine/build 
