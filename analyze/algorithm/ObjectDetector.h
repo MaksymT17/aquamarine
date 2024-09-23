@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BfsObjectDetector.h"
-#include "sh_mem/Message.hpp"
+#include "Message.h"
 
 namespace am::analyze::algorithm
 {

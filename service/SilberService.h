@@ -1,7 +1,7 @@
 #include "IService.h"
 #include <string.h>
 #include <memory>
-#include "sh_mem/ServerProcCommunicator.h"
+#include "ServerProcCommunicator.h"
 #include "service/ConnectionsInfo.h"
 #include "AmApi.h"
 

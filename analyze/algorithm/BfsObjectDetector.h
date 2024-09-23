@@ -1,6 +1,6 @@
 #pragma once
 #include "IObjectDetector.h"
-#include "sh_mem/Message.hpp"
+#include "Message.h"
 #include "common/Logger.hpp"
 #include "Object.h"
 

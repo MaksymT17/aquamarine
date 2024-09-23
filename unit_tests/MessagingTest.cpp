@@ -5,23 +5,23 @@
 #include <chrono>
 #include <mutex>
 #include "gtest/gtest.h"
-static const std::string shared_mem_name{"/shmem_test"};
+static const std::string shared_mem_name{"/shmem_test1"};
 
 // Function to be executed in a separate thread
 void backgroundTask()
 {
     std::cout << "Background task starts.\n";
     Message request{1, MessageType::HANDSHAKE};
-    Message response{666, MessageType::HANDSHAKE};
+    Message* response;
     ClientProcCommunicator master(shared_mem_name);
     int counter = 0;
 
     while (counter < 10)
     {
         //each client must receive its id
-        master.sendRequestGetResponse(&request, response);
-        EXPECT_EQ(response.id, 1);
-        EXPECT_EQ(response.type, MessageType::HANDSHAKE_OK);
+        master.sendRequestGetResponse(&request, &response);
+        EXPECT_EQ(response->id, 1);
+        EXPECT_EQ(response->type, MessageType::HANDSHAKE_OK);
         counter++;
     }
 
@@ -33,15 +33,15 @@ void backgroundTaskMasterMaster()
     std::cout << "Background Master task started...\n";
     ClientProcCommunicator master( shared_mem_name);
     Message request{2, MessageType::HANDSHAKE};
-    Message response{666, MessageType::HANDSHAKE};
+    Message* response;
     int counter = 0;
 
     while (counter < 10)
     {
         //each client must receive its id
-        master.sendRequestGetResponse(&request, response);
-        EXPECT_EQ(response.id, 2);
-        EXPECT_EQ(response.type, MessageType::HANDSHAKE_OK);
+        master.sendRequestGetResponse(&request, &response);
+        EXPECT_EQ(response->id, 2);
+        EXPECT_EQ(response->type, MessageType::HANDSHAKE_OK);
         counter++;
     }
 

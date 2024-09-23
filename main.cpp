@@ -6,8 +6,8 @@
 
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
-#include "sh_mem/ServerProcCommunicator.h"
-#include "sh_mem/ClientProcCommunicator.h"
+#include "ServerProcCommunicator.h"
+#include "ClientProcCommunicator.h"
 #include "service/ConnectionsInfo.h"
 #include "service/SilberService.h"
 

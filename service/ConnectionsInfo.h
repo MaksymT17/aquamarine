@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
-#include "sh_mem/Message.hpp"
+#include "Message.h"
 
 class ConnectionsInfo
 {
