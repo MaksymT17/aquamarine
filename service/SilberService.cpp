@@ -1,5 +1,5 @@
 #include "SilberService.h"
-#include "sh_mem/Message.hpp"
+#include "Message.h"
 
 static Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 namespace am::service
