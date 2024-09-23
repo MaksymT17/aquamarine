@@ -7,7 +7,7 @@ namespace am
 		class IService
 		{
 		public:
-			virtual ~IService() = default;
+			~IService() = default;
 
 			virtual void start() = 0;
 			virtual void stop() = 0;

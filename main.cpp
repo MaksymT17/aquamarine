@@ -1,51 +1,54 @@
 #include <memory>
 #include <stdio.h>
+#include <vector>
+#include <csignal>
+#include <algorithm>
 
 #include "analyze/algorithm/ObjectDetector.h"
 #include "AmApi.h"
+#include "sh_mem/ServerProcCommunicator.h"
+#include "sh_mem/ClientProcCommunicator.h"
+#include "service/ConnectionsInfo.h"
+#include "service/SilberService.h"
+
+std::unique_ptr<am::service::SilberService> server;
+
+void handleSignal(int signal)
+{
+	std::cout << "Received SIGTERM signal (" << signal << "). Cleaning up and exiting...\n";
+	if (server)
+	{
+		server->stop();
+		server.reset();
+	}
+	exit(0);
+}
 
 int main(int argc, char *argv[])
 {
-	std::string base_img_path, cmp_img_path;
-	const char *conf_path;
-	const char *out_img_path;
+#ifndef _WIN32
+	struct sigaction sa;
+	sa.sa_handler = handleSignal;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
 
-	// read arguments or use default for demo purposes
-	if (argc == 5)
+	// Set up handlers for SIGTERM and SIGINT
+	if (sigaction(SIGTERM, &sa, nullptr) == -1)
 	{
-		std::cout << "Parse user-defined parameters." << std::endl;
-		base_img_path = std::string(argv[1]);
-		cmp_img_path = std::string(argv[2]);
-		conf_path = argv[3];
-		out_img_path = argv[4];
+		std::cerr << "Error setting up SIGTERM handler\n";
+		return 1;
 	}
-	else
+	if (sigaction(SIGINT, &sa, nullptr) == -1)
 	{
-		std::cout << "Use default parameters" << std::endl;
-		base_img_path = "inputs/10x10_clean.jpg";
-		cmp_img_path = "inputs/10x10_2obj.jpg";
-		conf_path = "inputs/configuration.csv";
-		out_img_path = "compare_result.bmp";
+		std::cerr << "Error setting up SIGINT handler\n";
+		return 1;
 	}
+#endif
 
-	am::AmApi amApi(conf_path);
+	const std::string shared_memory_name{"/_shmem1107"};
+	server = std::make_unique<am::service::SilberService>(shared_memory_name);
+	server->start();
+	std::cout << "Aquamarine service performed all actions. Disconnect requested, exiting process..." << std::endl;
 
-	// just for demo purposes all found rects data can be printed
-	/*const auto rects = amApi.compare(base_img_path, cmp_img_path);
-	for (auto &rect : rects)
-	{
-		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n",
-			   rect.getMinHeight(), rect.getLeft(), rect.getMaxHeight(),
-			   rect.getRight(), rect.getPixelsCount());
-	}*/
-	amApi.enable_database_reports("results.db");
-	const auto rects = amApi.compare(base_img_path, cmp_img_path);
-	for (auto &rect : rects)
-	{
-		printf("row:%zd col:%zd    row:%zd col:%zd value:%zd\n",
-			   rect.getMinHeight(), rect.getLeft(), rect.getMaxHeight(),
-			   rect.getRight(), rect.getPixelsCount());
-	}
-	printf("rects %zu\n", rects.size());
 	return 0;
 }

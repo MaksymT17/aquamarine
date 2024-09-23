@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${AM_INC}/sh_mem)
 IF (UNIX)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
@@ -43,6 +43,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB UT_SOURCES "*.cpp")
+
+add_subdirectory(../sh_mem ${CMAKE_BINARY_DIR}/sh_mem)
 
 add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
@@ -61,7 +63,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine_ut gtest_main silber-1.0 ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX)
 target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

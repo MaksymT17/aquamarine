@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <memory>
 
@@ -5,7 +6,7 @@
 #include "configuration/ConfigurationReader.hpp"
 #include "common/Logger.hpp"
 #include "extraction/MultipleExtractor.h"
-#if defined __unix__ || defined __APPLE__
+#ifndef WIN32
 #include "database/DataBaseCommunicator.h"
 #endif
 
@@ -14,12 +15,12 @@ namespace am
     class AmApi
     {
     public:
-        AmApi(const char *conf_path);
+        AmApi(const Configuration& conf);
         analyze::algorithm::DescObjects compare(const std::string &base_img, const std::string &cmp_img);
         void compare_and_save_diff_img(const std::string &base_img, const std::string &cmp_img, std::string &&out_diff_img);
         void enable_database_reports(const char *db_name);
-        std::shared_ptr<configuration::Configuration> getConfiguration();
-        void setConfiguration(std::shared_ptr<configuration::Configuration> newConf);
+        const Configuration& getConfiguration();
+        void setConfiguration(const Configuration& newConf);
 
     private:
         std::shared_ptr<am::common::Logger> loggerPtr;
@@ -28,9 +29,9 @@ namespace am
 
         std::string base_img_path;
         std::string cmp_img_path;
-#if defined __unix__ || defined __APPLE__
+#ifndef WIN32
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
 #endif
-        std::shared_ptr<configuration::Configuration> configuration;
+        Configuration configuration;
     };
 }

@@ -30,7 +30,7 @@ namespace am::analyze::algorithm::movement
 	}
 
 	MovementDetector::MovementDetector(const size_t threads,
-									   std::shared_ptr<am::configuration::Configuration> &conf,
+									   const Configuration &conf,
 									   std::shared_ptr<am::common::Logger> &logger)
 		: ObjectDetector(threads, conf, logger)
 	{
@@ -55,16 +55,16 @@ namespace am::analyze::algorithm::movement
 		auto startTime = std::chrono::steady_clock::now();
 
 		for (size_t rowId = obj.getMinHeight(); rowId < obj.getMaxHeight();
-			 rowId += mConfiguration->PixelStep)
+			 rowId += mConfiguration.PixelStep)
 		{
-			for (size_t colId = obj.getLeft(); colId < obj.getRight(); colId += mConfiguration->PixelStep)
+			for (size_t colId = obj.getLeft(); colId < obj.getRight(); colId += mConfiguration.PixelStep)
 			{
-				if (pair->getAbsoluteDiff(rowId, colId) > mConfiguration->AffinityThreshold &&
+				if (pair->getAbsoluteDiff(rowId, colId) > mConfiguration.AffinityThreshold &&
 					changes(rowId, colId) != common::CHANGE)
 				{
 					ObjectRectangle pxs(rowId, colId);
-					auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration->PixelStep);
-					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, *mConfiguration);
+					auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration.PixelStep);
+					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, mConfiguration);
 					found.emplace_back(objFound);
 				}
 			}

@@ -20,7 +20,7 @@ TEST(MovementDetectionTest, checkTwoObjectsMovements)
 	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(firstBmp, secondtBmp));
 
 	std::multiset<ObjectRectangle, comparators::Descending> m1;
-	am::configuration::ConfigurationReader reader;
+	configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	movement::MovementDetector detector(3, conf, lPtr);
 
@@ -124,7 +124,7 @@ TEST(MovementDetectionTest, checkMovementOnEqualImages)
 	obj_r.addPixel(20, 20);
 
 	m_objs.emplace(obj_r);
-	am::configuration::ConfigurationReader reader;
+	configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
 	movement::MovementDetector detector(4, conf, lPtr);
 	detector.setTrackingObjects(m_objs);
