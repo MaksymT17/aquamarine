@@ -21,16 +21,16 @@ void handleSignal(int signal)
 		server->stop();
 		server.reset();
 	}
-	exit(0); // Exit the program with status code 0
+	exit(0);
 }
 
 int main(int argc, char *argv[])
 {
 #ifndef _WIN32
 	struct sigaction sa;
-	sa.sa_handler = handleSignal; // Set the handler function
-	sa.sa_flags = 0;			  // No special flags
-	sigemptyset(&sa.sa_mask);	  // No additional signals blocked during handler execution
+	sa.sa_handler = handleSignal;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
 
 	// Set up handlers for SIGTERM and SIGINT
 	if (sigaction(SIGTERM, &sa, nullptr) == -1)

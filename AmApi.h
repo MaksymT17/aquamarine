@@ -6,7 +6,7 @@
 #include "configuration/ConfigurationReader.hpp"
 #include "common/Logger.hpp"
 #include "extraction/MultipleExtractor.h"
-#if defined __unix__ || defined __APPLE__
+#ifndef WIN32
 #include "database/DataBaseCommunicator.h"
 #endif
 
@@ -29,7 +29,7 @@ namespace am
 
         std::string base_img_path;
         std::string cmp_img_path;
-#if defined __unix__ || defined __APPLE__
+#ifndef WIN32
         std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
 #endif
         Configuration configuration;

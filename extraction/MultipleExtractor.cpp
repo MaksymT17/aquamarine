@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "BmpExtractor.h"
-#if defined __unix__ || defined __APPLE__
+#ifndef WIN32
 #include "JpgExtractor.h"
 #endif
 #include "common/types/Color24b.hpp"
@@ -38,7 +38,7 @@ namespace am
 				{
 					futures.emplace_back(std::async(std::launch::deferred, BmpExtractor::readFile, fileNames[i]));
 				}
-#if defined __unix__ || defined __APPLE__ // note: currently jpeg supported with Unix OS (with libjpeg)
+#ifndef WIN32 // note: currently jpeg supported with Unix OS (with libjpeg)
 				else if (file_ext == "jpg" || file_ext == "jpeg" || file_ext == "jpe")
 				{
 					futures.emplace_back(std::async(std::launch::async, JpgExtractor::readFile, fileNames[i]));

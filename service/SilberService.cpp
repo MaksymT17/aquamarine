@@ -17,7 +17,7 @@ namespace am::service
         while (m_isRunning)
         {
             Message *message = m_server->receive();
-            printf("received %d message\n", message->type);
+            printf("received %zu message\n", message->type);
             if (!m_connections.isRequestValid(message))
             {
                 std::cout << "received UNEXPECTED_REQUEST req\n"
@@ -58,7 +58,7 @@ namespace am::service
                     printf("compare_ %s %s _\n", messageCompare->base, messageCompare->to_compare);
                     auto iter = m_connections.processActionUpdate(message);
                     m_amApi->setConfiguration(iter->configuration); // set configuration for this client
-                    printf("conf pixs %d\n", iter->configuration.MinPixelsForObject);
+                    printf("conf pixs %zu\n", iter->configuration.MinPixelsForObject);
                     am::analyze::algorithm::DescObjects result;
                     try
                     {
