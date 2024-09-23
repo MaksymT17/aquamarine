@@ -47,6 +47,12 @@ jobs:
         check_name: Unit test results
         files: "**/test_detail.xml"
 
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: aquamarine_build_Linux
+        path: aquamarine/build/
+
   build-windows:
     runs-on: windows-latest
 
@@ -72,6 +78,12 @@ jobs:
           cmake --build . &&
           echo "Build complete!"
         shell: bash
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: aquamarine_build_Windows
+          path: aquamarine/build/
 
   build-macos:
     runs-on: macos-latest
@@ -101,5 +113,11 @@ jobs:
         cd aquamarine/unit_tests &&
         ./prepare_build.sh &&
         cd build &&
-        make -j8 &&
+        make -j2 &&
         ./aquamarine_ut
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: aquamarine_build_MacOS
+        path: aquamarine/build/
