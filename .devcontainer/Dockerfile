@@ -8,4 +8,4 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get -y update && apt-get install -y
 
 # Install the Clang compiler
-RUN apt-get -y install git g++ cmake python3 valgrind gcovr libsqlite3-dev libjpeg-dev
+RUN apt -y install git g++ cmake python3 valgrind gcovr libsqlite3-dev libjpeg-dev alsa-utils
