@@ -25,6 +25,7 @@ jobs:
         repository: MaksymT17/aquamarine
         ref: ${{ github.head_ref }}  # Use the head reference of the pull request
         path: aquamarine
+        fetch-depth: 1
 
     - name: Build artifacts with Cmake
       run: |
