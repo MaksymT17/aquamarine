@@ -14,7 +14,7 @@ namespace am::analyze::algorithm
 	{
 		// optimized bfs depending to left/right borders for threads,
 		// every thread will search in defined area(column) of image
-		ObjectRectangle bfs(MatrixU16 &changes, Pixels &toCheck, ObjectRectangle &object, ImageRowSegment row)
+		ObjectRectangle bfs(MatrixU16 &changes, const Pixels &toCheck, ObjectRectangle &object, ImageRowSegment row)
 		{
 			Pixels nextCheck;
 
