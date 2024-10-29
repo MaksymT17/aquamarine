@@ -18,11 +18,17 @@ namespace am::analyze::algorithm
 
 	// Time dependent execution, if max calculation time exceeded calculation should
 	// finalize processing, and show up collected objects(if found).
-	ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, Pixels &toCheck,
+	ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, const Pixels &toCheck,
 						ObjectRectangle &object, ImageRowSegment row,
 						std::chrono::steady_clock::time_point &startTime,
-						const Configuration &conf)
+						const Configuration &conf, size_t depth)
 	{
+		if(depth == 120 * 2) {
+			// limit depth of search, low step value can affect stack consuming on images with noise.
+			// depth can be modified or be configurable depending on HW.
+			printf("Depth limit exceeded max_depth = %zd.\n", depth);
+			return object;
+		}
 		auto timeNow = std::chrono::steady_clock::now();
 		std::chrono::duration<double> calcDuration = timeNow - startTime;
 		if (calcDuration.count() >= conf.CalculationTimeLimit)
@@ -34,7 +40,7 @@ namespace am::analyze::algorithm
 		}
 		Pixels nextCheck;
 
-		for (auto &position : toCheck)
+		for (const auto &position : toCheck)
 		{
 			if (visited(position.rowId, position.colId) != common::CHANGE &&
 				pair.getAbsoluteDiff(position.rowId, position.colId) >
@@ -47,8 +53,9 @@ namespace am::analyze::algorithm
 				object.addPixel(position.rowId, position.colId);
 			}
 		}
-		if (nextCheck.size())
-			bfs(pair, visited, nextCheck, object, row, startTime, conf);
+		if (nextCheck.size()){
+			bfs(pair, visited, nextCheck, object, row, startTime, conf, depth +1);
+		}
 
 		return object;
 	}
@@ -83,7 +90,7 @@ namespace am::analyze::algorithm
 					ObjectRectangle obj(rowId, colId);
 					auto conns = checkConnections(rowId, colId, pair.getWidth(), row, conf.PixelStep);
 
-					resultList.emplace_back(bfs(pair, changes, conns, obj, row, startTime, conf));
+					resultList.emplace_back(bfs(pair, changes, conns, obj, row, startTime, conf, 1));
 				}
 			}
 		}
@@ -98,7 +105,7 @@ namespace am::analyze::algorithm
 		mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
 					  mThreadsCount);
 		// threadpool could be replaced with std::async calls
-		am::common::ThreadPool pool;
+		am::common::ThreadPool pool(mThreadsCount);
 		for (size_t rowId = 0; rowId < mThreadsCount - 1; ++rowId)
 		{
 			ImageRowSegment row{rowId * rowHeight, rowId * rowHeight + rowHeight};

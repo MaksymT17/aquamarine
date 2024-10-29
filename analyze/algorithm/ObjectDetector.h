@@ -7,9 +7,9 @@ namespace am::analyze::algorithm
 {
 
 	ObjectRectangle bfs(const ImagePair &pair, common::types::MatrixU16 &visited,
-						std::vector<Pixel> &toCheck, ObjectRectangle &object,
+						const std::vector<Pixel> &toCheck, ObjectRectangle &object,
 						ImageRowSegment row, std::chrono::steady_clock::time_point &startTime,
-						const Configuration &conf);
+						const Configuration &conf, size_t depth);
 
 	class ObjectDetector : public BfsObjectDetector
 	{

@@ -64,7 +64,7 @@ namespace am::analyze::algorithm::movement
 				{
 					ObjectRectangle pxs(rowId, colId);
 					auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration.PixelStep);
-					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, mConfiguration);
+					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, mConfiguration, 1);
 					found.emplace_back(objFound);
 				}
 			}
