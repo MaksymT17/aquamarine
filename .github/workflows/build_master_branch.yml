@@ -38,9 +38,7 @@ jobs:
         ./prepare_build.sh &&
         cd build &&
         make -j8 &&
-        ./aquamarine_ut --gtest_output="xml" &&
-        cmake --build . --config Debug --target coverage_aquamarine_ut -- -j 4 &&
-        lynx -dump ./coverage_aquamarine_ut/index.html
+        ./aquamarine_ut --gtest_output="xml" 
 
     - name: Publish Results
       uses: EnricoMi/publish-unit-test-result-action@v1
@@ -58,10 +56,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
 
       - name: Checkout aquamarine repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: MaksymT17/aquamarine
           ref: ${{ github.head_ref }}
@@ -81,7 +78,7 @@ jobs:
         shell: bash
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: aquamarine_build_Windows
           path: aquamarine/build/
@@ -91,14 +88,14 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: |
         brew install git gcc cmake sqlite3 gcovr jpeg
 
     - name: Checkout aquamarine repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: MaksymT17/aquamarine
         ref: ${{ github.head_ref }}
@@ -118,7 +115,7 @@ jobs:
         ./aquamarine_ut
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: aquamarine_build_MacOS
         path: aquamarine/build/
