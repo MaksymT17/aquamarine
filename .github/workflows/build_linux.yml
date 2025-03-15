@@ -3,6 +3,7 @@ name: Linux build
 on:
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 permissions:
   issues: write
@@ -15,12 +16,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
     - name: Install packages
       run: sudo apt -y install git g++ cmake libsqlite3-dev gcovr libjpeg-dev
 
     - name: Checkout silber repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: MaksymT17/aquamarine
         ref: ${{ github.head_ref }}  # Use the head reference of the pull request
@@ -47,7 +47,7 @@ jobs:
         files: "**/test_detail.xml"
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: aquamarine_build_Linux
         path: aquamarine/build 

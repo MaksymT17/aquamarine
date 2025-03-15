@@ -3,6 +3,7 @@ name: MacOS build (Homebrew)
 on:
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 permissions:
   issues: write
@@ -15,15 +16,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
     - name: Install dependencies
       run: |
         brew install git gcc cmake sqlite3 gcovr jpeg
 
     - name: Checkout aquamarine repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: MaksymT17/aquamarine
         ref: ${{ github.head_ref }}
@@ -44,7 +42,7 @@ jobs:
         ./aquamarine_ut
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: aquamarine_build_MacOS
         path: aquamarine/build
