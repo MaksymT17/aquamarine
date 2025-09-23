@@ -28,15 +28,13 @@ struct ObjectDetectorWrapper : public ::testing::Test
 
 	void SetUp() override
 	{
-		loggerPtr = std::make_shared<am::common::Logger>("od_dummy_log.log");
-		extractor = std::make_unique<am::extraction::MultipleExtractor>(loggerPtr);
+		extractor = std::make_unique<am::extraction::MultipleExtractor>();
 	}
 
 	void TearDown() override
 	{
 	}
 
-	std::shared_ptr<am::common::Logger> loggerPtr;
 	std::unique_ptr<am::extraction::MultipleExtractor> extractor;
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
 	configuration::ConfigurationReader reader;
@@ -50,7 +48,7 @@ TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
 	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
 
 	algorithm::ImagePair pair(data[0], data[1]);
-	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf, loggerPtr);
+	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf);
 
 	algorithm::DescObjects rects2 = diffDetector.getObjectsRects(pair);
 
@@ -67,7 +65,7 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
 	Configuration conf1 = Configuration(conf_s10x10);
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
@@ -84,7 +82,7 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 	// configuration where object with 1 pixel could be detected
 	Configuration conf_s10x10{1, 1, 1, 1, 1, 1};
 	Configuration conf1 = Configuration(conf_s10x10);
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1);
 
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);
 
@@ -114,7 +112,7 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 	Configuration conf1 = Configuration(conf_s10x10);
 
 	// note: big count of threads also require longer time to sync
-	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1, loggerPtr);
+	algorithm::ObjectDetector detector = algorithm::ObjectDetector(opt_threads, conf1);
 
 	auto startTime = std::chrono::steady_clock::now();
 	algorithm::DescObjects rects1 = detector.getObjectsRects(pair);

@@ -13,6 +13,7 @@ add_compile_options(-fno-rtti)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O1 -fprofile-arcs -ftest-coverage")
 
+find_package(spdlog REQUIRED)
 find_package (Threads REQUIRED)
 IF (UNIX)
 find_package (SQLite3 REQUIRED)
@@ -64,7 +65,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine_ut gtest_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT} spdlog::spdlog)
 IF (UNIX)
 target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()
