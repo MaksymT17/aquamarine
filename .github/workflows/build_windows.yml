@@ -33,7 +33,7 @@ jobs:
           echo "preparing new build with cmake..." &&
           cd build/ &&
           echo "Configure with cmake ..." &&
-          cmake -B . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}" &&
+          cmake -B . -S .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}" &&
           echo "Build ..." &&
           cmake --build . &&
           echo "Build complete!"
