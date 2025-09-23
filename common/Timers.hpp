@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <iomanip>
 
 #ifdef WIN32
 #include <windows.h>
