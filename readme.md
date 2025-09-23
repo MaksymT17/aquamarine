@@ -18,7 +18,8 @@ _Commercial usage of sources added in this repo is forbidden without agreement w
 
 _Activity with current SW, which can be recognized as violating privacy laws is not allowed._
 
-_For defense-specific or military purposes, this Software is allowed to be used for Ukraine, EU, and USA with author agreement_ 
+_For defense-specific or military purposes, this Software is allowed to be used only for Ukraine, EU, and USA with author agreement_ 
 
 _For questions or suggestions, please send a private message or email_
+
 
