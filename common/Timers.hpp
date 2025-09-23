@@ -1,6 +1,10 @@
 #pragma once
 #include <stdint.h>
-#include <iomanip>
+#include <chrono>   // for std::chrono::system_clock
+#include <ctime>    // for std::time_t
+#include <iomanip>  // for std::put_time
+#include <sstream>  // for std::ostringstream
+#include <iostream>
 
 #ifdef WIN32
 #include <windows.h>

@@ -55,6 +55,8 @@ ENDIF()
 
 add_executable(aquamarine main.cpp)
 
+target_link_libraries(aquamarine_lib spdlog::spdlog)
+
 target_link_libraries(aquamarine aquamarine_lib silber-1.2 spdlog::spdlog ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
