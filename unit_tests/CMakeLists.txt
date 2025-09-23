@@ -45,7 +45,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB UT_SOURCES "*.cpp")
-link_directories(${AM_INC}/../silber/build/)
+link_directories(${AM_INC}/build/silber/)
 
 add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
