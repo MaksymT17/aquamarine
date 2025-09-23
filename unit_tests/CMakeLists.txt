@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.15)
 
 project (aquamarine_ut)
 
@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${AM_INC}/thirdparty/silber/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${AM_INC}/silber/)
 IF (UNIX)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
@@ -36,14 +36,16 @@ ENDIF()
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.14.0
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB UT_SOURCES "*.cpp")
-link_directories(${AM_INC}/../thirdparty/silber/lib)
+link_directories(${AM_INC}/build/silber/)
 
 add_executable(aquamarine_ut
     ${AM_SRC}/extraction/BmpExtractor.cpp
@@ -62,7 +64,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main silber-1.1 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine_ut gtest_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX)
 target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()
@@ -74,5 +76,5 @@ setup_target_for_coverage_gcovr_html(
     NAME coverage_aquamarine_ut
     EXECUTABLE aquamarine_ut
     BASE_DIRECTORY "${AM_SRC}/"
-    EXCLUDE "${CMAKE_SOURCE_DIR}/" "${CMAKE_SOURCE_DIR}/../thirdparty/"
+    EXCLUDE "${CMAKE_SOURCE_DIR}/" "${CMAKE_SOURCE_DIR}/../thirdparty/" "${CMAKE_SOURCE_DIR}/../silber/"
 )
