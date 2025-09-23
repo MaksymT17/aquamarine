@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${AM_INC}/thirdparty/silber/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${AM_INC} ${AM_INC}/silber/)
 IF (UNIX)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
