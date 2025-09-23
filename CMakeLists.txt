@@ -23,8 +23,6 @@ IF (UNIX OR APPLE)
 include_directories(${SQLite3_INCLUDE_DIRS} ${JPEG_INCLUDE_DIR})
 ENDIF()
 
-#add_subdirectory(sh_mem)
-
 set(AM_SOURCE_FILES 
     analyze/AffinityComparer.cpp 
     analyze/ThresholdDiffChecker.cpp 
@@ -43,41 +41,10 @@ set(AM_SOURCE_FILES
     service/ConnectionsInfo.cpp
     service/SilberService.cpp
 )
+add_subdirectory(silber)
 
-# Unpack the archive based on the platform
-if(UNIX AND NOT APPLE)
-    set(LIB_URL "https://github.com/MaksymT17/silber/releases/download/1.1/linux_release.zip")
-    set(LIB_NAME "linux_release.zip")
-    set(LIB_PATH "${CMAKE_BINARY_DIR}/${LIB_NAME}")  # Full path including filename
-    file(DOWNLOAD ${LIB_URL} ${LIB_PATH})
-    execute_process(COMMAND unzip ${LIB_PATH} -d ${CMAKE_BINARY_DIR})
-
-elseif(APPLE)
-    set(LIB_URL "https://github.com/MaksymT17/silber/releases/download/1.1/macos_release.zip")
-    set(LIB_NAME "macos_release.zip")
-    set(LIB_PATH "${CMAKE_BINARY_DIR}/${LIB_NAME}")  # Full path including filename
-    file(DOWNLOAD ${LIB_URL} ${LIB_PATH})
-    execute_process(COMMAND unzip ${LIB_PATH} -d ${CMAKE_BINARY_DIR})
-
-elseif(WIN32)
-    set(LIB_URL "https://github.com/MaksymT17/silber/releases/download/1.1/windows_debug.zip")
-    set(LIB_NAME "windows_debug.zip")
-    set(LIB_PATH "${CMAKE_BINARY_DIR}/${LIB_NAME}")  # Full path including filename
-    file(DOWNLOAD ${LIB_URL} ${LIB_PATH})
-    execute_process(COMMAND powershell -Command "Expand-Archive -Path ${LIB_PATH} -DestinationPath '${CMAKE_BINARY_DIR}'")
-
-else()
-#print unsupported OS
-endif()
-
-file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/lib")
-file(COPY "${CMAKE_BINARY_DIR}/lib" DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/")
-
-file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/include")
-file(COPY "${CMAKE_BINARY_DIR}/include" DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/")
-
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/lib")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/silber/include")
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/silber/build/")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/silber")
 
 IF (UNIX OR APPLE)
 add_library(aquamarine_lib STATIC ${AM_SOURCE_FILES} ${JPEG_LIBRARIES} database/DataBaseCommunicator.cpp extraction/JpgExtractor.cpp)
