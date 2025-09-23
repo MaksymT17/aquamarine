@@ -10,7 +10,7 @@
 #include "ClientProcCommunicator.h"
 #include "service/ConnectionsInfo.h"
 #include "service/SilberService.h"
-
+#include <spdlog/spdlog.h>
 std::unique_ptr<am::service::SilberService> server;
 
 void handleSignal(int signal)
@@ -26,6 +26,7 @@ void handleSignal(int signal)
 
 int main(int argc, char *argv[])
 {
+	spdlog::info("AM starting ...");
 #ifndef _WIN32
 	struct sigaction sa;
 	sa.sa_handler = handleSignal;

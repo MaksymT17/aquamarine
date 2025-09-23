@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 add_compile_options(-fno-rtti)
 
 find_package (Threads REQUIRED)
+find_package(spdlog REQUIRED)
 IF (UNIX OR APPLE)
 find_package (SQLite3 REQUIRED)
 find_package (JPEG REQUIRED)
@@ -54,7 +55,7 @@ ENDIF()
 
 add_executable(aquamarine main.cpp)
 
-target_link_libraries(aquamarine aquamarine_lib silber-1.2 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(aquamarine aquamarine_lib silber-1.2 spdlog::spdlog ${CMAKE_THREAD_LIBS_INIT})
 IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

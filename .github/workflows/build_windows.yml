@@ -18,6 +18,12 @@ jobs:
           path: aquamarine
           fetch-depth: 1
 
+      - name: Install spdlog
+        run: |
+          vcpkg install spdlog
+          echo "CMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake" >> $GITHUB_ENV
+
+
       - name: Build artifacts with Cmake
         run: |
           cd aquamarine &&
@@ -27,7 +33,7 @@ jobs:
           mkdir build &&
           echo "preparing new build with cmake..." &&
           cd build/ &&
-          cmake -DCMAKE_BUILD_TYPE=Release .. &&
+          cmake -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% &&
           cmake --build . &&
           echo "Build complete!"
         shell: bash
