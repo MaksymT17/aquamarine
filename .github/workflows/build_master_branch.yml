@@ -69,6 +69,7 @@ jobs:
           cd aquamarine &&
           echo "removing existing build folder..."
           rm -rf build/ &&
+          git clone --branch "1.2" --depth 1 https://github.com/MaksymT17/silber &&
           mkdir build &&
           echo "preparing new build with cmake..." &&
           cd build/ &&
