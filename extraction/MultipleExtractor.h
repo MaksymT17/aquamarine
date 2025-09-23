@@ -3,7 +3,6 @@
 #include <memory>
 #include "common/types/Matrix.hpp"
 #include "common/types/Color24b.hpp"
-#include "common/Logger.hpp"
 #include "IMultipleExtractor.h"
 
 namespace am::extraction
@@ -15,13 +14,10 @@ namespace am::extraction
 	{
 
 	public:
-		MultipleExtractor(std::shared_ptr<am::common::Logger> &logger);
+		MultipleExtractor();
 		~MultipleExtractor() = default;
 
 		// fill up the Matrices for each file provided in the input parameter
 		virtual std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string> &&fileNames) override;
-
-	private:
-		std::shared_ptr<am::common::Logger> mLogger;
 	};
 }

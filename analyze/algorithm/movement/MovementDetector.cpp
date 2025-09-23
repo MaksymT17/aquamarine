@@ -1,6 +1,7 @@
 #include "MovementDetector.h"
 #include "common/exceptions/AmException.hpp"
 #include "common/types/Matrix.hpp"
+#include <spdlog/spdlog.h>
 
 namespace am::analyze::algorithm::movement
 {
@@ -30,16 +31,15 @@ namespace am::analyze::algorithm::movement
 	}
 
 	MovementDetector::MovementDetector(const size_t threads,
-									   const Configuration &conf,
-									   std::shared_ptr<am::common::Logger> &logger)
-		: ObjectDetector(threads, conf, logger)
+									   const Configuration &conf)
+		: ObjectDetector(threads, conf)
 	{
 	}
 
 	void MovementDetector::setTrackingObjects(DescObjects &objs)
 	{
 		if (!objs.size())
-			mLogger->warn("%s, empty list of objects.", __func__);
+			spdlog::warn("empty list of objects.");
 
 		mObjects = objs;
 	}

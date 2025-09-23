@@ -1,7 +1,7 @@
 #include "ObjectDetector.h"
 #include "analyze/algorithm/ImagePair.h"
 #include <future>
-
+#include <spdlog/spdlog.h>
 // uncomment in case of threadpool usage
 #include "common/ThreadPool.hpp"
 
@@ -12,9 +12,8 @@ namespace am::analyze::algorithm
 
 	ObjectDetector::ObjectDetector(
 		const size_t threads,
-		const Configuration &conf,
-		std::shared_ptr<am::common::Logger> &logger)
-		: BfsObjectDetector(threads, conf, logger) {}
+		const Configuration &conf)
+		: BfsObjectDetector(threads, conf) {}
 
 	// Time dependent execution, if max calculation time exceeded calculation should
 	// finalize processing, and show up collected objects(if found).
@@ -26,7 +25,7 @@ namespace am::analyze::algorithm
 		if(depth == 120 * 2) {
 			// limit depth of search, low step value can affect stack consuming on images with noise.
 			// depth can be modified or be configurable depending on HW.
-			printf("Depth limit exceeded max_depth = %zd.\n", depth);
+			spdlog::info("Depth limit exceeded max_depth = {}.", depth);
 			return object;
 		}
 		auto timeNow = std::chrono::steady_clock::now();
@@ -34,8 +33,8 @@ namespace am::analyze::algorithm
 		if (calcDuration.count() >= conf.CalculationTimeLimit)
 		{
 			/// todo: make Error notification about failed detection
-			printf("Timelimit for calculation exceeded. Try to increase calculation "
-				   "time in configuration.\n");
+			spdlog::info("Timelimit for calculation exceeded. Try to increase calculation "
+				   "time in configuration.");
 			return object;
 		}
 		Pixels nextCheck;
@@ -102,7 +101,7 @@ namespace am::analyze::algorithm
 		const size_t rowHeight = pair.getHeight() / mThreadsCount;
 		std::vector<std::vector<ObjectRectangle>> res;
 		std::vector<std::future<std::vector<ObjectRectangle>>> futures;
-		mLogger->info("ObjectDetector::getObjectsRects pair threads:%d",
+		spdlog::info("ObjectDetector::getObjectsRects pair threads:{}",
 					  mThreadsCount);
 		// threadpool could be replaced with std::async calls
 		am::common::ThreadPool pool(mThreadsCount);

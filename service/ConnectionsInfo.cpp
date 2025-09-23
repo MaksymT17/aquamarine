@@ -1,13 +1,14 @@
 #include "ConnectionsInfo.h"
+#include <spdlog/spdlog.h>
 
 bool ConnectionsInfo::isRequestValid(const Message *message)
 {
-    std::cout << "isRequestValid" << message->id << message->type << std::endl;
+    spdlog::info("isRequestValid id:{} type:{}", message->id, static_cast<size_t>(message->type));
     auto client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
                                         { return c.id == message->id; });
     if (client_iterator == clients.end())
     {
-        std::cout << "isRequestValid 1" << std::endl;
+        spdlog::info("isRequestValid 1");
         // add clinet with default configuration
         clients.push_back({message->id, State::UNKNOWN, {75, 10, 1, 50, 5, 10.0}});
         client_iterator = std::find_if(clients.begin(), clients.end(), [&](const ClientInfo &c)
@@ -15,28 +16,29 @@ bool ConnectionsInfo::isRequestValid(const Message *message)
     }
     if (message->type == MessageType::HANDSHAKE || message->type == MessageType::DISCONNECT)
     {
-        std::cout << "isRequestValid HANDSHAKE  OK" << std::endl;
+        spdlog::info("isRequestValid HANDSHAKE  OK");
         return true;
     }
     else if (message->type == MessageType::SET_CONFIG)
     {
-        std::cout << "isRequestValid SET_CONFIG  " << std::endl;
+        spdlog::info("isRequestValid SET_CONFIG  ");
         return client_iterator->state >= State::READY ? true : false;
     }
     else if (message->type == MessageType::COMPARE_REQUEST)
     {
-        std::cout << "isRequestValid COMPARE_REQUEST  " << std::endl;
+        spdlog::info("isRequestValid COMPARE_REQUEST  ");
         if (client_iterator->state == State::UNKNOWN)
         {
             return false;
         }
         else if (client_iterator->state >= State::READY)
         {
-            std::cerr << "Client was not properly configured. Use default configuration." << std::endl;
+            spdlog::warn("Client was not properly configured. Use default configuration.");
             return client_iterator->state == State::CONFIGURED ? true : false;
         }
     }
-    std::cerr << "isRequestValid unknown state. If new Message type has been added - extend validation for it." <<client_iterator->state<< std::endl;
+    spdlog::error("isRequestValid unknown state. If new Message type has been added - extend validation for it. State:{}",
+        static_cast<size_t>(client_iterator->state));
     return false;
 }
 
@@ -46,7 +48,7 @@ std::vector<ConnectionsInfo::ClientInfo>::const_iterator ConnectionsInfo::proces
                                         { return c.id == msg->id; });
     if (client_iterator == clients.end())
     {
-        std::cout << "Unknown client id: " << msg->id << std::endl;
+        spdlog::info("Unknown client id: ", msg->id);
         return client_iterator;
     }
 
@@ -69,7 +71,7 @@ std::vector<ConnectionsInfo::ClientInfo>::const_iterator ConnectionsInfo::proces
     }
     else
     {
-        std::cout << "No updates" << std::endl;
+        spdlog::info("No updates");
     }
     return client_iterator;
 }

@@ -4,7 +4,6 @@
 
 #include "extraction/BmpExtractor.h"
 #include "configuration/ConfigurationReader.hpp"
-#include "common/Logger.hpp"
 #include "extraction/MultipleExtractor.h"
 #ifndef WIN32
 #include "database/DataBaseCommunicator.h"
@@ -23,7 +22,6 @@ namespace am
         void setConfiguration(const Configuration& newConf);
 
     private:
-        std::shared_ptr<am::common::Logger> loggerPtr;
         extraction::MultipleExtractor extractor;
         std::unique_ptr<analyze::algorithm::ObjectDetector> detector;
 

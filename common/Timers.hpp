@@ -9,16 +9,6 @@
 
 namespace am::common
 {
-
-	static void wait_msec(uint16_t milliseconds) noexcept
-	{
-#ifdef WIN32
-		Sleep(milliseconds);
-#else
-		usleep(milliseconds * 1000);
-#endif // win32
-	}
-
 	static std::string get_datetime()
 	{
 		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();

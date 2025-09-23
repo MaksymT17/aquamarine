@@ -1,7 +1,6 @@
 #pragma once
 #include "IObjectDetector.h"
 #include "Message.h"
-#include "common/Logger.hpp"
 #include "Object.h"
 
 namespace am::analyze::algorithm
@@ -33,11 +32,9 @@ namespace am::analyze::algorithm
 
 	protected:
 		// abstract class construction limited, aggregate common functions and interface requirement
-		BfsObjectDetector(const size_t threads, const Configuration &conf,
-						  std::shared_ptr<am::common::Logger> &logger);
+		BfsObjectDetector(const size_t threads, const Configuration &conf);
 
 		size_t mThreadsCount;
 		Configuration mConfiguration;
-		std::shared_ptr<am::common::Logger> mLogger;
 	};
 } // namespace am::analyze::algorithm

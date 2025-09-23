@@ -11,6 +11,8 @@
 #include "service/ConnectionsInfo.h"
 #include "service/SilberService.h"
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+
 std::unique_ptr<am::service::SilberService> server;
 
 void handleSignal(int signal)
@@ -24,8 +26,34 @@ void handleSignal(int signal)
 	exit(0);
 }
 
+void initLogging()
+{
+	try
+	{
+		// Create rotating logger: 8 files, 2 MB each
+		auto logger = spdlog::rotating_logger_mt(
+			"am",	   // logger name
+			"logs/am.log", // log file path
+			2 * 1024 * 1024,   // max file size: 2 MB
+			8				   // max 8 rotated files
+		);
+
+		// Flush immediately on error level
+		logger->flush_on(spdlog::level::err);
+
+		spdlog::set_default_logger(logger);
+
+		spdlog::info("SpdLogger has been configured.");
+	}
+	catch (const spdlog::spdlog_ex &ex)
+	{
+		std::cerr << "Log initialization failed: " << ex.what() << std::endl;
+	}
+}
+
 int main(int argc, char *argv[])
 {
+	initLogging();
 	spdlog::info("AM starting ...");
 #ifndef _WIN32
 	struct sigaction sa;
@@ -49,7 +77,6 @@ int main(int argc, char *argv[])
 	const std::string shared_memory_name{"/_shmem1107"};
 	server = std::make_unique<am::service::SilberService>(shared_memory_name);
 	server->start();
-	std::cout << "Aquamarine service performed all actions. Disconnect requested, exiting process..." << std::endl;
-
+	spdlog::info("Aquamarine service performed all actions. Disconnect requested, exiting process...");
 	return 0;
 }

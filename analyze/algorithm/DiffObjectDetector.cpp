@@ -3,6 +3,7 @@
 #include "analyze/AffinityComparer.h"
 #include "analyze/algorithm/ImagePair.h"
 #include <future>
+#include <spdlog/spdlog.h>
 
 namespace am::analyze::algorithm
 {
@@ -63,7 +64,7 @@ namespace am::analyze::algorithm
 		}
 	}
 
-	DiffObjectDetector::DiffObjectDetector(const size_t threads, const Configuration &conf, std::shared_ptr<am::common::Logger> &logger) : BfsObjectDetector(threads, conf, logger)
+	DiffObjectDetector::DiffObjectDetector(const size_t threads, const Configuration &conf) : BfsObjectDetector(threads, conf)
 	{
 	}
 
@@ -74,8 +75,7 @@ namespace am::analyze::algorithm
 		const size_t rowWidth = height / mThreadsCount;
 		std::vector<std::vector<ObjectRectangle>> res;
 		std::vector<std::future<std::vector<ObjectRectangle>>> futures;
-
-		mLogger->info("DiffObjectDetector::getObjectsRects width:%zd height:%zd  threads:%d", width, height, mThreadsCount);
+		spdlog::info("DiffObjectDetector::getObjectsRects width:%{} height:{}  threads:{}", width, height, mThreadsCount);
 
 		MatrixU16 changes = ThresholdDiffChecker::getThresholdDiff(diffs,
 																   mThreadsCount, mThreadsCount);
@@ -90,7 +90,7 @@ namespace am::analyze::algorithm
 		for (auto &e : futures)
 			res.push_back(e.get());
 
-		mLogger->info("DiffObjectDetector::getObjectsRects fin");
+		spdlog::info("DiffObjectDetector::getObjectsRects fin");
 		return createObjectRects(res, mConfiguration.MinPixelsForObject);
 	}
 
