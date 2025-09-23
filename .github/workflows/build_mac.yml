@@ -18,7 +18,7 @@ jobs:
     steps:
     - name: Install dependencies
       run: |
-        brew install git gcc cmake sqlite3 gcovr jpeg
+        brew install git gcc cmake sqlite3 gcovr jpeg spdlog
 
     - name: Checkout aquamarine repo
       uses: actions/checkout@v4

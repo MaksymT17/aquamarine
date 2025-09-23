@@ -2,6 +2,7 @@
 #include "MultipleExtractor.h"
 #include <future>
 #include <algorithm>
+#include <spdlog/spdlog.h>
 
 #include "BmpExtractor.h"
 #ifndef WIN32
@@ -16,8 +17,7 @@ namespace am
 	{
 		using namespace common::types;
 
-		MultipleExtractor::MultipleExtractor(std::shared_ptr<am::common::Logger> &logger)
-			: mLogger(logger)
+		MultipleExtractor::MultipleExtractor()
 		{
 		}
 
@@ -29,7 +29,7 @@ namespace am
 
 			for (size_t i = 0; i < fileNames.size(); ++i)
 			{
-				printf("file %s\n", fileNames[i].c_str());
+				spdlog::info("MultipleExtractor readFile {}", fileNames[i].c_str());
 				std::string file_ext = fileNames[i].substr(fileNames[i].find_last_of(".") + 1);
 				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(),
 							   [](unsigned char c)
@@ -51,7 +51,7 @@ namespace am
 					throw am::common::exceptions::WrongFormatException(errorMsg);
 				}
 
-				mLogger->info("Reading of file:%s has been added in extraction queue.", fileNames[i].c_str());
+				spdlog::info("Reading of file:{} has been added in extraction queue.", fileNames[i].c_str());
 			}
 
 			for (auto &e : futures)

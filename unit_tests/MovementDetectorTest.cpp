@@ -1,12 +1,10 @@
 #include "gtest/gtest.h"
 #include "analyze/algorithm/movement/MovementDetector.h"
-#include "common/Logger.hpp"
 #include "configuration/ConfigurationReader.hpp"
 #include "extraction/BmpExtractor.h"
 
 using namespace am::analyze::algorithm;
 
-std::shared_ptr<am::common::Logger> lPtr(std::make_shared<am::common::Logger>("ut_dummy_logger.log"));
 
 TEST(MovementDetectionTest, checkTwoObjectsMovements)
 {
@@ -22,7 +20,7 @@ TEST(MovementDetectionTest, checkTwoObjectsMovements)
 	std::multiset<ObjectRectangle, comparators::Descending> m1;
 	configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
-	movement::MovementDetector detector(3, conf, lPtr);
+	movement::MovementDetector detector(3, conf);
 
 	EXPECT_THROW(detector.analyze(pair, m1), am::common::exceptions::AmException);
 }
@@ -126,7 +124,7 @@ TEST(MovementDetectionTest, checkMovementOnEqualImages)
 	m_objs.emplace(obj_r);
 	configuration::ConfigurationReader reader;
 	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
-	movement::MovementDetector detector(4, conf, lPtr);
+	movement::MovementDetector detector(4, conf);
 	detector.setTrackingObjects(m_objs);
 	auto movements = detector.analyze(pair, result);
 

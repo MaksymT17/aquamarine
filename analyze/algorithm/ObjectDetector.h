@@ -14,8 +14,7 @@ namespace am::analyze::algorithm
 	class ObjectDetector : public BfsObjectDetector
 	{
 	public:
-		ObjectDetector(const size_t threads, const Configuration &conf,
-					   std::shared_ptr<am::common::Logger> &logger);
+		ObjectDetector(const size_t threads, const Configuration &conf);
 		~ObjectDetector() = default;
 
 		// time for every collecting results defined in configuration

@@ -1,6 +1,5 @@
 #pragma once
 #include <thread>
-#include "Logger.hpp"
 #include "configuration/ConfigurationReader.hpp"
 
 namespace am::common

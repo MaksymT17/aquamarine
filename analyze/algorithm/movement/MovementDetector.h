@@ -5,7 +5,6 @@
 #include "analyze/algorithm/Object.h"
 #include "analyze/algorithm/ImagePair.h"
 #include "analyze/algorithm/ObjectDetector.h"
-#include "common/Logger.hpp"
 
 #include "IMovementDetector.h"
 
@@ -19,7 +18,7 @@ namespace am::analyze::algorithm::movement
 	class MovementDetector : public ObjectDetector, IMovementDetector
 	{
 	public:
-		MovementDetector(const size_t threads, const Configuration &conf, std::shared_ptr<am::common::Logger> &logger);
+		MovementDetector(const size_t threads, const Configuration &conf);
 		~MovementDetector() = default;
 
 		// set objects which will be used for BFS search, like stencil on whole Image

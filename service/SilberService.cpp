@@ -1,5 +1,6 @@
 #include "SilberService.h"
 #include "Message.h"
+#include <spdlog/spdlog.h>
 
 static Configuration default_conf{75, 10, 1, 50, 5, 10.0};
 namespace am::service
@@ -17,18 +18,17 @@ namespace am::service
         while (m_isRunning)
         {
             Message *message = m_server->receive();
-            printf("received %zu message\n", message->type);
+            spdlog::info("received {} message", static_cast<size_t>(message->type));
             if (!m_connections.isRequestValid(message))
             {
-                std::cout << "received UNEXPECTED_REQUEST req\n"
-                          << message->type << std::endl;
+                spdlog::info("received UNEXPECTED_REQUEST req {}", static_cast<size_t>(message->type));
                 Message response{message->id, MessageType::UNEXPECTED_REQUEST};
                 m_server->send(&response);
                 continue;
             }
             if (message->type == MessageType::HANDSHAKE)
             {
-                std::cout << "received HANDSHAKE req\n";
+                spdlog::info("received HANDSHAKE req");
                 Message msg{message->id, MessageType::HANDSHAKE_OK};
                 auto iter = m_connections.processActionUpdate(message);
                 m_server->send(&msg);
@@ -36,29 +36,29 @@ namespace am::service
             else if (message->type == MessageType::SET_CONFIG)
             {
                 MessageSetConfig *messageConf = static_cast<MessageSetConfig *>(message);
-                std::cout << "received SET_CONFIG req px:" << messageConf->configuration.MinPixelsForObject << std::endl;
+                spdlog::info("received SET_CONFIG req px: {}", messageConf->configuration.MinPixelsForObject);
                 Message msg{message->id, MessageType::SET_CONFIG_OK};
                 auto iter = m_connections.processActionUpdate(message);
                 // Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
 
                 m_amApi->setConfiguration(messageConf->configuration);
-                std::cout << "received SET_CONFIG OK \n";
+                spdlog::info("received SET_CONFIG OK");
                 m_server->send(&msg);
-                std::cout << "received SET_CONFIG OK sent\n";
+                spdlog::info("received SET_CONFIG OK sent");
             }
             else if (message->type == MessageType::COMPARE_REQUEST)
             {
-                std::cout << "received COMPARE_REQUEST req\n";
+                spdlog::info("received COMPARE_REQUEST req");
                 auto iter = m_connections.processActionUpdate(message);
                 m_amApi->setConfiguration(iter->configuration);
 
                 MessageCompareRequest *messageCompare = static_cast<MessageCompareRequest *>(message);
                 if (messageCompare)
                 {
-                    printf("compare_ %s %s _\n", messageCompare->base, messageCompare->to_compare);
+                    spdlog::info("compare_ {} {} _", messageCompare->base, messageCompare->to_compare);
                     auto iter = m_connections.processActionUpdate(message);
                     m_amApi->setConfiguration(iter->configuration); // set configuration for this client
-                    printf("conf pixs %zu\n", iter->configuration.MinPixelsForObject);
+                    spdlog::info("conf MinPixelsForObject {}", iter->configuration.MinPixelsForObject);
                     am::analyze::algorithm::DescObjects result;
                     try
                     {
@@ -66,12 +66,12 @@ namespace am::service
                     }
                     catch (const am::common::exceptions::AmException exc)
                     {
-                        std::cout << "Exception has been caught: " << exc.what() << ::std::endl;
+                        spdlog::error("Exception has been caught: {}", exc.what());
                         Message failed{messageCompare->id, MessageType::COMPARE_FAIL};
                         m_server->send(&failed);
                         continue;
                     }
-                    std::cout << "received after compare\n";
+                    spdlog::info("received after compare");
                     MessageCompareResult compare_result;
                     compare_result.id = messageCompare->id;
 
@@ -85,9 +85,9 @@ namespace am::service
                             compare_result.payload_bytes = 100 * sizeof(Rect);
                             break;
                         }
-                        printf("_ %zd %zd %zd %zd _\n", rectangle.getLeft(), rectangle.getRight(), rectangle.getMaxHeight(), rectangle.getMinHeight());
+                        spdlog::info("Object Rect {} {} {} {}", rectangle.getLeft(), rectangle.getRight(), rectangle.getMaxHeight(), rectangle.getMinHeight());
                         rects[id++] = {rectangle.getLeft(), rectangle.getRight(), rectangle.getMaxHeight(), rectangle.getMinHeight()};
-                        printf("_send %zd %zd %zd %zd _\n", rects[id - 1].l, rects[id - 1].r, rects[id - 1].t, rects[id - 1].b);
+                        spdlog::info("_send {} {} {} {} _", rects[id - 1].l, rects[id - 1].r, rects[id - 1].t, rects[id - 1].b);
                     }
                     compare_result.type = MessageType::COMPARE_RESULT;
                     m_server->send(&compare_result);
@@ -95,7 +95,7 @@ namespace am::service
             }
             else if (message->type == MessageType::DISCONNECT)
             {
-                std::cout << "received DISCONNECT req\n";
+                spdlog::info("received DISCONNECT req");
                 m_isRunning = false;
                 Message msg{message->id, MessageType::DISCONNECT};
                 auto iter = m_connections.processActionUpdate(message);

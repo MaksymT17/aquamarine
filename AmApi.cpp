@@ -1,6 +1,7 @@
 #include "AmApi.h"
 #include <vector>
 #include "extraction/BmpDrawer.hpp"
+#include "common/Timers.hpp"
 #include "analyze/algorithm/ImagePair.h"
 #include <sstream>
 
@@ -12,8 +13,7 @@ namespace am
     using namespace common::types;
     using namespace analyze;
 
-    AmApi::AmApi(const Configuration &conf) : loggerPtr(std::make_shared<am::common::Logger>("log.log")),
-                                              extractor(loggerPtr)
+    AmApi::AmApi(const Configuration &conf): extractor()
     {
         configuration::ConfigurationReader reader;
         setConfiguration(conf);
@@ -65,6 +65,6 @@ namespace am
     {
         configuration = newConf;
         const size_t opt_threads = am::common::getOptimalThreadsCount(configuration.ThreadsMultiplier);
-        detector = std::make_unique<algorithm::ObjectDetector>(opt_threads, configuration, loggerPtr);
+        detector = std::make_unique<algorithm::ObjectDetector>(opt_threads, configuration);
     }
 }

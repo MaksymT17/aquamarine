@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include <common/Context.hpp>
+#include <spdlog/spdlog.h>
 
 namespace am::analyze::algorithm
 {
@@ -80,9 +81,8 @@ namespace am::analyze::algorithm
 
 	BfsObjectDetector::BfsObjectDetector(
 		const size_t threads,
-		const Configuration &conf,
-		std::shared_ptr<am::common::Logger> &logger)
-		: mThreadsCount(threads), mConfiguration(conf), mLogger(logger) {}
+		const Configuration &conf)
+		: mThreadsCount(threads), mConfiguration(conf) {}
 
 	DescObjects BfsObjectDetector::createObjectRects(
 		std::vector<std::vector<ObjectRectangle>> &objPixels, const size_t minPixels)
@@ -137,9 +137,10 @@ namespace am::analyze::algorithm
 			if (rightItem.getPixelsCount() >= minPixels)
 				orderedResult.emplace(rightItem);
 		}
-
-		mLogger->info("BfsObjectDetector::%s, objects found:%d", __func__,
+		spdlog::info("BfsObjectDetector::{}, objects found:{}", __func__,
 					  orderedResult.size());
+		//mLogger->info("BfsObjectDetector::%s, objects found:%d", __func__,
+		//			  orderedResult.size());
 
 		return orderedResult;
 	}
