@@ -64,7 +64,7 @@ namespace am::service
                     {
                         result = m_amApi->compare(messageCompare->base, messageCompare->to_compare);
                     }
-                    catch (const am::common::exceptions::AmException exc)
+                    catch (const am::common::exceptions::AmException& exc)
                     {
                         spdlog::error("Exception has been caught: {}", exc.what());
                         Message failed{messageCompare->id, MessageType::COMPARE_FAIL};
