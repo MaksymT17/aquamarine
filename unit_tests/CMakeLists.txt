@@ -62,10 +62,13 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/ObjectDetector.cpp 
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleExtractor.cpp
+    ${AM_SRC}/extraction/ExtractorFactory.cpp
+    ${AM_SRC}/extraction/ImageDrawer.cpp
     ${AM_SRC}/database/DataBaseCommunicator.cpp
+    ${AM_SRC}/AmApi.cpp
     ${UT_SOURCES}
 )
-target_link_libraries(aquamarine_ut gtest_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT} spdlog::spdlog)
+target_link_libraries(aquamarine_ut gtest_main gtest gmock gmock_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT} spdlog::spdlog)
 IF (UNIX)
 target_link_libraries(aquamarine_ut ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()

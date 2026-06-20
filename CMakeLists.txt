@@ -37,10 +37,14 @@ set(AM_SOURCE_FILES
     analyze/algorithm/movement/MovementDetector.cpp
     extraction/BmpExtractor.cpp
     extraction/MultipleExtractor.cpp
+    extraction/ExtractorFactory.cpp
     common/Timers.hpp
     AmApi.cpp
     service/ConnectionsInfo.cpp
     service/SilberService.cpp
+    service/report/DrawingReportService.cpp
+    service/report/DatabaseReportService.cpp
+    extraction/ImageDrawer.cpp
 )
 add_subdirectory(silber)
 
@@ -61,3 +65,10 @@ target_link_libraries(aquamarine aquamarine_lib silber-1.2 spdlog::spdlog ${CMAK
 IF (UNIX OR APPLE)
 target_link_libraries(aquamarine ${SQLite3_LIBRARIES} ${JPEG_LIBRARIES} )
 ENDIF()
+find_package(Qt6 COMPONENTS Widgets Svg QUIET)
+if(Qt6_FOUND)
+    message(STATUS "Qt6 found, building standalone Qt app.")
+    add_subdirectory(qt)
+else()
+    message(STATUS "Qt6 not found, skipping standalone Qt app build.")
+endif()

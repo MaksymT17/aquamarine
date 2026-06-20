@@ -1,15 +1,40 @@
 #include "SilberService.h"
 #include "Message.h"
 #include <spdlog/spdlog.h>
+#include "extraction/MultipleExtractor.h"
+#include "extraction/ExtractorFactory.h"
+#include "extraction/BmpExtractor.h"
+#ifndef WIN32
+#include "extraction/JpgExtractor.h"
+#endif
+#include "analyze/algorithm/ObjectDetector.h"
+#include "common/Context.hpp"
 
 static Configuration default_conf{75, 10, 1, 50, 5, 10.0};
+
 namespace am::service
 {
+    std::unique_ptr<am::extraction::ExtractorFactory> createExtractorFactory() {
+        auto factory = std::make_unique<am::extraction::ExtractorFactory>();
+        factory->registerExtractor("bmp", am::extraction::BmpExtractor::readFile);
+#ifndef WIN32
+        factory->registerExtractor("jpg", am::extraction::JpgExtractor::readFile);
+        factory->registerExtractor("jpeg", am::extraction::JpgExtractor::readFile);
+        factory->registerExtractor("jpe", am::extraction::JpgExtractor::readFile);
+#endif
+        return factory;
+    }
+
     SilberService::SilberService(const std::string &shMemName) : m_server(std::make_unique<ServerProcCommunicator>(shMemName)),
-                                                                 m_amApi(std::make_unique<am::AmApi>(default_conf)),
                                                                  m_isRunning(false)
 
     {
+        const size_t opt_threads = am::common::getOptimalThreadsCount(default_conf.ThreadsMultiplier);
+        m_amApi = std::make_unique<am::AmApi>(
+            default_conf,
+            std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
+            std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, default_conf)
+        );
     }
 
     void SilberService::start()
@@ -39,9 +64,14 @@ namespace am::service
                 spdlog::info("received SET_CONFIG req px: {}", messageConf->configuration.MinPixelsForObject);
                 Message msg{message->id, MessageType::SET_CONFIG_OK};
                 auto iter = m_connections.processActionUpdate(message);
-                // Configuration newConf{messageConf->configuration.AffinityThreshold, messageConf->configuration.MinPixelsForObject, messageConf->configuration.PixelStep, messageConf->configuration.CalculationTimeLimit, messageConf->configuration.IdleTimeout, messageConf->configuration.ThreadsMultiplier};
 
-                m_amApi->setConfiguration(messageConf->configuration);
+                const size_t opt_threads = am::common::getOptimalThreadsCount(messageConf->configuration.ThreadsMultiplier);
+                m_amApi = std::make_unique<am::AmApi>(
+                    messageConf->configuration,
+                    std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
+                    std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, messageConf->configuration)
+                );
+                
                 spdlog::info("received SET_CONFIG OK");
                 m_server->send(&msg);
                 spdlog::info("received SET_CONFIG OK sent");
@@ -50,21 +80,27 @@ namespace am::service
             {
                 spdlog::info("received COMPARE_REQUEST req");
                 auto iter = m_connections.processActionUpdate(message);
-                m_amApi->setConfiguration(iter->configuration);
+                
+                const size_t opt_threads = am::common::getOptimalThreadsCount(iter->configuration.ThreadsMultiplier);
+                m_amApi = std::make_unique<am::AmApi>(
+                    iter->configuration,
+                    std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
+                    std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, iter->configuration)
+                );
 
                 MessageCompareRequest *messageCompare = static_cast<MessageCompareRequest *>(message);
                 if (messageCompare)
                 {
                     spdlog::info("compare_ {} {} _", messageCompare->base, messageCompare->to_compare);
-                    auto iter = m_connections.processActionUpdate(message);
-                    m_amApi->setConfiguration(iter->configuration); // set configuration for this client
                     spdlog::info("conf MinPixelsForObject {}", iter->configuration.MinPixelsForObject);
                     am::analyze::algorithm::DescObjects result;
                     try
                     {
-                        result = m_amApi->compare(messageCompare->base, messageCompare->to_compare);
+                        std::string base_str(messageCompare->base, strnlen(messageCompare->base, 200));
+                        std::string to_compare_str(messageCompare->to_compare, strnlen(messageCompare->to_compare, 200));
+                        result = m_amApi->compare(base_str, to_compare_str);
                     }
-                    catch (const am::common::exceptions::AmException exc)
+                    catch (const am::common::exceptions::AmException& exc)
                     {
                         spdlog::error("Exception has been caught: {}", exc.what());
                         Message failed{messageCompare->id, MessageType::COMPARE_FAIL};
@@ -96,7 +132,6 @@ namespace am::service
             else if (message->type == MessageType::DISCONNECT)
             {
                 spdlog::info("received DISCONNECT req");
-                m_isRunning = false;
                 Message msg{message->id, MessageType::DISCONNECT};
                 auto iter = m_connections.processActionUpdate(message);
 

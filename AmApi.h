@@ -2,34 +2,25 @@
 #include <string>
 #include <memory>
 
-#include "extraction/BmpExtractor.h"
+#include "extraction/IMultipleExtractor.h"
+#include "analyze/algorithm/IObjectDetector.h"
 #include "configuration/ConfigurationReader.hpp"
-#include "extraction/MultipleExtractor.h"
-#ifndef WIN32
-#include "database/DataBaseCommunicator.h"
-#endif
 
 namespace am
 {
     class AmApi
     {
     public:
-        AmApi(const Configuration& conf);
+        AmApi(const Configuration& conf, 
+              std::unique_ptr<extraction::IMultipleExtractor> extractor, 
+              std::unique_ptr<analyze::algorithm::IObjectDetector> detector);
         analyze::algorithm::DescObjects compare(const std::string &base_img, const std::string &cmp_img);
-        void compare_and_save_diff_img(const std::string &base_img, const std::string &cmp_img, std::string &&out_diff_img);
-        void enable_database_reports(const char *db_name);
         const Configuration& getConfiguration();
-        void setConfiguration(const Configuration& newConf);
 
     private:
-        extraction::MultipleExtractor extractor;
-        std::unique_ptr<analyze::algorithm::ObjectDetector> detector;
+        std::unique_ptr<extraction::IMultipleExtractor> extractor;
+        std::unique_ptr<analyze::algorithm::IObjectDetector> detector;
 
-        std::string base_img_path;
-        std::string cmp_img_path;
-#ifndef WIN32
-        std::unique_ptr<database::DataBaseCommunicator> dbcPtr;
-#endif
         Configuration configuration;
     };
 }

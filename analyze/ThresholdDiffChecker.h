@@ -1,6 +1,8 @@
 #pragma once
-
-#include "IComparer.h"
+#include <cstdint>
+#include <cstddef>
+#include "common/types/Matrix.hpp"
+#include "common/types/Color24bDiff.hpp"
 
 namespace am::analyze
 {

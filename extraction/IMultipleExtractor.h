@@ -11,7 +11,7 @@ namespace am::extraction
 	class IMultipleExtractor
 	{
 	public:
-		~IMultipleExtractor() = default;
+		virtual ~IMultipleExtractor() = default;
 
 		virtual std::vector<common::types::Matrix<common::types::Color24b>> readFiles(std::vector<std::string> &&fileNames) = 0;
 	};

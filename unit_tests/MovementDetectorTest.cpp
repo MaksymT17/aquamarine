@@ -135,3 +135,72 @@ TEST(MovementDetectionTest, checkMovementOnEqualImages)
 	EXPECT_FALSE(movements[0].mov[3]);
 	EXPECT_TRUE(movements[0].mov[4]); // check if STEALTH bit is set
 }
+
+using namespace am::common::types;
+
+TEST(MovementDetectionTest, emptyTrackingObjectsWarns)
+{
+	configuration::ConfigurationReader reader;
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	movement::MovementDetector detector(3, conf);
+	std::multiset<ObjectRectangle, comparators::Descending> empty_objs;
+	detector.setTrackingObjects(empty_objs);
+}
+
+TEST(MovementDetectionTest, checkMovementWithActualDifferencesMultipleObjects)
+{
+	Matrix<Color24b> bmp1(20, 20);
+	Matrix<Color24b> bmp2(20, 20);
+
+	// Make the second image different in two separate spots within the tracking rectangle
+	bmp2(5, 5).r = 255;
+	bmp2(15, 15).r = 255;
+
+	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(bmp1, bmp2));
+
+	std::multiset<ObjectRectangle, comparators::Descending> m_objs, result;
+
+	// Track the whole image
+	ObjectRectangle obj_r(0, 0);
+	obj_r.addPixel(19, 19);
+	m_objs.emplace(obj_r);
+
+	configuration::ConfigurationReader reader;
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	conf.AffinityThreshold = 100; // diff is 255
+	movement::MovementDetector detector(1, conf);
+	detector.setTrackingObjects(m_objs);
+
+	auto movements = detector.analyze(pair, result);
+	
+	EXPECT_EQ(movements.size(), 1);
+	EXPECT_EQ(result.size(), 2); // 2 objects found
+}
+
+TEST(MovementDetectionTest, checkMovementWithActualDifferencesSingleObject)
+{
+	Matrix<Color24b> bmp1(20, 20);
+	Matrix<Color24b> bmp2(20, 20);
+
+	// Make the second image different in one spot
+	bmp2(5, 5).r = 255;
+
+	movement::ImagePairPtr pair(std::make_shared<am::analyze::algorithm::ImagePair>(bmp1, bmp2));
+
+	std::multiset<ObjectRectangle, comparators::Descending> m_objs, result;
+
+	ObjectRectangle obj_r(0, 0);
+	obj_r.addPixel(19, 19);
+	m_objs.emplace(obj_r);
+
+	configuration::ConfigurationReader reader;
+	auto conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	conf.AffinityThreshold = 100;
+	movement::MovementDetector detector(1, conf);
+	detector.setTrackingObjects(m_objs);
+
+	auto movements = detector.analyze(pair, result);
+	
+	EXPECT_EQ(movements.size(), 1);
+	EXPECT_EQ(result.size(), 1);
+}

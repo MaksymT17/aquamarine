@@ -64,7 +64,7 @@ namespace am::analyze::algorithm::movement
 				{
 					ObjectRectangle pxs(rowId, colId);
 					auto conns = checkConnections(rowId, colId, pair->getHeight(), {0u, pair->getWidth()}, mConfiguration.PixelStep);
-					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, mConfiguration, 1);
+					auto objFound = bfs(*pair, changes, conns, pxs, {0u, pair->getWidth()}, startTime, mConfiguration);
 					found.emplace_back(objFound);
 				}
 			}
@@ -85,7 +85,7 @@ namespace am::analyze::algorithm::movement
 		/// fullfill all movements from collected vector of objects
 		for (const auto &newObj : found)
 		{
-			MovementType current = getMovementFromObjRects(obj, *found.begin());
+			MovementType current = getMovementFromObjRects(obj, newObj);
 			for (int pos = 0; pos < current.mov.size(); pos++)
 			{
 				if (current.mov[pos])

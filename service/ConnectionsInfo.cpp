@@ -33,8 +33,10 @@ bool ConnectionsInfo::isRequestValid(const Message *message)
         }
         else if (client_iterator->state >= State::READY)
         {
-            spdlog::warn("Client was not properly configured. Use default configuration.");
-            return client_iterator->state == State::CONFIGURED ? true : false;
+            if (client_iterator->state != State::CONFIGURED) {
+                spdlog::warn("Client was not properly configured. Use default configuration.");
+            }
+            return true;
         }
     }
     spdlog::error("isRequestValid unknown state. If new Message type has been added - extend validation for it. State:{}",

@@ -4,10 +4,6 @@
 #include <algorithm>
 #include <spdlog/spdlog.h>
 
-#include "BmpExtractor.h"
-#ifndef WIN32
-#include "JpgExtractor.h"
-#endif
 #include "common/types/Color24b.hpp"
 #include "common/exceptions/WrongFormatException.hpp"
 
@@ -17,7 +13,7 @@ namespace am
 	{
 		using namespace common::types;
 
-		MultipleExtractor::MultipleExtractor()
+		MultipleExtractor::MultipleExtractor(std::unique_ptr<ExtractorFactory> factory) : m_factory(std::move(factory))
 		{
 		}
 
@@ -34,22 +30,11 @@ namespace am
 				std::transform(file_ext.begin(), file_ext.end(), file_ext.begin(),
 							   [](unsigned char c)
 							   { return std::tolower(c); });
-				if (file_ext == "bmp")
-				{
-					futures.emplace_back(std::async(std::launch::deferred, BmpExtractor::readFile, fileNames[i]));
-				}
-#ifndef WIN32 // note: currently jpeg supported with Unix OS (with libjpeg)
-				else if (file_ext == "jpg" || file_ext == "jpeg" || file_ext == "jpe")
-				{
-					futures.emplace_back(std::async(std::launch::async, JpgExtractor::readFile, fileNames[i]));
-				}
-#endif
-				else
-				{
-					std::string errorMsg("WrongFormatException on data extraction from file(allowed jpeg/bmp)! File: ");
-					errorMsg.append(fileNames[i]);
-					throw am::common::exceptions::WrongFormatException(errorMsg);
-				}
+                
+                auto extractorFunc = m_factory->getExtractor(file_ext);
+                futures.emplace_back(std::async(std::launch::deferred, [func = std::move(extractorFunc), file = fileNames[i]]() {
+                    return func(file);
+                }));
 
 				spdlog::info("Reading of file:{} has been added in extraction queue.", fileNames[i].c_str());
 			}
