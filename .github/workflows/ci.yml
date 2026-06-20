@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Dependencies
       run: |
@@ -38,7 +38,7 @@ jobs:
         gcovr -r ../../ --exclude '.*/thirdparty/.*' --exclude '.*/silber/.*' --exclude '.*/unit_tests/.*'
 
     - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: unit_tests/build/coverage_aquamarine_ut/
