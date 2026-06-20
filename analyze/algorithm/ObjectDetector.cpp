@@ -17,43 +17,37 @@ namespace am::analyze::algorithm
 
 	// Time dependent execution, if max calculation time exceeded calculation should
 	// finalize processing, and show up collected objects(if found).
-	ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, const Pixels &toCheck,
+	ObjectRectangle bfs(const ImagePair &pair, MatrixU16 &visited, Pixels currentCheck,
 						ObjectRectangle &object, ImageRowSegment row,
 						std::chrono::steady_clock::time_point &startTime,
-						const Configuration &conf, size_t depth)
+						const Configuration &conf)
 	{
-		if(depth == 120 * 2) {
-			// limit depth of search, low step value can affect stack consuming on images with noise.
-			// depth can be modified or be configurable depending on HW.
-			spdlog::info("Depth limit exceeded max_depth = {}.", depth);
-			return object;
-		}
-		auto timeNow = std::chrono::steady_clock::now();
-		std::chrono::duration<double> calcDuration = timeNow - startTime;
-		if (calcDuration.count() >= conf.CalculationTimeLimit)
-		{
-			/// todo: make Error notification about failed detection
-			spdlog::info("Timelimit for calculation exceeded. Try to increase calculation "
-				   "time in configuration.");
-			return object;
-		}
-		Pixels nextCheck;
-
-		for (const auto &position : toCheck)
-		{
-			if (visited(position.rowId, position.colId) != common::CHANGE &&
-				pair.getAbsoluteDiff(position.rowId, position.colId) >
-					conf.AffinityThreshold)
+		while (!currentCheck.empty()) {
+			auto timeNow = std::chrono::steady_clock::now();
+			std::chrono::duration<double> calcDuration = timeNow - startTime;
+			if (calcDuration.count() >= conf.CalculationTimeLimit)
 			{
-				visited(position.rowId, position.colId) = common::CHANGE;
-				checkClosest(position.rowId, position.colId, nextCheck, object, row,
-							 visited.getWidth(), conf.PixelStep);
-
-				object.addPixel(position.rowId, position.colId);
+				/// todo: make Error notification about failed detection
+				spdlog::info("Timelimit for calculation exceeded. Try to increase calculation "
+					   "time in configuration.");
+				return object;
 			}
-		}
-		if (nextCheck.size()){
-			bfs(pair, visited, nextCheck, object, row, startTime, conf, depth +1);
+			Pixels nextCheck;
+
+			for (const auto &position : currentCheck)
+			{
+				if (visited(position.rowId, position.colId) != common::CHANGE &&
+					pair.getAbsoluteDiff(position.rowId, position.colId) >
+						conf.AffinityThreshold)
+				{
+					visited(position.rowId, position.colId) = common::CHANGE;
+					checkClosest(position.rowId, position.colId, nextCheck, object, row,
+								 visited.getWidth(), conf.PixelStep);
+
+					object.addPixel(position.rowId, position.colId);
+				}
+			}
+			currentCheck = std::move(nextCheck);
 		}
 
 		return object;
@@ -89,7 +83,7 @@ namespace am::analyze::algorithm
 					ObjectRectangle obj(rowId, colId);
 					auto conns = checkConnections(rowId, colId, pair.getWidth(), row, conf.PixelStep);
 
-					resultList.emplace_back(bfs(pair, changes, conns, obj, row, startTime, conf, 1));
+					resultList.emplace_back(bfs(pair, changes, conns, obj, row, startTime, conf));
 				}
 			}
 		}

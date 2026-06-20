@@ -15,26 +15,23 @@ namespace am::analyze::algorithm
 	{
 		// optimized bfs depending to left/right borders for threads,
 		// every thread will search in defined area(column) of image
-		ObjectRectangle bfs(MatrixU16 &changes, const Pixels &toCheck, ObjectRectangle &object, ImageRowSegment row)
+		ObjectRectangle bfs(MatrixU16 &changes, Pixels currentCheck, ObjectRectangle &object, ImageRowSegment row)
 		{
-			Pixels nextCheck;
+			while (!currentCheck.empty()) {
+				Pixels nextCheck;
 
-			for (auto &position : toCheck)
-			{
-				if (changes(position.rowId, position.colId) == common::CHANGE)
+				for (auto &position : currentCheck)
 				{
-					checkClosest(position.rowId, position.colId, nextCheck, object, row, changes.getWidth(), 1u);
+					if (changes(position.rowId, position.colId) == common::CHANGE)
+					{
+						checkClosest(position.rowId, position.colId, nextCheck, object, row, changes.getWidth(), 1u);
 
-					// if (isNew(object, position.rowId, position.colId))
-					//{
-					// object.emplace_back(position.rowId, position.colId);
-					object.addPixel(position.rowId, position.colId);
-					changes(position.rowId, position.colId) = 0;
-					//}
+						object.addPixel(position.rowId, position.colId);
+						changes(position.rowId, position.colId) = 0;
+					}
 				}
+				currentCheck = std::move(nextCheck);
 			}
-			if (nextCheck.size())
-				bfs(changes, nextCheck, object, row);
 
 			return object;
 		}
