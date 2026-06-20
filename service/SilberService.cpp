@@ -62,7 +62,9 @@ namespace am::service
                     am::analyze::algorithm::DescObjects result;
                     try
                     {
-                        result = m_amApi->compare(messageCompare->base, messageCompare->to_compare);
+                        std::string base_str(messageCompare->base, strnlen(messageCompare->base, 200));
+                        std::string to_compare_str(messageCompare->to_compare, strnlen(messageCompare->to_compare, 200));
+                        result = m_amApi->compare(base_str, to_compare_str);
                     }
                     catch (const am::common::exceptions::AmException& exc)
                     {
