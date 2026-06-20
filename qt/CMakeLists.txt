@@ -20,6 +20,7 @@ add_executable(AquamarineQt
     main.cpp
     mainwindow.cpp
     worker.cpp
+    imageviewer.cpp
 )
 
 target_link_libraries(AquamarineQt PRIVATE 

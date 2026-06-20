@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include "imageviewer.h"
 #include <QPushButton>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
@@ -31,14 +32,13 @@ private slots:
     void onComparisonError(const QString& errorMsg);
 
 private:
-    void updateImageView(QLabel* label, const QString& path);
     void setupUI();
     Configuration getConfigurationFromUI() const;
     void setUIEnabled(bool enabled);
 
     // UI elements
-    QLabel* m_lblBaseImage;
-    QLabel* m_lblCompareImage;
+    ImageViewer* m_baseViewer;
+    ImageViewer* m_compareViewer;
     
     QPushButton* m_btnSelectBase;
     QPushButton* m_btnSelectCompare;

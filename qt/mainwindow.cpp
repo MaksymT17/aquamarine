@@ -42,7 +42,7 @@ void MainWindow::setupUI()
         "QSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QDoubleSpinBox::down-button { width: 0px; border: none; }"
         "QProgressBar { border: 1px solid #444; border-radius: 4px; background-color: #111; text-align: center; color: white; font-weight: bold; }"
         "QProgressBar::chunk { background-color: #00d1ff; border-radius: 3px; }"
-        "QLabel#imagePlaceholder { background-color: #151515; border: 2px dashed #444; border-radius: 8px; color: #666; font-weight: bold; font-size: 14px; }"
+        "ImageViewer#imagePlaceholder { background-color: #151515; border: 2px dashed #444; border-radius: 8px; }"
         "QLabel#statusLabel { color: #00d1ff; font-weight: bold; font-size: 14px; }"
     );
     
@@ -55,23 +55,21 @@ void MainWindow::setupUI()
     selectionLayout->setSpacing(20);
     
     QVBoxLayout* baseLayout = new QVBoxLayout();
-    m_lblBaseImage = new QLabel("SELECT BASE IMAGE");
-    m_lblBaseImage->setObjectName("imagePlaceholder");
-    m_lblBaseImage->setAlignment(Qt::AlignCenter);
-    m_lblBaseImage->setMinimumSize(320, 240);
+    m_baseViewer = new ImageViewer("SELECT BASE IMAGE", this);
+    m_baseViewer->setObjectName("imagePlaceholder");
+    m_baseViewer->setMinimumSize(320, 240);
     m_btnSelectBase = new QPushButton("Browse Base Image");
     connect(m_btnSelectBase, &QPushButton::clicked, this, &MainWindow::selectBaseImage);
-    baseLayout->addWidget(m_lblBaseImage);
+    baseLayout->addWidget(m_baseViewer, 1);
     baseLayout->addWidget(m_btnSelectBase);
     
     QVBoxLayout* cmpLayout = new QVBoxLayout();
-    m_lblCompareImage = new QLabel("SELECT COMPARE IMAGE");
-    m_lblCompareImage->setObjectName("imagePlaceholder");
-    m_lblCompareImage->setAlignment(Qt::AlignCenter);
-    m_lblCompareImage->setMinimumSize(320, 240);
+    m_compareViewer = new ImageViewer("SELECT COMPARE IMAGE", this);
+    m_compareViewer->setObjectName("imagePlaceholder");
+    m_compareViewer->setMinimumSize(320, 240);
     m_btnSelectCompare = new QPushButton("Browse Compare Image");
     connect(m_btnSelectCompare, &QPushButton::clicked, this, &MainWindow::selectCompareImage);
-    cmpLayout->addWidget(m_lblCompareImage);
+    cmpLayout->addWidget(m_compareViewer, 1);
     cmpLayout->addWidget(m_btnSelectCompare);
     
     selectionLayout->addLayout(baseLayout);
@@ -164,7 +162,7 @@ void MainWindow::selectBaseImage()
     if (!path.isEmpty()) {
         m_baseImagePath = path;
         m_baseQImage.load(path);
-        updateImageView(m_lblBaseImage, path);
+        m_baseViewer->setImage(m_baseQImage);
     }
 }
 
@@ -174,17 +172,7 @@ void MainWindow::selectCompareImage()
     if (!path.isEmpty()) {
         m_compareImagePath = path;
         m_compareQImage.load(path);
-        updateImageView(m_lblCompareImage, path);
-    }
-}
-
-void MainWindow::updateImageView(QLabel* label, const QString& path)
-{
-    QPixmap pix(path);
-    if (!pix.isNull()) {
-        label->setPixmap(pix.scaled(label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    } else {
-        label->setText("Failed to load image");
+        m_compareViewer->setImage(m_compareQImage);
     }
 }
 
@@ -259,8 +247,7 @@ void MainWindow::onComparisonSuccess(const am::analyze::algorithm::DescObjects& 
             painter.drawRect(x, y, w, h);
         }
 
-        QPixmap pix = QPixmap::fromImage(resultImg);
-        m_lblCompareImage->setPixmap(pix.scaled(m_lblCompareImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        m_compareViewer->setImage(resultImg);
     }
 }
 
