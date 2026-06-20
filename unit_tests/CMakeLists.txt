@@ -63,6 +63,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/analyze/algorithm/DiffObjectDetector.cpp 
     ${AM_SRC}/extraction/MultipleExtractor.cpp
     ${AM_SRC}/extraction/ExtractorFactory.cpp
+    ${AM_SRC}/extraction/ImageDrawer.cpp
     ${AM_SRC}/database/DataBaseCommunicator.cpp
     ${AM_SRC}/AmApi.cpp
     ${UT_SOURCES}

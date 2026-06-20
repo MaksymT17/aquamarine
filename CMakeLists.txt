@@ -44,6 +44,7 @@ set(AM_SOURCE_FILES
     service/SilberService.cpp
     service/report/DrawingReportService.cpp
     service/report/DatabaseReportService.cpp
+    extraction/ImageDrawer.cpp
 )
 add_subdirectory(silber)
 
