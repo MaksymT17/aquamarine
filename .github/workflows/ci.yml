@@ -30,6 +30,7 @@ jobs:
       run: |
         cd unit_tests
         mkdir build && cd build
+        cp -r ../../inputs ./inputs
         cmake ..
         make coverage_aquamarine_ut -j4
 
