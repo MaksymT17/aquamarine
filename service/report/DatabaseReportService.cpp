@@ -12,7 +12,7 @@ namespace am::service
     {
 #ifndef WIN32
         if (!db_name.empty()) {
-            dbcPtr = std::make_unique<am::database::DataBaseCommunicator>(db_name);
+            dbcPtr = std::make_unique<am::database::DataBaseCommunicator>(db_name.c_str());
         }
 #endif
     }

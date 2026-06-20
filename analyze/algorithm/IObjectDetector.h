@@ -15,7 +15,7 @@ namespace am::analyze::algorithm
 	class IObjectDetector
 	{
 	public:
-		~IObjectDetector() = default;
+		virtual ~IObjectDetector() = default;
 
 		virtual DescObjects getObjectsRects(ImagePair &pair) = 0;
 	};

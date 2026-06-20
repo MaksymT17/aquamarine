@@ -16,12 +16,15 @@
 #include "analyze/algorithm/ImagePair.h"
 #include "configuration/ConfigurationReader.hpp"
 #include "common/Context.hpp"
-#include <memory>
+#include "extraction/BmpExtractor.h"
+#include "MockMultipleExtractor.h"
+#include <gmock/gmock.h>
 
 using namespace am::common::types;
 using namespace am::analyze;
 using namespace configuration;
 using namespace am::analyze::algorithm;
+
 struct ObjectDetectorWrapper : public ::testing::Test
 {
 	ObjectDetectorWrapper() = default;
@@ -32,45 +35,64 @@ struct ObjectDetectorWrapper : public ::testing::Test
 
 	void SetUp() override
 	{
-		auto factory = std::make_unique<am::extraction::ExtractorFactory>();
-		factory->registerExtractor("bmp", am::extraction::BmpExtractor::readFile);
-#ifndef WIN32
-		factory->registerExtractor("jpg", am::extraction::JpgExtractor::readFile);
-		factory->registerExtractor("jpeg", am::extraction::JpgExtractor::readFile);
-		factory->registerExtractor("jpe", am::extraction::JpgExtractor::readFile);
-#endif
-		extractor = std::make_unique<am::extraction::MultipleExtractor>(std::move(factory));
+		extractor = std::make_unique<am::unit_tests::MockMultipleExtractor>();
 	}
 
 	void TearDown() override
 	{
 	}
 
-	std::unique_ptr<am::extraction::MultipleExtractor> extractor;
+    std::vector<Matrix<Color24b>> createMatrices(size_t width, size_t height, int num_objs, size_t obj_size = 4) {
+        Matrix<Color24b> base(width, height);
+        Matrix<Color24b> compare(width, height);
+        Color24b color{0, 0, 0};
+        Color24b colorDiff{255, 255, 255};
+        for (size_t y = 0; y < height; ++y) {
+            for (size_t x = 0; x < width; ++x) {
+                base(y, x) = color;
+                compare(y, x) = color;
+            }
+        }
+        int objects_placed = 0;
+        size_t spacing = obj_size + 2;
+        size_t start_y = std::min((size_t)10, height / 2);
+        size_t start_x = std::min((size_t)10, width / 2);
+        for (size_t y = start_y; y + obj_size <= height && objects_placed < num_objs; y += spacing) {
+            for (size_t x = start_x; x + obj_size <= width && objects_placed < num_objs; x += spacing) {
+                for(size_t dy = 0; dy < obj_size; ++dy) {
+                    for(size_t dx = 0; dx < obj_size; ++dx) {
+                        compare(y + dy, x + dx) = colorDiff;
+                    }
+                }
+                objects_placed++;
+            }
+        }
+        return {base, compare};
+    }
+
+	std::unique_ptr<am::unit_tests::MockMultipleExtractor> extractor;
 	const size_t opt_threads = am::common::getOptimalThreadsCount();
-	configuration::ConfigurationReader reader;
-	Configuration conf = reader.getConfigurationFromFile("inputs/configuration.csv");
+	Configuration conf{75, 1, 1, 50, 5, 10.0};
 };
 
 TEST_F(ObjectDetectorWrapper, Check3ObjsFHD)
 {
-	std::string base("inputs/fhd_clean.bmp");
-	std::string toCompare("inputs/fhd_3obj.bmp");
-	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
+    EXPECT_CALL(*extractor, readFiles(::testing::_)).WillOnce(::testing::Return(createMatrices(1920, 1080, 3)));
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({"fake1", "fake2"});
 
 	algorithm::ImagePair pair(data[0], data[1]);
+
 	algorithm::DiffObjectDetector diffDetector = algorithm::DiffObjectDetector(opt_threads, conf);
 
 	algorithm::DescObjects rects2 = diffDetector.getObjectsRects(pair);
-
+	
 	EXPECT_TRUE(rects2.size() >= 3);
 }
 
 TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 {
-	std::string base("inputs/10x10_clean.bmp");
-	std::string toCompare("inputs/10x10_2obj.bmp");
-	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
+    EXPECT_CALL(*extractor, readFiles(::testing::_)).WillOnce(::testing::Return(createMatrices(10, 10, 2, 1)));
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({"fake1", "fake2"});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
@@ -85,9 +107,8 @@ TEST_F(ObjectDetectorWrapper, Check2Objs10x10)
 
 TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 {
-	std::string base("inputs/20x20_clean.bmp");
-	std::string toCompare("inputs/20x20_5objs.bmp");
-	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
+    EXPECT_CALL(*extractor, readFiles(::testing::_)).WillOnce(::testing::Return(createMatrices(20, 20, 5, 1)));
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({"fake1", "fake2"});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected
@@ -102,9 +123,12 @@ TEST_F(ObjectDetectorWrapper, Check5Objs20x20)
 
 TEST_F(ObjectDetectorWrapper, CheckInvalidSize)
 {
-	std::string base("inputs/20x20_clean.bmp");
-	std::string toCompare("inputs/10x10_clean.bmp");
-	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
+    std::vector<Matrix<Color24b>> badData;
+    badData.emplace_back(20, 20);
+    badData.emplace_back(10, 10);
+    EXPECT_CALL(*extractor, readFiles(::testing::_)).WillOnce(::testing::Return(badData));
+
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({"fake1", "fake2"});
 	EXPECT_THROW(algorithm::ImagePair pair(data[0], data[1]), am::common::exceptions::AmException);
 }
 
@@ -113,9 +137,8 @@ TEST_F(ObjectDetectorWrapper, CheckTimeLimitation)
 	constexpr float duration_70ms = 0.07f;
 	constexpr float duration_additional_ms = 0.03f;
 
-	std::string base("inputs/rs_1.bmp");
-	std::string toCompare("inputs/rs_2.bmp");
-	std::vector<Matrix<Color24b>> data = extractor->readFiles({base, toCompare});
+    EXPECT_CALL(*extractor, readFiles(::testing::_)).WillOnce(::testing::Return(createMatrices(1920, 1080, 5)));
+	std::vector<Matrix<Color24b>> data = extractor->readFiles({"fake1", "fake2"});
 
 	algorithm::ImagePair pair(data[0], data[1]);
 	// configuration where object with 1 pixel could be detected

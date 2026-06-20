@@ -45,43 +45,27 @@ TEST(ThresholdDiffCheckerTest, check75percent_3x3)
 
     am::common::types::Matrix<am::common::types::Color24b> base(4, 4);
     am::common::types::Color24b color{201, 201, 201};
-    base(0, 0) = color;
-    base(0, 1) = color;
-    base(0, 2) = color;
-    base(0, 3) = color;
-    base(1, 0) = color;
-    base(1, 1) = color;
-    base(1, 2) = color;
-    base(1, 3) = color;
-    base(2, 0) = color;
-    base(2, 1) = color;
-    base(2, 2) = color;
-    base(2, 3) = color;
-    base(3, 0) = color;
-    base(3, 1) = color;
-    base(3, 2) = color;
-    base(3, 3) = color;
+    am::common::types::Color24b color1{200, 200, 200};
+
+    for (size_t y = 0; y < 4; ++y) {
+        for (size_t x = 0; x < 4; ++x) {
+            base(y, x) = color;
+        }
+    }
 
     // only 4 pixel out of 16 are set with different color
     // expected 1/4 = 75% of the affinity percent
     am::common::types::Matrix<am::common::types::Color24b> compare(4, 4);
-    am::common::types::Color24b color1{200, 200, 200};
-    compare(0, 0) = color;
-    compare(0, 1) = color;
-    compare(0, 2) = color;
+    for (size_t y = 0; y < 4; ++y) {
+        for (size_t x = 0; x < 4; ++x) {
+            compare(y, x) = color;
+        }
+    }
+    
     compare(0, 3) = color1;
     compare(1, 0) = color1;
-    compare(1, 1) = color;
-    compare(1, 2) = color;
-    compare(1, 3) = color;
     compare(2, 0) = color1;
     compare(2, 1) = color1;
-    compare(2, 2) = color;
-    compare(2, 3) = color;
-    compare(3, 0) = color;
-    compare(3, 1) = color;
-    compare(3, 2) = color;
-    compare(3, 3) = color;
 
     Matrix<Color24bDiff> res = AffinityComparer::compare(base, compare, 1);
 
