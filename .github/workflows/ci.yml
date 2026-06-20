@@ -21,6 +21,7 @@ jobs:
 
     - name: Build Core & Silber
       run: |
+        git clone --branch "1.2" --depth 1 https://github.com/MaksymT17/silber
         mkdir build && cd build
         cmake ..
         make -j4
