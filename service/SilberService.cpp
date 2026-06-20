@@ -96,7 +96,6 @@ namespace am::service
             else if (message->type == MessageType::DISCONNECT)
             {
                 spdlog::info("received DISCONNECT req");
-                m_isRunning = false;
                 Message msg{message->id, MessageType::DISCONNECT};
                 auto iter = m_connections.processActionUpdate(message);
 
