@@ -1,8 +1,6 @@
 #pragma once
-#include "IComparer.h"
 #include "common/types/Color24bDiff.hpp"
 #include "common/types/Matrix.hpp"
-
 namespace am::analyze
 {
 	enum DataMode
@@ -12,7 +10,7 @@ namespace am::analyze
 	};
 
 	using namespace common::types;
-	class AffinityComparer : public IComparer
+	class AffinityComparer
 	{
 	public:
 		explicit AffinityComparer(common::types::Matrix<common::types::Color24b> &base);
