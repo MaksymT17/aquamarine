@@ -56,8 +56,6 @@ namespace am::service
                 if (messageCompare)
                 {
                     spdlog::info("compare_ {} {} _", messageCompare->base, messageCompare->to_compare);
-                    auto iter = m_connections.processActionUpdate(message);
-                    m_amApi->setConfiguration(iter->configuration); // set configuration for this client
                     spdlog::info("conf MinPixelsForObject {}", iter->configuration.MinPixelsForObject);
                     am::analyze::algorithm::DescObjects result;
                     try
