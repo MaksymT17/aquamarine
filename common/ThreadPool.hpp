@@ -36,7 +36,7 @@ namespace am::common
             }
         }
 
-        template <typename F, typename R = std::result_of_t<F && ()>>
+        template <typename F, typename R = std::invoke_result_t<F>>
         std::future<R> run(F &&f) const
         {
             auto task = std::packaged_task<std::vector<am::analyze::algorithm::ObjectRectangle>()>(std::forward<F>(f));
