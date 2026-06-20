@@ -20,7 +20,6 @@ add_executable(AquamarineQt
     main.cpp
     mainwindow.cpp
     worker.cpp
-    assets.qrc
 )
 
 target_link_libraries(AquamarineQt PRIVATE 
