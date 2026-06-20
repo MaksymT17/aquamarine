@@ -64,6 +64,7 @@ add_executable(aquamarine_ut
     ${AM_SRC}/extraction/MultipleExtractor.cpp
     ${AM_SRC}/extraction/ExtractorFactory.cpp
     ${AM_SRC}/database/DataBaseCommunicator.cpp
+    ${AM_SRC}/AmApi.cpp
     ${UT_SOURCES}
 )
 target_link_libraries(aquamarine_ut gtest_main gtest gmock gmock_main silber-1.2 ${CMAKE_THREAD_LIBS_INIT} spdlog::spdlog)

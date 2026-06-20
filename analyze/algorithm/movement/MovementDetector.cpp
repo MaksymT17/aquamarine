@@ -85,7 +85,7 @@ namespace am::analyze::algorithm::movement
 		/// fullfill all movements from collected vector of objects
 		for (const auto &newObj : found)
 		{
-			MovementType current = getMovementFromObjRects(obj, *found.begin());
+			MovementType current = getMovementFromObjRects(obj, newObj);
 			for (int pos = 0; pos < current.mov.size(); pos++)
 			{
 				if (current.mov[pos])
