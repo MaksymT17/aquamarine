@@ -29,41 +29,64 @@ void MainWindow::setupUI()
     QWidget* centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
     
+    // Set a global stylesheet for the application
+    this->setStyleSheet(
+        "QWidget { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #e0e0e0; }"
+        "QGroupBox { font-weight: bold; border: 1px solid #333; border-radius: 6px; margin-top: 2ex; background-color: #1a1a1a; padding-top: 15px; }"
+        "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; padding: 0 5px; color: #00d1ff; left: 10px; font-size: 14px; font-weight: bold; }"
+        "QPushButton { background-color: #2c2c2c; color: #fff; border: 1px solid #444; border-radius: 4px; padding: 8px 16px; font-weight: bold; }"
+        "QPushButton:hover { background-color: #3a3a3a; border-color: #555; }"
+        "QPushButton:pressed { background-color: #222; border-color: #333; }"
+        "QPushButton:disabled { background-color: #111; color: #555; border-color: #222; }"
+        "QSpinBox, QDoubleSpinBox { background-color: #111; color: #00d1ff; border: 1px solid #333; border-radius: 4px; padding: 4px 8px; font-family: 'Menlo', monospace; font-weight: bold; selection-background-color: #00d1ff; selection-color: black; }"
+        "QSpinBox::up-button, QSpinBox::down-button, QDoubleSpinBox::up-button, QDoubleSpinBox::down-button { width: 0px; border: none; }"
+        "QProgressBar { border: 1px solid #444; border-radius: 4px; background-color: #111; text-align: center; color: white; font-weight: bold; }"
+        "QProgressBar::chunk { background-color: #00d1ff; border-radius: 3px; }"
+        "QLabel#imagePlaceholder { background-color: #151515; border: 2px dashed #444; border-radius: 8px; color: #666; font-weight: bold; font-size: 14px; }"
+        "QLabel#statusLabel { color: #00d1ff; font-weight: bold; font-size: 14px; }"
+    );
+    
     QVBoxLayout* mainLayout = new QVBoxLayout(centralWidget);
+    mainLayout->setContentsMargins(25, 25, 25, 25);
+    mainLayout->setSpacing(20);
     
     // --- Top section: Image Selection ---
     QHBoxLayout* selectionLayout = new QHBoxLayout();
+    selectionLayout->setSpacing(20);
     
     QVBoxLayout* baseLayout = new QVBoxLayout();
-    m_btnSelectBase = new QPushButton("Select Base Image");
-    connect(m_btnSelectBase, &QPushButton::clicked, this, &MainWindow::selectBaseImage);
-    m_lblBaseImage = new QLabel("No image selected");
+    m_lblBaseImage = new QLabel("SELECT BASE IMAGE");
+    m_lblBaseImage->setObjectName("imagePlaceholder");
     m_lblBaseImage->setAlignment(Qt::AlignCenter);
     m_lblBaseImage->setMinimumSize(320, 240);
-    m_lblBaseImage->setStyleSheet("background-color: #1c1c1c; border: 1px solid #333;");
+    m_btnSelectBase = new QPushButton("Browse Base Image");
+    connect(m_btnSelectBase, &QPushButton::clicked, this, &MainWindow::selectBaseImage);
     baseLayout->addWidget(m_lblBaseImage);
     baseLayout->addWidget(m_btnSelectBase);
     
     QVBoxLayout* cmpLayout = new QVBoxLayout();
-    m_btnSelectCompare = new QPushButton("Select Compare Image");
-    connect(m_btnSelectCompare, &QPushButton::clicked, this, &MainWindow::selectCompareImage);
-    m_lblCompareImage = new QLabel("No image selected");
+    m_lblCompareImage = new QLabel("SELECT COMPARE IMAGE");
+    m_lblCompareImage->setObjectName("imagePlaceholder");
     m_lblCompareImage->setAlignment(Qt::AlignCenter);
     m_lblCompareImage->setMinimumSize(320, 240);
-    m_lblCompareImage->setStyleSheet("background-color: #1c1c1c; border: 1px solid #333;");
+    m_btnSelectCompare = new QPushButton("Browse Compare Image");
+    connect(m_btnSelectCompare, &QPushButton::clicked, this, &MainWindow::selectCompareImage);
     cmpLayout->addWidget(m_lblCompareImage);
     cmpLayout->addWidget(m_btnSelectCompare);
     
     selectionLayout->addLayout(baseLayout);
     selectionLayout->addLayout(cmpLayout);
     
-    mainLayout->addLayout(selectionLayout);
+    mainLayout->addLayout(selectionLayout, 1);
     
     // --- Middle section: Configuration & Run ---
     QHBoxLayout* middleLayout = new QHBoxLayout();
+    middleLayout->setSpacing(20);
     
-    QGroupBox* grpConfig = new QGroupBox("Configuration");
+    QGroupBox* grpConfig = new QGroupBox("ANALYSIS CONFIGURATION");
     QFormLayout* formLayout = new QFormLayout(grpConfig);
+    formLayout->setContentsMargins(20, 20, 20, 20);
+    formLayout->setSpacing(12);
     
     m_spnAffinityThreshold = new QSpinBox();
     m_spnAffinityThreshold->setRange(0, 255);
@@ -99,16 +122,27 @@ void MainWindow::setupUI()
     middleLayout->addWidget(grpConfig);
     
     QVBoxLayout* runLayout = new QVBoxLayout();
-    m_btnRun = new QPushButton("Run Comparison");
-    m_btnRun->setMinimumHeight(50);
-    m_btnRun->setStyleSheet("font-weight: bold; background-color: #00d1ff; color: black; border-radius: 5px;");
+    runLayout->setContentsMargins(10, 10, 10, 10);
+    runLayout->setSpacing(15);
+    
+    m_btnRun = new QPushButton("RUN COMPARISON");
+    m_btnRun->setMinimumHeight(60);
+    m_btnRun->setStyleSheet(
+        "QPushButton { font-size: 16px; letter-spacing: 1px; font-weight: bold; background-color: #00d1ff; color: #000; border: none; border-radius: 6px; }"
+        "QPushButton:hover { background-color: #33daff; }"
+        "QPushButton:pressed { background-color: #00aacc; }"
+        "QPushButton:disabled { background-color: #113333; color: #005566; }"
+    );
     connect(m_btnRun, &QPushButton::clicked, this, &MainWindow::runComparison);
     
     m_progressBar = new QProgressBar();
     m_progressBar->setRange(0, 0); // Indeterminate
     m_progressBar->setVisible(false);
+    m_progressBar->setFixedHeight(6);
     
-    m_lblStatus = new QLabel("Ready");
+    m_lblStatus = new QLabel("SYSTEM READY");
+    m_lblStatus->setObjectName("statusLabel");
+    m_lblStatus->setAlignment(Qt::AlignCenter);
     
     runLayout->addStretch();
     runLayout->addWidget(m_btnRun);
@@ -122,13 +156,6 @@ void MainWindow::setupUI()
     
     mainLayout->addLayout(middleLayout);
     
-    // --- Bottom section: Result Image ---
-    m_lblResultImage = new QLabel("Result will appear here");
-    m_lblResultImage->setAlignment(Qt::AlignCenter);
-    m_lblResultImage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_lblResultImage->setStyleSheet("background-color: #111; border: 2px dashed #444;");
-    
-    mainLayout->addWidget(m_lblResultImage, 1); // Give it stretch
 }
 
 void MainWindow::selectBaseImage()
@@ -146,6 +173,7 @@ void MainWindow::selectCompareImage()
     QString path = QFileDialog::getOpenFileName(this, "Select Compare Image", "", "Images (*.png *.xpm *.jpg *.bmp)");
     if (!path.isEmpty()) {
         m_compareImagePath = path;
+        m_compareQImage.load(path);
         updateImageView(m_lblCompareImage, path);
     }
 }
@@ -214,9 +242,9 @@ void MainWindow::onComparisonSuccess(const am::analyze::algorithm::DescObjects& 
     setUIEnabled(true);
     m_lblStatus->setText(QString("Done. Found %1 objects.").arg(result.size()));
 
-    // Draw rectangles on a copy of the base image
-    if (!m_baseQImage.isNull()) {
-        QImage resultImg = m_baseQImage.copy();
+    // Draw rectangles on a copy of the compare image
+    if (!m_compareQImage.isNull()) {
+        QImage resultImg = m_compareQImage.copy();
         QPainter painter(&resultImg);
         
         QPen pen(Qt::red);
@@ -232,7 +260,7 @@ void MainWindow::onComparisonSuccess(const am::analyze::algorithm::DescObjects& 
         }
 
         QPixmap pix = QPixmap::fromImage(resultImg);
-        m_lblResultImage->setPixmap(pix.scaled(m_lblResultImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        m_lblCompareImage->setPixmap(pix.scaled(m_lblCompareImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
 }
 

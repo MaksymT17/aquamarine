@@ -39,7 +39,6 @@ private:
     // UI elements
     QLabel* m_lblBaseImage;
     QLabel* m_lblCompareImage;
-    QLabel* m_lblResultImage;
     
     QPushButton* m_btnSelectBase;
     QPushButton* m_btnSelectCompare;
@@ -59,6 +58,7 @@ private:
     QString m_baseImagePath;
     QString m_compareImagePath;
     QImage m_baseQImage;
+    QImage m_compareQImage;
 
     CompareWorker* m_worker;
 };
