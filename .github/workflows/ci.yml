@@ -1,0 +1,43 @@
+name: Aquamarine CI
+
+on:
+  push:
+    branches: [ "master", "main", "AM-*" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ gcovr libspdlog-dev libsqlite3-dev libjpeg-dev qt6-base-dev libgl1-mesa-dev
+
+    - name: Build Core & Silber
+      run: |
+        mkdir build && cd build
+        cmake ..
+        make -j4
+
+    - name: Run Tests and Generate Coverage
+      run: |
+        cd unit_tests
+        mkdir build && cd build
+        cmake ..
+        make coverage_aquamarine_ut -j4
+
+    - name: Print Coverage Summary
+      run: |
+        cd unit_tests/build
+        gcovr -r ../../ --exclude '.*/thirdparty/.*' --exclude '.*/silber/.*' --exclude '.*/unit_tests/.*'
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: unit_tests/build/coverage_aquamarine_ut/
