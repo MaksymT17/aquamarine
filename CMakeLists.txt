@@ -37,6 +37,7 @@ set(AM_SOURCE_FILES
     analyze/algorithm/movement/MovementDetector.cpp
     extraction/BmpExtractor.cpp
     extraction/MultipleExtractor.cpp
+    extraction/ExtractorFactory.cpp
     common/Timers.hpp
     AmApi.cpp
     service/ConnectionsInfo.cpp

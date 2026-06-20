@@ -3,7 +3,11 @@
 #include "analyze/AffinityComparer.h"
 #include <stdio.h>
 #include "extraction/MultipleExtractor.h"
+#include "extraction/ExtractorFactory.h"
 #include "extraction/BmpExtractor.h"
+#ifndef WIN32
+#include "extraction/JpgExtractor.h"
+#endif
 #include "analyze/ThresholdDiffChecker.h"
 #include "analyze/algorithm/BfsObjectDetector.h"
 #include "analyze/algorithm/DiffObjectDetector.h"
@@ -28,7 +32,14 @@ struct ObjectDetectorWrapper : public ::testing::Test
 
 	void SetUp() override
 	{
-		extractor = std::make_unique<am::extraction::MultipleExtractor>();
+		auto factory = std::make_unique<am::extraction::ExtractorFactory>();
+		factory->registerExtractor("bmp", am::extraction::BmpExtractor::readFile);
+#ifndef WIN32
+		factory->registerExtractor("jpg", am::extraction::JpgExtractor::readFile);
+		factory->registerExtractor("jpeg", am::extraction::JpgExtractor::readFile);
+		factory->registerExtractor("jpe", am::extraction::JpgExtractor::readFile);
+#endif
+		extractor = std::make_unique<am::extraction::MultipleExtractor>(std::move(factory));
 	}
 
 	void TearDown() override

@@ -2,12 +2,29 @@
 #include "Message.h"
 #include <spdlog/spdlog.h>
 #include "extraction/MultipleExtractor.h"
+#include "extraction/ExtractorFactory.h"
+#include "extraction/BmpExtractor.h"
+#ifndef WIN32
+#include "extraction/JpgExtractor.h"
+#endif
 #include "analyze/algorithm/ObjectDetector.h"
 #include "common/Context.hpp"
 
 static Configuration default_conf{75, 10, 1, 50, 5, 10.0};
+
 namespace am::service
 {
+    std::unique_ptr<am::extraction::ExtractorFactory> createExtractorFactory() {
+        auto factory = std::make_unique<am::extraction::ExtractorFactory>();
+        factory->registerExtractor("bmp", am::extraction::BmpExtractor::readFile);
+#ifndef WIN32
+        factory->registerExtractor("jpg", am::extraction::JpgExtractor::readFile);
+        factory->registerExtractor("jpeg", am::extraction::JpgExtractor::readFile);
+        factory->registerExtractor("jpe", am::extraction::JpgExtractor::readFile);
+#endif
+        return factory;
+    }
+
     SilberService::SilberService(const std::string &shMemName) : m_server(std::make_unique<ServerProcCommunicator>(shMemName)),
                                                                  m_isRunning(false)
 
@@ -15,7 +32,7 @@ namespace am::service
         const size_t opt_threads = am::common::getOptimalThreadsCount(default_conf.ThreadsMultiplier);
         m_amApi = std::make_unique<am::AmApi>(
             default_conf,
-            std::make_unique<am::extraction::MultipleExtractor>(),
+            std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
             std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, default_conf)
         );
     }
@@ -51,7 +68,7 @@ namespace am::service
                 const size_t opt_threads = am::common::getOptimalThreadsCount(messageConf->configuration.ThreadsMultiplier);
                 m_amApi = std::make_unique<am::AmApi>(
                     messageConf->configuration,
-                    std::make_unique<am::extraction::MultipleExtractor>(),
+                    std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
                     std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, messageConf->configuration)
                 );
                 
@@ -67,7 +84,7 @@ namespace am::service
                 const size_t opt_threads = am::common::getOptimalThreadsCount(iter->configuration.ThreadsMultiplier);
                 m_amApi = std::make_unique<am::AmApi>(
                     iter->configuration,
-                    std::make_unique<am::extraction::MultipleExtractor>(),
+                    std::make_unique<am::extraction::MultipleExtractor>(createExtractorFactory()),
                     std::make_unique<am::analyze::algorithm::ObjectDetector>(opt_threads, iter->configuration)
                 );
 
