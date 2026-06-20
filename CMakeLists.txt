@@ -41,6 +41,8 @@ set(AM_SOURCE_FILES
     AmApi.cpp
     service/ConnectionsInfo.cpp
     service/SilberService.cpp
+    service/report/DrawingReportService.cpp
+    service/report/DatabaseReportService.cpp
 )
 add_subdirectory(silber)
 
